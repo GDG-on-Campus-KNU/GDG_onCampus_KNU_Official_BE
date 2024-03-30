@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: server
+    import:
+      - classpath:secrets.yml
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      jdbc:
+        time_zone: Asia/Seoul

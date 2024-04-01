@@ -29,6 +29,12 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private String sessionId;
+
+    public void updateSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     public void updateRole(Role role) {
         this.role = role;
     }

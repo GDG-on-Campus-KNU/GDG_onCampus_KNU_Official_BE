@@ -1,8 +1,12 @@
 package com.gdsc_knu.official_homepage.entity;
 
+import com.gdsc_knu.official_homepage.dto.MemberInfoRequest;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,11 +35,25 @@ public class Member extends BaseTimeEntity{
 
     private String sessionId;
 
+    private String profileUrl;
+
+    private String introduction;
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberTeam> memberTeams = new ArrayList<>();
     public void updateSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
-
     public void updateRole(Role role) {
         this.role = role;
+    }
+    public void update(MemberInfoRequest memberInfoRequest){
+        this.name = memberInfoRequest.getName();
+        this.profileUrl = memberInfoRequest.getProfileUrl();
+        this.age = memberInfoRequest.getAge();
+        this.major = memberInfoRequest.getMajor();
+        this.studentNumber = memberInfoRequest.getStudentNumber();
+        this.email = memberInfoRequest.getEmail();
+        this.introduction = memberInfoRequest.getIntroduction();
     }
 }

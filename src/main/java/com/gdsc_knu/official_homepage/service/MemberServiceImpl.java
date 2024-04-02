@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
         Cookie cookie = new Cookie("JSESSIONID", httpSession.getId());
         headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        Member member = memberRepository.findByEmail(loginRequest.getEmail());
+        Member member = memberRepository.getByEmail(loginRequest.getEmail());
         member.updateSessionId(httpSession.getId());
         memberRepository.save(member);
 

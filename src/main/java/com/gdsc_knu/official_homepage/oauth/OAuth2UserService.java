@@ -1,8 +1,6 @@
 package com.gdsc_knu.official_homepage.oauth;
 
 import com.gdsc_knu.official_homepage.entity.Member;
-import com.gdsc_knu.official_homepage.exception.CustomException;
-import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,14 +20,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(request);
 
-        String registrationId = request.getClientRegistration().getRegistrationId();
         String accessToken = request.getAccessToken().getTokenValue();
         System.out.println(accessToken);
 
-        String userNameAttributeName = request.getClientRegistration()
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName();
 
         System.out.println(oAuth2User.getAttributes().toString());
         saveMember(OAuthAttributes.of(oAuth2User.getAttributes()));

@@ -1,6 +1,5 @@
 package com.gdsc_knu.official_homepage.dto;
 
-import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

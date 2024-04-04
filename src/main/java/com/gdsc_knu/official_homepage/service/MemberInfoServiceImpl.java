@@ -28,7 +28,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
         List<TeamInfoResponse> teamInfos = new ArrayList<>();
 
-        for (MemberTeam memberTeam: member.getMemberTeams()){
+        for (MemberTeam memberTeam : member.getMemberTeams()){
             Team team = memberTeam.getTeam();
             teamInfos.add(new TeamInfoResponse(team.getTeamName(),team.getTeamPageUrl()));
         }

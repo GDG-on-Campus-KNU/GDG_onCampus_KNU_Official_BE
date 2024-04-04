@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import org.springframework.http.HttpHeaders;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

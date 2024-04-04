@@ -16,7 +16,7 @@ import java.util.List;
 public class Member extends BaseTimeEntity{
     @Id
     @Column(name = "member_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -40,7 +40,7 @@ public class Member extends BaseTimeEntity{
     private String introduction;
 
     @OneToMany(mappedBy = "member")
-    private List<MemberTeam> memberTeams = new ArrayList<>();
+    private final List<MemberTeam> memberTeams = new ArrayList<>();
     public void updateSessionId(String sessionId) {
         this.sessionId = sessionId;
     }

@@ -33,17 +33,12 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String sessionId;
-
     private String profileUrl;
 
     private String introduction;
 
     @OneToMany(mappedBy = "member")
     private final List<MemberTeam> memberTeams = new ArrayList<>();
-    public void updateSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
     public void updateRole(Role role) {
         this.role = role;
     }

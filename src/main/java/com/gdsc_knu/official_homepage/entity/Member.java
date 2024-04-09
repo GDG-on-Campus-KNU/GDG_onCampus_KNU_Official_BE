@@ -1,6 +1,5 @@
 package com.gdsc_knu.official_homepage.entity;
 
-import com.gdsc_knu.official_homepage.dto.MemberInfoRequest;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
@@ -42,13 +41,20 @@ public class Member extends BaseTimeEntity{
     public void updateRole(Role role) {
         this.role = role;
     }
-    public void update(MemberInfoRequest memberInfoRequest){
-        this.name = memberInfoRequest.getName();
-        this.profileUrl = memberInfoRequest.getProfileUrl();
-        this.age = memberInfoRequest.getAge();
-        this.major = memberInfoRequest.getMajor();
-        this.studentNumber = memberInfoRequest.getStudentNumber();
-        this.email = memberInfoRequest.getEmail();
-        this.introduction = memberInfoRequest.getIntroduction();
+    public void update(String name, String profileUrl, int age, String major, String studentNumber, String email, String introduction){
+        this.name = name;
+        this.profileUrl = profileUrl;
+        this.age = age;
+        this.major = major;
+        this.studentNumber = studentNumber;
+        this.email = email;
+        this.introduction = introduction;
+    }
+    public void addInfo(String name, int age, String major, String studentNumber){
+        this.name = name;
+        this.age = age;
+        this.major = major;
+        this.studentNumber = studentNumber;
+        this.role = Role.MEMBER;
     }
 }

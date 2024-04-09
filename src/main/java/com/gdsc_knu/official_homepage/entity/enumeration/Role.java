@@ -1,5 +1,5 @@
 package com.gdsc_knu.official_homepage.entity.enumeration;
 
 public enum Role {
-    GUEST, MEMBER, CORE
+    GUEST, MEMBER, CORE, TEMP
 }

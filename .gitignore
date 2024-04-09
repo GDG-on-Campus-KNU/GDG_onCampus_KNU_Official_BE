@@ -37,3 +37,4 @@ out/
 .vscode/
 
 /src/main/resources/**/*.yml
+src/main/resources/static/index.html

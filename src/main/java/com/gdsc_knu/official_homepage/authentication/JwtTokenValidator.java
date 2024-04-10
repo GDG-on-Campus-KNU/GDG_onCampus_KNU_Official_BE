@@ -1,10 +1,11 @@
 package com.gdsc_knu.official_homepage.authentication;
 
+import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
+import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
 import java.security.Key;
 
 @Component
@@ -23,14 +23,31 @@ public class JwtTokenValidator {
     private String jwtSecret;
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisRepository redisRepository;
 
-    public JwtUserDetails validateTokenAndGetUserDetails(String token) {
+    private String checkToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("토큰이 없거나 유효하지 않은 형식입니다.");
+            throw new IllegalArgumentException("유효하지 않은 형식의 토큰입니다.");
         }
         // Bearer 제거
-        token = token.substring(7);
+        return token.substring(7);
+    }
 
+    public String checkAccessToken(String token) {
+        return checkToken(token);
+    }
+
+    public String checkRefreshToken(String token) {
+        String checkedToken = checkToken(token);
+        RedisToken redisToken = redisRepository.findById(token)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다."));
+        if (!redisToken.getEmail().equals(getUserDetails(token).getEmail())) {
+            throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
+        }
+        return checkedToken;
+    }
+
+    public JwtUserDetails getUserDetails(String token) {
         JwtUserDetails userDetails = null;
         try {
             Key key = jwtTokenProvider.createSignature();

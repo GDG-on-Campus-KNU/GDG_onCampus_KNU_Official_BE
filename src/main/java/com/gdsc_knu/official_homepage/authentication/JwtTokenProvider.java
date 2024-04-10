@@ -1,5 +1,7 @@
 package com.gdsc_knu.official_homepage.authentication;
 
+import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
+import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
@@ -30,6 +32,7 @@ public class JwtTokenProvider {
     private final long jwtRefreshExpiration = 1000 * 60 * 60 * 24 * 7; // 1주
 
     private final MemberRepository memberRepository;
+    private final RedisRepository redisRepository;
 
     public TokenResponse issueTokens(String email) {
         long current = System.currentTimeMillis();
@@ -41,6 +44,8 @@ public class JwtTokenProvider {
 
         String accessToken = generateToken(accessTokenExpireTime, createClaims(member));
         String refreshToken = generateToken(refreshTokenExpireTime, createClaims(member));
+
+        saveRefreshToken(email, refreshToken);
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
@@ -56,6 +61,14 @@ public class JwtTokenProvider {
                 .setExpiration(expiration)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private void saveRefreshToken(String email, String refreshToken) {
+        RedisToken redisToken = RedisToken.builder()
+                .email(email)
+                .refreshToken(refreshToken)
+                .build();
+        redisRepository.save(redisToken);
     }
 
 

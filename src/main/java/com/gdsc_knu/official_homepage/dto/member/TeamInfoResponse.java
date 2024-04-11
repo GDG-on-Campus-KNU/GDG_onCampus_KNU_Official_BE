@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.dto.Member;
+package com.gdsc_knu.official_homepage.dto.member;
 
 import lombok.AllArgsConstructor;
 

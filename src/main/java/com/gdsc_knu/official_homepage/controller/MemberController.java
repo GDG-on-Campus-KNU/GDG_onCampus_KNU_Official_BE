@@ -1,8 +1,8 @@
 package com.gdsc_knu.official_homepage.controller;
 
-import com.gdsc_knu.official_homepage.dto.Member.MemberInfoAdd;
-import com.gdsc_knu.official_homepage.dto.Member.MemberInfoUpdate;
-import com.gdsc_knu.official_homepage.dto.Member.MemberInfoResponse;
+import com.gdsc_knu.official_homepage.dto.member.MemberInfoAdd;
+import com.gdsc_knu.official_homepage.dto.member.MemberInfoUpdate;
+import com.gdsc_knu.official_homepage.dto.member.MemberInfoResponse;
 import com.gdsc_knu.official_homepage.service.MemberInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

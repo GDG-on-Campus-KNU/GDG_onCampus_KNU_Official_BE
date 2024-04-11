@@ -1,9 +1,12 @@
-package com.gdsc_knu.official_homepage.service.oauth;
+package com.gdsc_knu.official_homepage.oauth;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gdsc_knu.official_homepage.authentication.JwtTokenProvider;
+import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleToken;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleUserInfo;
 import com.gdsc_knu.official_homepage.dto.oauth.LoginResponseDto;
@@ -22,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class OAuthService {
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     private final RestTemplate restTemplate = new RestTemplate();
     /**
      * 1. code로 액세스 토큰 받아오기
@@ -50,7 +54,12 @@ public class OAuthService {
         Member member = memberRepository.findByEmail(googleUserInfo.getEmail())
                 .orElseGet(() -> saveNewMember(googleUserInfo));
 
-        return new LoginResponseDto(member.getRole()==Role.TEMP,"accessTokenadfhtd","refreshTokenasdgrggfds");
+        TokenResponse response = jwtTokenProvider.issueTokens(member.getEmail());
+
+        return new LoginResponseDto(
+                member.getRole()==Role.TEMP,
+                response.getAccessToken(),
+                response.getAccessToken());
     }
 
     private GoogleToken getAccessToken(String code){

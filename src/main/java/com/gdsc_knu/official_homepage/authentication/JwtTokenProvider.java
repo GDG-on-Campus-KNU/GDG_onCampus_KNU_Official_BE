@@ -6,6 +6,7 @@ import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.Header;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -27,8 +28,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
-    @Value("${jwt.secret}")
-    private String jwtSecret;
     private final long jwtAccessExpiration = 1000 * 60 * 60 * 24; // 1일
     private final long jwtRefreshExpiration = 1000 * 60 * 60 * 24 * 14; // 1주
 
@@ -49,7 +48,7 @@ public class JwtTokenProvider {
         Date refreshTokenExpireTime = new Date(current + jwtRefreshExpiration);
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
 
         String accessToken = generateToken(accessTokenExpireTime, createClaims(member));
         String refreshToken = generateToken(refreshTokenExpireTime, createClaims(member));

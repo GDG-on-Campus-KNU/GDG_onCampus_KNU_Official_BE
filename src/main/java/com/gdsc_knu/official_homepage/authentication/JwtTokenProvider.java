@@ -36,11 +36,13 @@ public class JwtTokenProvider {
     private final RedisRepository redisRepository;
     private final JwtTokenValidator jwtTokenValidator;
 
+    // 리프레쉬 토큰을 받아 검증하여 토큰을 재발급 할때 사용하는 메서드입니다.
     public TokenResponse reissueTokens(String token) {
         String email = jwtTokenValidator.checkRefreshToken(token);
         return issueTokens(email);
     }
 
+    // 로그인 시 토큰을 발급할때 사용하는 메서드입니다.
     public TokenResponse issueTokens(String email) {
         long current = System.currentTimeMillis();
         Date accessTokenExpireTime = new Date(current + jwtAccessExpiration);
@@ -60,6 +62,7 @@ public class JwtTokenProvider {
                 .build();
     }
 
+    // 토큰 발급을 위해 토큰을 생성하여 반환해주는 메서드입니다.
     private String generateToken(Date expiration, Map<String, Object> claims) {
         Key secretKey = jwtTokenValidator.createSignature();
 
@@ -70,6 +73,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // 리프레시 토큰을 레디스에 저장하는 메서드입니다.
     private void saveRefreshToken(String email, String refreshToken) {
         RedisToken redisToken = RedisToken.builder()
                 .email(email)
@@ -78,7 +82,7 @@ public class JwtTokenProvider {
         redisRepository.save(redisToken);
     }
 
-
+    // 토큰에 담을 정보인 claim을 생성하는 메서드입니다. 현재는 이메일과 역할이 담겨있습니다.
     private static Map<String, Object> createClaims(Member member) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", member.getEmail());

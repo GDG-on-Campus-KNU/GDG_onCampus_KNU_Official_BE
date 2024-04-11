@@ -23,6 +23,7 @@ public class JwtTokenValidator {
 
     private final RedisRepository redisRepository;
 
+    // 토큰의 형식을 검사하는 private 메서드입니다.
     private String checkToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
             throw new IllegalArgumentException("유효하지 않은 형식의 토큰입니다.");
@@ -31,10 +32,12 @@ public class JwtTokenValidator {
         return token.substring(7);
     }
 
+    // 엑세스 토큰 검사하는 (위의 메서드와 동일) public 메서드입니다.
     public String checkAccessToken(String token) {
         return checkToken(token);
     }
 
+    // 리프레쉬 토큰을 검사하는 메서드입니다.
     public String checkRefreshToken(String token) {
         String checkedToken = checkToken(token);
         JwtUserDetails userDetails = getUserDetails(checkedToken);
@@ -48,6 +51,7 @@ public class JwtTokenValidator {
         return userDetails.getEmail();
     }
 
+    // JWT claim에서 정보를 추출하는 메서드입니다.
     public JwtUserDetails getUserDetails(String token) {
         JwtUserDetails userDetails = null;
         try {

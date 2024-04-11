@@ -2,10 +2,8 @@ package com.gdsc_knu.official_homepage.authentication;
 
 import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
+import jakarta.xml.bind.DatatypeConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 
 @Component
@@ -22,7 +21,6 @@ public class JwtTokenValidator {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final RedisRepository redisRepository;
 
     private String checkToken(String token) {
@@ -39,18 +37,21 @@ public class JwtTokenValidator {
 
     public String checkRefreshToken(String token) {
         String checkedToken = checkToken(token);
-        RedisToken redisToken = redisRepository.findById(token)
+        JwtUserDetails userDetails = getUserDetails(checkedToken);
+        RedisToken redisToken = redisRepository.findById(userDetails.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다."));
-        if (!redisToken.getEmail().equals(getUserDetails(token).getEmail())) {
-            throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
+        if (!redisToken.getRefreshToken().equals(checkedToken)) {
+            redisRepository.delete(redisToken);
+            throw new IllegalArgumentException("요청한 리프레시 토큰이 저장된 토큰과 다릅니다.");
         }
-        return checkedToken;
+        redisRepository.delete(redisToken);
+        return userDetails.getEmail();
     }
 
     public JwtUserDetails getUserDetails(String token) {
         JwtUserDetails userDetails = null;
         try {
-            Key key = jwtTokenProvider.createSignature();
+            Key key = createSignature();
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
@@ -70,6 +71,11 @@ public class JwtTokenValidator {
         }
 
         return userDetails;
+    }
+
+    protected Key createSignature() {
+        byte[] secretBytes = DatatypeConverter.parseBase64Binary(jwtSecret);
+        return new SecretKeySpec(secretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
     @Getter

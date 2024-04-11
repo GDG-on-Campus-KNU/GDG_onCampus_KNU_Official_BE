@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +30,16 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String jwtSecret;
     private final long jwtAccessExpiration = 1000 * 60 * 60 * 24; // 1일
-    private final long jwtRefreshExpiration = 1000 * 60 * 60 * 24 * 7; // 1주
+    private final long jwtRefreshExpiration = 1000 * 60 * 60 * 24 * 14; // 1주
 
     private final MemberRepository memberRepository;
     private final RedisRepository redisRepository;
+    private final JwtTokenValidator jwtTokenValidator;
+
+    public TokenResponse reissueTokens(String token) {
+        String email = jwtTokenValidator.checkRefreshToken(token);
+        return issueTokens(email);
+    }
 
     public TokenResponse issueTokens(String email) {
         long current = System.currentTimeMillis();
@@ -54,7 +61,7 @@ public class JwtTokenProvider {
     }
 
     private String generateToken(Date expiration, Map<String, Object> claims) {
-        Key secretKey = createSignature();
+        Key secretKey = jwtTokenValidator.createSignature();
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -79,8 +86,4 @@ public class JwtTokenProvider {
         return claims;
     }
 
-    protected Key createSignature() {
-        byte[] secretBytes = DatatypeConverter.parseBase64Binary(jwtSecret);
-        return new SecretKeySpec(secretBytes, SignatureAlgorithm.HS256.getJcaName());
-    }
 }

@@ -19,15 +19,27 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] WHITE_LIST = {
+            "/**"
+    };
+    private static final String[] MEMBER_AUTHENTICATION_LIST = {
+
+    };
+
+    private static final String[] CORE_AUTHENTICATION_LIST = {
+
+    };
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers(new MvcRequestMatcher(introspector,"/**")).permitAll()
+                        .requestMatchers(WHITE_LIST).permitAll()
+                        .requestMatchers(MEMBER_AUTHENTICATION_LIST).hasRole("MEMBER")
+                        .requestMatchers(CORE_AUTHENTICATION_LIST).hasRole("CORE")
                         .anyRequest().permitAll()
-                )
-                .oauth2Login(Customizer.withDefaults());
+                );
+
         return httpSecurity.build();
     }
 }

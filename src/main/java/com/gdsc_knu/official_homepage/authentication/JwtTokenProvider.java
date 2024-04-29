@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -50,8 +51,8 @@ public class JwtTokenProvider {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
 
-        String accessToken = generateToken(accessTokenExpireTime, createClaims(member));
-        String refreshToken = generateToken(refreshTokenExpireTime, createClaims(member));
+        String accessToken = generateToken(accessTokenExpireTime, email);
+        String refreshToken = generateToken(refreshTokenExpireTime, email);
 
         saveRefreshToken(email, refreshToken);
 
@@ -62,11 +63,11 @@ public class JwtTokenProvider {
     }
 
     // 토큰 발급을 위해 토큰을 생성하여 반환해주는 메서드입니다.
-    private String generateToken(Date expiration, Map<String, Object> claims) {
+    private String generateToken(Date expiration, String email) {
         Key secretKey = jwtTokenValidator.createSignature();
 
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setExpiration(expiration)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
@@ -80,13 +81,4 @@ public class JwtTokenProvider {
                 .build();
         redisRepository.save(redisToken);
     }
-
-    // 토큰에 담을 정보인 claim을 생성하는 메서드입니다. 현재는 이메일과 역할이 담겨있습니다.
-    private static Map<String, Object> createClaims(Member member) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", member.getEmail());
-        claims.put("role", member.getRole().toString());
-        return claims;
-    }
-
 }

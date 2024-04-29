@@ -57,6 +57,7 @@ public class OAuthService {
         TokenResponse response = jwtTokenProvider.issueTokens(member.getEmail());
 
         return new LoginResponseDto(
+                member.getId(),
                 member.getRole()==Role.TEMP,
                 response.getAccessToken(),
                 response.getAccessToken());

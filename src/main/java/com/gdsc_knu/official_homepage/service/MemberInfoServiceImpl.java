@@ -1,9 +1,9 @@
 package com.gdsc_knu.official_homepage.service;
 
-import com.gdsc_knu.official_homepage.dto.Member.MemberInfoAdd;
-import com.gdsc_knu.official_homepage.dto.Member.MemberInfoUpdate;
-import com.gdsc_knu.official_homepage.dto.Member.MemberInfoResponse;
-import com.gdsc_knu.official_homepage.dto.Member.TeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.member.MemberInfoAdd;
+import com.gdsc_knu.official_homepage.dto.member.MemberInfoUpdate;
+import com.gdsc_knu.official_homepage.dto.member.MemberInfoResponse;
+import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;

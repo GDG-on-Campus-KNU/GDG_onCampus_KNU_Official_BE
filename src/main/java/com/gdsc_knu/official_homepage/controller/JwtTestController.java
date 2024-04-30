@@ -1,7 +1,9 @@
 package com.gdsc_knu.official_homepage.controller;
 
+import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.JwtTokenProvider;
 import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,10 @@ public class JwtTestController {
         return ResponseEntity.ok().body(jwtTokenProvider.issueTokens("chaejm55@gmail.com"));
     }
 
-    // 전달 받은 엑세스 토큰으로 멤버 이메일, 역할을 반환하는 테스트 컨트롤러입니다.
+    // 전달 받은 엑세스 토큰으로 멤버 MemberDetail(이메일)을 반환하는 테스트 컨트롤러입니다.
     @GetMapping("/check")
-    public ResponseEntity<JwtTokenValidator.JwtUserDetails> checkJwtToken(@RequestHeader("Authorization") String token) {
-        String checkedToken = jwtTokenValidator.checkAccessToken(token);
-        return ResponseEntity.ok().body(jwtTokenValidator.getUserDetails(checkedToken));
+    public ResponseEntity<JwtMemberDetail> checkJwtToken(@TokenMember JwtMemberDetail jwtMemberDetail) {
+        return ResponseEntity.ok().body(jwtMemberDetail);
     }
 
     // 리프레시 토큰으로 모든 토큰을 재발급 받는 테스트 컨트롤러입니다.

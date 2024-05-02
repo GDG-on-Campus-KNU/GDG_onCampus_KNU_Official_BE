@@ -7,14 +7,14 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import io.swagger.v3.oas.annotations.Hidden;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
 @AllArgsConstructor
 @Builder
-@Nullable
+@Hidden
 public class JwtMemberDetail implements UserDetails {
     private Member member;
     private String email;

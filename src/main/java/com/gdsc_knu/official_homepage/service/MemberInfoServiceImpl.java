@@ -54,8 +54,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
     @Transactional
     @Override
-    public void addMemberInfo(MemberInfoAdd memberInfo) {
-        Member member = memberRepository.findById(memberInfo.getId())
+    public void addMemberInfo(Long id, MemberInfoAdd memberInfo) {
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
         member.addInfo(memberInfo.getName(),
                 memberInfo.getAge(),

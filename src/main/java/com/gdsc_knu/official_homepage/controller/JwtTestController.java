@@ -5,10 +5,12 @@ import com.gdsc_knu.official_homepage.authentication.JwtTokenProvider;
 import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Hidden
 @RequestMapping("/api/jwt")
 @RestController
 @RequiredArgsConstructor

@@ -1,6 +1,5 @@
 package com.gdsc_knu.official_homepage.annotation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -8,9 +7,6 @@ import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;

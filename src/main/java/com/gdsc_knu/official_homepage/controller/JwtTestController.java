@@ -34,4 +34,16 @@ public class JwtTestController {
     public ResponseEntity<TokenResponse> reissueTokens(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(jwtTokenProvider.reissueTokens(token));
     }
+
+    // 권한 부여를 확인하기 위한 컨트롤러입니다.
+    @GetMapping("/member")
+    public String member(){
+        return "member 권한을 가집니다.";
+    }
+    @GetMapping("/core")
+    public String core(){
+        return "core 권한을 가집니다.";
+    }
+
+
 }

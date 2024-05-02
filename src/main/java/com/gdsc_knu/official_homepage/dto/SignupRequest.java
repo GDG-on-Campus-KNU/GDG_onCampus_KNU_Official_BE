@@ -34,7 +34,7 @@ public class SignupRequest {
                 .studentNumber(studentNumber)
                 .major(major)
                 .email(email)
-                .role(Role.MEMBER)
+                .role(Role.ROLE_MEMBER)
                 .build();
     }
 }

@@ -55,6 +55,6 @@ public class Member extends BaseTimeEntity{
         this.age = age;
         this.major = major;
         this.studentNumber = studentNumber;
-        this.role = Role.MEMBER;
+        this.role = Role.ROLE_MEMBER;
     }
 }

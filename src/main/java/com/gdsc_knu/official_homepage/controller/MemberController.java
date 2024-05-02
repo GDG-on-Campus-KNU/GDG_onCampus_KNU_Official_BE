@@ -28,7 +28,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberInfoService.retrieveMemberInfo(id));
     }
 
-    @PostMapping()
+    @PutMapping()
     @Operation(summary="사용자 정보 수정 API")
     public void updateMemberInfo(@RequestBody MemberInfoUpdate memberInfoUpdate,
                                  @RequestParam(name = "userId")Long id){

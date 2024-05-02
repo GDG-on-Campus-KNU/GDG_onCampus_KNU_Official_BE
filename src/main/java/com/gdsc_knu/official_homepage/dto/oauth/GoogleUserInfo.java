@@ -22,7 +22,7 @@ public class GoogleUserInfo {
                 .email(email)
                 .profileUrl(picture)
                 .name(name)
-                .role(Role.TEMP)
+                .role(Role.ROLE_TEMP)
                 .build();
     }
 }

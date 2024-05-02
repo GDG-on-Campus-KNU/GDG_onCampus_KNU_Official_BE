@@ -30,6 +30,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String jwtHeader = request.getHeader("Authorization");
 
+        // 인증이 필요없는 요청은 바로 리턴(이 필터에 안걸려도 인증은 리졸버를 통해 수행함)
+        if (jwtHeader==null){
+            chain.doFilter(request,response);
+            return;
+        }
+
         String jwtToken = jwtTokenValidator.checkAccessToken(jwtHeader);
         Claims claims = jwtTokenValidator.extractClaims(jwtToken);
         String email = claims.getSubject();

@@ -23,7 +23,7 @@ public class SecurityConfig {
     private final MemberRepository memberRepository;
 
     private static final String[] WHITE_LIST = {
-            "/**"
+            "/**",
     };
     private static final String[] MEMBER_AUTHENTICATION_LIST = {
             "/api/jwt/member"

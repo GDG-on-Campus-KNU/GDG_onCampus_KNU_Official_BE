@@ -7,5 +7,5 @@ import com.gdsc_knu.official_homepage.dto.member.MemberInfoResponse;
 public interface MemberInfoService {
     MemberInfoResponse retrieveMemberInfo(Long id);
     void updateMemberInfo(Long id, MemberInfoUpdate memberInfoUpdate);
-    void addMemberInfo(MemberInfoAdd memberInfoAdd);
+    void addMemberInfo(Long id, MemberInfoAdd memberInfoAdd);
 }

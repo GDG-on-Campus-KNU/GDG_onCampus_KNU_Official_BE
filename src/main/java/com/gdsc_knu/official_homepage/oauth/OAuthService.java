@@ -58,7 +58,7 @@ public class OAuthService {
 
         return new LoginResponseDto(
                 member.getId(),
-                member.getRole()==Role.TEMP,
+                member.getRole()==Role.ROLE_TEMP,
                 response.getAccessToken(),
                 response.getAccessToken());
     }

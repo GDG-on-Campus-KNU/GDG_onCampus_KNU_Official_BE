@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class MemberInfoAdd {
-    private Long id;
     private String name;
     private int age;
     private String studentNumber;

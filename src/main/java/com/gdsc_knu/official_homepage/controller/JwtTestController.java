@@ -5,10 +5,12 @@ import com.gdsc_knu.official_homepage.authentication.JwtTokenProvider;
 import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Hidden
 @RequestMapping("/api/jwt")
 @RestController
 @RequiredArgsConstructor
@@ -34,4 +36,16 @@ public class JwtTestController {
     public ResponseEntity<TokenResponse> reissueTokens(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(jwtTokenProvider.reissueTokens(token));
     }
+
+    // 권한 부여를 확인하기 위한 컨트롤러입니다.
+    @GetMapping("/member")
+    public String member(){
+        return "member 권한을 가집니다.";
+    }
+    @GetMapping("/core")
+    public String core(){
+        return "core 권한을 가집니다.";
+    }
+
+
 }

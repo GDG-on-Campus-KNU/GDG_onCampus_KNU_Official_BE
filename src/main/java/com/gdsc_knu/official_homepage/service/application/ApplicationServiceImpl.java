@@ -1,6 +1,5 @@
 package com.gdsc_knu.official_homepage.service.application;
 
-import com.gdsc_knu.official_homepage.dto.application.ApplicationCheckRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
 import com.gdsc_knu.official_homepage.entity.Application;
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Service;
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     @Override
-    public ApplicationResponse getApplication(ApplicationCheckRequest applicationCheckRequest) {
-        Application application = applicationRepository.findByStudentNumber(applicationCheckRequest
-                .getStudentNumber()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원서입니다."));
+    public ApplicationResponse getApplication(String name, String studentNumber) {
+        Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원서입니다."));
         return new ApplicationResponse(application);
     }
 
@@ -26,8 +25,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Long updateApplication(ApplicationRequest applicationRequest) {
-        Application application = applicationRepository.findByStudentNumber(applicationRequest.getStudentNumber())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원서입니다."));
+        Application application = applicationRepository.findByNameAndStudentNumber(applicationRequest.getName(), applicationRequest.getStudentNumber())
+                .orElseThrow(() -> new IllegalArgumentException("해당 지원서가 존재하지 않습니다."));
         application.updateApplication(applicationRequest);
         applicationRepository.save(application);
         return application.getId();

@@ -29,6 +29,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = applicationRepository.findByStudentNumber(applicationRequest.getStudentNumber())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원서입니다."));
         application.updateApplication(applicationRequest);
+        applicationRepository.save(application);
         return application.getId();
     }
 }

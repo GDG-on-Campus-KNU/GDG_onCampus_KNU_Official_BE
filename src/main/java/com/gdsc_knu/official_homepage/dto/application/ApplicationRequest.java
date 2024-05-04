@@ -36,6 +36,9 @@ public class ApplicationRequest {
     private Track track;
 
     public Application toEntity() {
+        if (this.applicationStatus == null) {
+            this.applicationStatus = ApplicationStatus.TEMPORAL;
+        }
         return Application.builder()
                 .name(name)
                 .studentNumber(studentNumber)

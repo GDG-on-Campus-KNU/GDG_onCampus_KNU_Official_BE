@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.authentication.redis;
+package com.gdsc_knu.official_homepage.authentication.jwt;
 
 import com.gdsc_knu.official_homepage.entity.Member;
 import jakarta.annotation.Nullable;

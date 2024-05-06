@@ -1,9 +1,9 @@
 package com.gdsc_knu.official_homepage.controller;
 
 import com.gdsc_knu.official_homepage.annotation.TokenMember;
-import com.gdsc_knu.official_homepage.authentication.JwtTokenProvider;
-import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
-import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenProvider;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;

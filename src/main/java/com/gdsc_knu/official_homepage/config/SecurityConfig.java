@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.config;
 
-import com.gdsc_knu.official_homepage.authentication.JwtFilter;
-import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.authentication.filter.JwtFilter;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

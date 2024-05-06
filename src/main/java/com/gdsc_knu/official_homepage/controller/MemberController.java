@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.controller;
 
 import com.gdsc_knu.official_homepage.annotation.TokenMember;
-import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.member.MemberInfoAdd;
 import com.gdsc_knu.official_homepage.dto.member.MemberInfoUpdate;
 import com.gdsc_knu.official_homepage.dto.member.MemberInfoResponse;

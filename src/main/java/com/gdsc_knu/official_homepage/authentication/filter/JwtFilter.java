@@ -1,6 +1,7 @@
-package com.gdsc_knu.official_homepage.authentication;
+package com.gdsc_knu.official_homepage.authentication.filter;
 
-import com.gdsc_knu.official_homepage.authentication.redis.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;

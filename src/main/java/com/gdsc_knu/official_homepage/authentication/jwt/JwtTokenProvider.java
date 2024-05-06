@@ -1,29 +1,19 @@
-package com.gdsc_knu.official_homepage.authentication;
+package com.gdsc_knu.official_homepage.authentication.jwt;
 
 import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
-import java.security.SecureRandom;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor

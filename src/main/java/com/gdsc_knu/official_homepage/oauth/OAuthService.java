@@ -1,11 +1,6 @@
 package com.gdsc_knu.official_homepage.oauth;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gdsc_knu.official_homepage.authentication.JwtTokenProvider;
-import com.gdsc_knu.official_homepage.authentication.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenProvider;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleToken;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleUserInfo;

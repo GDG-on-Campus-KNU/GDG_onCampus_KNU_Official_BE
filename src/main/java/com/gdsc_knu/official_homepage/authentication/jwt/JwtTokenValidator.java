@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.authentication;
+package com.gdsc_knu.official_homepage.authentication.jwt;
 
 import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;

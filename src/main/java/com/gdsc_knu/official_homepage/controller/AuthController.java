@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.controller;
 
-import com.gdsc_knu.official_homepage.dto.oauth.GoogleCode;
+import com.gdsc_knu.official_homepage.dto.oauth.AuthorizationCode;
 import com.gdsc_knu.official_homepage.dto.oauth.LoginResponseDto;
 import com.gdsc_knu.official_homepage.oauth.OAuthService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -26,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("google/oauth")
-    public ResponseEntity<LoginResponseDto> googleOAuth(@RequestBody GoogleCode code){
+    public ResponseEntity<LoginResponseDto> googleOAuth(@RequestBody AuthorizationCode code){
         return ResponseEntity.ok().body(oAuthService.getGoogleAccessToken(code.getCode()));
     }
 

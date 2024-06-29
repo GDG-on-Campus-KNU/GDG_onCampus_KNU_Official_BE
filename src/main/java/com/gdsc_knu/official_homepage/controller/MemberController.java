@@ -27,8 +27,8 @@ public class MemberController {
 
     @GetMapping()
     @Operation(summary="사용자 정보 조회 API")
-    public ResponseEntity<MemberInfoResponse> retrieveMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
-        return ResponseEntity.ok().body(memberInfoService.retrieveMemberInfo(jwtMemberDetail.getMember().getId()));
+    public ResponseEntity<MemberInfoResponse> getMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
+        return ResponseEntity.ok().body(memberInfoService.getMemberInfo(jwtMemberDetail.getMember().getId()));
     }
 
     @PutMapping()

@@ -27,7 +27,7 @@ public class AuthController {
         return ResponseEntity.ok().body(oAuthService.getGoogleAccessToken(code));
     }
 
-    @PostMapping("google/oauth")
+    @PostMapping("/oauth")
     public ResponseEntity<LoginResponseDto> googleOAuth(@RequestBody AuthorizationCode code){
         return ResponseEntity.ok().body(oAuthService.getGoogleAccessToken(code.getCode()));
     }

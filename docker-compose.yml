@@ -18,7 +18,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      PROFILE: test
+      PROFILE: prod
     depends_on:
       - redis
     networks:

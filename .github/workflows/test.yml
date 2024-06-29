@@ -28,6 +28,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Support longpaths
+        run: git config --system core.longpaths true
+
       # set up application file
       - name: Create application.yml
         run: |

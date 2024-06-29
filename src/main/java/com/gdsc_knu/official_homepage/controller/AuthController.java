@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final OAuthService oAuthService;
 
-    // 로컬환경에서 테스트를 위함
+    /**
+     * 로컬 환경에서 google oauth 테스트를 위함.
+     */
     @Hidden
     @GetMapping("google/oauth")
     public ResponseEntity<LoginResponseDto> googleOAuth(@RequestParam(name="code")String code){

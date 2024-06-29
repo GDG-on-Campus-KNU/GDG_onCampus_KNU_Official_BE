@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      - gdsc_net
+
+  gdsc-backend:
+    image: ${DOCKERHUB_USERNAME}/${DOCKER_IMAGENAME}
+    container_name: ${DOCKER_IMAGENAME}
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+    networks:
+      - gdsc_net
+
+networks:
+  gdsc_net:
+    driver: bridge

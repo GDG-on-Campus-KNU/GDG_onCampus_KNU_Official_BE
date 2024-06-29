@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +24,16 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     private final MemberRepository memberRepository;
 
     @Override
-    public MemberInfoResponse retrieveMemberInfo(Long id) {
+    public MemberInfoResponse getMemberInfo(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        List<TeamInfoResponse> teamInfos = new ArrayList<>();
-
-        for (MemberTeam memberTeam : member.getMemberTeams()){
-            Team team = memberTeam.getTeam();
-            teamInfos.add(new TeamInfoResponse(team.getTeamName(),team.getTeamPageUrl()));
-        }
+        List<TeamInfoResponse> teamInfos = member.getMemberTeams().stream()
+                .map(memberTeam -> {
+                    Team team = memberTeam.getTeam();
+                    return new TeamInfoResponse(team.getTeamName(), team.getTeamPageUrl());
+                })
+                .collect(Collectors.toList());
 
         return new MemberInfoResponse(member,teamInfos);
     }

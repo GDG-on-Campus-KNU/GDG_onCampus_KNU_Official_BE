@@ -9,9 +9,9 @@ name: Deploy dev branch
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 
 jobs:
@@ -77,5 +77,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
             sudo docker stop ${{ secrets.DOCKER_IMAGENAME }} 2>/dev/null || true
             sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker run --name ${{ secrets.DOCKER_IMAGENAME }} -d -p 8080:8080 --network=gdsc_knu_be_network --hostname spring_server ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
+            sudo docker-compose -f docker-compose.yml up -d
             sudo docker system prune -f

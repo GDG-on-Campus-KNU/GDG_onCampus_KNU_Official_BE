@@ -44,16 +44,12 @@ public class OAuthService {
 
     public LoginResponseDto getGoogleAccessToken(String code) {
         GoogleToken googleToken = getAccessToken(code);
-        System.out.println("googleToken: "+googleToken.getAccess_token());
         GoogleUserInfo googleUserInfo = getUserInfo(googleToken.getAccess_token());
-        System.out.println("googleToken: "+googleUserInfo.getEmail());
-
 
         Member member = memberRepository.findByEmail(googleUserInfo.getEmail())
                 .orElseGet(() -> saveNewMember(googleUserInfo));
 
         TokenResponse response = jwtTokenProvider.issueTokens(member.getEmail());
-        System.out.println("jwt: "+response.getAccessToken());
         return new LoginResponseDto(
                 member.getId(),
                 member.getRole()==Role.ROLE_TEMP,
@@ -72,10 +68,8 @@ public class OAuthService {
         params.add("redirect_uri",redirectUrl);
         params.add("grant_type", "authorization_code");
 
-        System.out.println("request params: "+params);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params,headers);
-
         ResponseEntity<GoogleToken> response = restTemplate.exchange(
                 tokenUrl,
                 HttpMethod.POST,

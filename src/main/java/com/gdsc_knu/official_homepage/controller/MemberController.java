@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberInfoService memberInfoService;
-    @PostMapping("additionalInfo")
+    @PostMapping("additional-info")
     @Operation(summary="신규가입 추가정보 입력 API")
     public void additionalInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
                                @RequestBody MemberInfoAdd request){

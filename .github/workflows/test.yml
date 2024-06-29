@@ -28,17 +28,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Support longpaths
-        run: git config --system core.longpaths true
-
       # set up application file
       - name: Create application.yml
         run: |
           mkdir -p ./src/main/resources
           cd ./src/main/resources
-          echo "${{ secrets.APPLICATION }}" >> ./application.yml
-          echo "${{ secrets.APPLICATION_PROD }}" >> ./application-prod.yml
-          echo "${{ secrets.APPLICATION_TEST }}" >> ./application-test.yml
+          echo "${{ secrets.APPLICATION }}" > application.yml
+          echo "${{ secrets.APPLICATION_TEST }}" > application-test.yml
 
       # apply caching
       - name: Gradle Caching

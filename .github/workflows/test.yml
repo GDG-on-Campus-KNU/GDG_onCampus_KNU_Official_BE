@@ -5,15 +5,15 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Deploy
+name: Test
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     permissions:
@@ -52,41 +52,5 @@ jobs:
       - name: Setup Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test -Pprofile=prod
+          ./gradlew clean build -Pprofile=test
 
-      # login dockerhub
-      - name: docker login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      # build Docker image
-      - name: docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }} .
-
-      # push docker image
-      - name: docker Hub push
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-
-
-  # run docker image
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Deploy Docker image
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }} 2>/dev/null || true
-            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker-compose -f docker-compose.yml up -d
-            sudo docker system prune -f

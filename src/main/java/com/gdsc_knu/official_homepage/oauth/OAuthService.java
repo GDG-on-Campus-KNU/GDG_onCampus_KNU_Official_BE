@@ -58,7 +58,7 @@ public class OAuthService {
                 member.getId(),
                 member.getRole()==Role.ROLE_TEMP,
                 response.getAccessToken(),
-                response.getAccessToken());
+                response.getRefreshToken());
     }
 
     private GoogleToken getAccessToken(String code){
@@ -72,7 +72,7 @@ public class OAuthService {
         params.add("redirect_uri",redirectUrl);
         params.add("grant_type", "authorization_code");
 
-        System.out.println(params);
+        System.out.println("request params: "+params);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params,headers);
 

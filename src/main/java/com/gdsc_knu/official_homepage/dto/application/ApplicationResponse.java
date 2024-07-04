@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.dto.application;
 
-import com.gdsc_knu.official_homepage.entity.Application;
+import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.EnumType;

@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.dto.application;
 
-import com.gdsc_knu.official_homepage.entity.Application;
+import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.EnumType;
@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +36,8 @@ public class ApplicationRequest {
 
     @Enumerated(EnumType.STRING)
     private Track track;
+
+    private List<String> questions;
 
     public Application toEntity() {
         if (this.applicationStatus == null) {

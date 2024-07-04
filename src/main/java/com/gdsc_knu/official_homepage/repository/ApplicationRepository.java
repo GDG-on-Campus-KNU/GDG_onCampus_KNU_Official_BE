@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.repository;
 
-import com.gdsc_knu.official_homepage.entity.Application;
+import com.gdsc_knu.official_homepage.entity.application.Application;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

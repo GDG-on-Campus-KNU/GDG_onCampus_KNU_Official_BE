@@ -2,7 +2,7 @@ package com.gdsc_knu.official_homepage.service.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
-import com.gdsc_knu.official_homepage.entity.Application;
+import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

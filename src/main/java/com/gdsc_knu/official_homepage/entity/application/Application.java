@@ -1,6 +1,7 @@
-package com.gdsc_knu.official_homepage.entity;
+package com.gdsc_knu.official_homepage.entity.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
+import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.*;

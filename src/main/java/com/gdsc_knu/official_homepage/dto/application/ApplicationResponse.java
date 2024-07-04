@@ -43,7 +43,7 @@ public class ApplicationResponse {
     @Enumerated(EnumType.STRING)
     private Track track;
 
-    private Map<Integer, String> answers;
+    private List<ApplicationAnswerDTO> answers;
 
     public ApplicationResponse(Application application) {
         this.id = application.getId();
@@ -57,6 +57,7 @@ public class ApplicationResponse {
         this.applicationStatus = application.getApplicationStatus();
         this.track = application.getTrack();
         this.answers = application.getAnswers().stream()
-                .collect(Collectors.toMap(ApplicationAnswer::getQuestionNumber, ApplicationAnswer::getAnswer));
+                .map(ApplicationAnswerDTO::new)
+                .collect(Collectors.toList());
     }
 }

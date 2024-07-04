@@ -41,7 +41,7 @@ public class ApplicationRequest {
     @Enumerated(EnumType.STRING)
     private Track track;
 
-    private Map<Integer, String> answers;
+    private List<ApplicationAnswerDTO> answers;
 
     public Application toEntity() {
         if (this.applicationStatus == null) {
@@ -57,10 +57,10 @@ public class ApplicationRequest {
                 .links(links)
                 .applicationStatus(applicationStatus)
                 .track(track)
-                .answers(this.answers.entrySet().stream()
-                        .map(entry -> ApplicationAnswer.builder()
-                                .questionNumber(entry.getKey())
-                                .answer(entry.getValue())
+                .answers(answers.stream()
+                        .map(answer -> ApplicationAnswer.builder()
+                                .questionNumber(answer.getQuestionNumber())
+                                .answer(answer.getAnswer())
                                 .build())
                         .collect(Collectors.toList()))
                 .build();

@@ -9,6 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.relational.core.sql.In;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -17,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Application extends BaseTimeEntity {
     @Id
+    @Column(name = "application_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -38,6 +45,10 @@ public class Application extends BaseTimeEntity {
 
     private Track track;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "application_id")
+    private List<ApplicationAnswer> answers = new ArrayList<>();
+
     public void updateApplication(ApplicationRequest applicationRequest) {
         this.name = applicationRequest.getName();
         this.studentNumber = applicationRequest.getStudentNumber();
@@ -48,5 +59,20 @@ public class Application extends BaseTimeEntity {
         this.links = applicationRequest.getLinks();
         this.applicationStatus = applicationRequest.getApplicationStatus();
         this.track = applicationRequest.getTrack();
+        updateNewAnswers(applicationRequest.getAnswers());
+    }
+
+    private void updateNewAnswers(Map<Integer, String> newAnswers) {
+        Map<Integer, ApplicationAnswer> oldAnswers = this.answers.stream()
+                .collect(Collectors.toMap(ApplicationAnswer::getQuestionNumber, answer -> answer));
+        int answerSize = oldAnswers.size();
+        if (answerSize != newAnswers.size()) {
+            throw new IllegalArgumentException("지원서의 질문 응답 개수가 일치하지 않습니다.");
+        }
+        for (int i = 0; i < answerSize; i++) {
+            if (!oldAnswers.get(i).getAnswer().equals(newAnswers.get(i))) {
+                oldAnswers.get(i).updateAnswer(newAnswers.get(i));
+            }
+        }
     }
 }

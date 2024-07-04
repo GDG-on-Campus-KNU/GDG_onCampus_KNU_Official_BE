@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.dto.application;
 
 import com.gdsc_knu.official_homepage.entity.application.Application;
+import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.EnumType;
@@ -9,6 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,6 +41,8 @@ public class ApplicationResponse {
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    private List<String> answers;
+
     public ApplicationResponse(Application application) {
         this.id = application.getId();
         this.name = application.getName();
@@ -48,5 +54,8 @@ public class ApplicationResponse {
         this.links = application.getLinks();
         this.applicationStatus = application.getApplicationStatus();
         this.track = application.getTrack();
+        this.answers = application.getAnswers().stream()
+                .map(ApplicationAnswer::getAnswer)
+                .collect(Collectors.toList());
     }
 }

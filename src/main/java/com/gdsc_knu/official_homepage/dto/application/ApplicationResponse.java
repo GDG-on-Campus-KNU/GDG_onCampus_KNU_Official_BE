@@ -10,8 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.relational.core.sql.In;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -41,7 +43,7 @@ public class ApplicationResponse {
     @Enumerated(EnumType.STRING)
     private Track track;
 
-    private List<String> answers;
+    private Map<Integer, String> answers;
 
     public ApplicationResponse(Application application) {
         this.id = application.getId();
@@ -55,7 +57,6 @@ public class ApplicationResponse {
         this.applicationStatus = application.getApplicationStatus();
         this.track = application.getTrack();
         this.answers = application.getAnswers().stream()
-                .map(ApplicationAnswer::getAnswer)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(ApplicationAnswer::getQuestionNumber, ApplicationAnswer::getAnswer));
     }
 }

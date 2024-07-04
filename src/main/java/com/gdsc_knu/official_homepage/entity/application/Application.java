@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.entity.application;
 
+import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -62,7 +63,9 @@ public class Application extends BaseTimeEntity {
         updateNewAnswers(applicationRequest.getAnswers());
     }
 
-    private void updateNewAnswers(Map<Integer, String> newAnswers) {
+    private void updateNewAnswers(List<ApplicationAnswerDTO> newAnswersDTO) {
+        Map<Integer, String> newAnswers = newAnswersDTO.stream()
+                .collect(Collectors.toMap(ApplicationAnswerDTO::getQuestionNumber, ApplicationAnswerDTO::getAnswer));
         Map<Integer, ApplicationAnswer> oldAnswers = this.answers.stream()
                 .collect(Collectors.toMap(ApplicationAnswer::getQuestionNumber, answer -> answer));
         int answerSize = oldAnswers.size();

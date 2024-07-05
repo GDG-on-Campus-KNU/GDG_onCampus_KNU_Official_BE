@@ -19,7 +19,7 @@ public class ApplicationAnswer {
 
     private int questionNumber;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "varchar(1024)")
     private String answer;
 
     @ManyToOne

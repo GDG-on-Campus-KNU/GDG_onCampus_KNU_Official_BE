@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ApplicationAnswer {
     @Id
     @Column(name = "application_answer_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int questionNumber;

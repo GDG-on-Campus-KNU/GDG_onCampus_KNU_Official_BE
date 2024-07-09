@@ -1,5 +1,7 @@
 package com.gdsc_knu.official_homepage.dto.application;
 
+import com.gdsc_knu.official_homepage.annotation.PhoneNumber;
+import com.gdsc_knu.official_homepage.annotation.ValidEnum;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -7,6 +9,9 @@ import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Lob;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,26 +26,36 @@ import java.util.stream.Collectors;
 @Builder
 @Getter
 public class ApplicationRequest {
+    @NotBlank(message = "이름은 필수 입력 필드입니다.")
     private String name;
 
+    @NotBlank(message = "학번은 필수 입력 필드입니다.")
     private String studentNumber;
 
+    @NotBlank(message = "전공은 필수 입력 필드입니다.")
     private String major;
 
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
+    @PhoneNumber
     private String phoneNumber;
 
+    @NotNull(message = "잘못된 입력 형식입니다.")
     private String techStack;
 
+    @NotNull(message = "잘못된 입력 형식입니다.")
     private String links;
 
     @Enumerated(EnumType.STRING)
+    @ValidEnum(enumClass = ApplicationStatus.class, message = "올바르지 않은 지원상태입니다.")
     private ApplicationStatus applicationStatus;
 
     @Enumerated(EnumType.STRING)
+    @ValidEnum(enumClass = Track.class, message = "올바르지 않은 트랙입니다.")
     private Track track;
 
+    @NotNull
     private List<ApplicationAnswerDTO> answers;
 
     public Application toEntity() {

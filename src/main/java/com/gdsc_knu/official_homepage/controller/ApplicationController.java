@@ -5,6 +5,7 @@ import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
 import com.gdsc_knu.official_homepage.service.application.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,13 @@ public class ApplicationController {
 
     @PostMapping
     @Operation(summary="지원서 등록 API")
-    public ResponseEntity<Long> postApplication(@RequestBody ApplicationRequest applicationRequest) {
+    public ResponseEntity<Long> postApplication(@RequestBody @Valid ApplicationRequest applicationRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(applicationService.saveApplication(applicationRequest));
     }
 
     @PutMapping
     @Operation(summary="지원서 수정 API")
-    public ResponseEntity<Long> updateApplication(@RequestBody ApplicationRequest applicationRequest) {
+    public ResponseEntity<Long> updateApplication(@RequestBody @Valid ApplicationRequest applicationRequest) {
         return ResponseEntity.ok().body(applicationService.updateApplication(applicationRequest));
     }
 }

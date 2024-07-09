@@ -24,8 +24,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public Long saveApplication(ApplicationRequest applicationRequest) {
-        applicationRepository.findByNameAndStudentNumber(applicationRequest.getName(), applicationRequest.getStudentNumber())
-                .orElseThrow(() -> new IllegalArgumentException("지원자님의 지원서가 이미 존재합니다."));
+        applicationRepository.findByNameAndStudentNumber(applicationRequest.getName(), applicationRequest.getStudentNumber()).ifPresent(application -> {
+            throw new IllegalArgumentException("지원자님의 지원서가 이미 존재합니다.");
+        });
         return applicationRepository.save(applicationRequest.toEntity()).getId();
     }
 

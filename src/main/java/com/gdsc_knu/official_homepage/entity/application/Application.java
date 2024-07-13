@@ -3,6 +3,7 @@ package com.gdsc_knu.official_homepage.entity.application;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
+import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.*;
@@ -30,38 +31,73 @@ public class Application extends BaseTimeEntity {
 
     private String name;
 
+    @Column(unique = true)
     private String studentNumber;
 
     private String major;
 
+    @Column(unique = true)
     private String email;
 
+    @Column(unique = true)
     private String phoneNumber;
 
     private String techStack;
 
     private String links;
 
+    @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
 
+    @Enumerated(EnumType.STRING)
     private Track track;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "application_id")
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
-    public void updateApplication(ApplicationRequest applicationRequest) {
-        this.name = applicationRequest.getName();
-        this.studentNumber = applicationRequest.getStudentNumber();
-        this.major = applicationRequest.getMajor();
-        this.email = applicationRequest.getEmail();
-        this.phoneNumber = applicationRequest.getPhoneNumber();
+    public Application(Member member, ApplicationRequest applicationRequest) {
+        this.name = member.getName();
+        this.studentNumber = member.getStudentNumber();
+        this.major = member.getMajor();
+        this.email = member.getEmail();
+        this.phoneNumber = member.getStudentNumber(); // 폰 넘버 어떻게 하지?
+        this.techStack = applicationRequest.getTechStack();
+        this.links = applicationRequest.getLinks();
+        this.applicationStatus = applicationRequest.getApplicationStatus();
+        this.track = applicationRequest.getTrack(); // 나중에 멤버로 바뀔지도...?
+        this.answers = applicationRequest.getAnswers().stream()
+                .map(answers -> ApplicationAnswer.builder()
+                        .questionNumber(answers.getQuestionNumber())
+                        .answer(answers.getAnswer())
+                        .build()).toList();
+    }
+
+    public void updateApplication(Member member, ApplicationRequest applicationRequest) {
+        this.name = member.getName();
+        this.studentNumber = member.getStudentNumber();
+        this.major = member.getMajor();
+        this.email = member.getEmail();
+        this.phoneNumber = member.getStudentNumber(); // 폰 넘버 어떻게 하지?
         this.techStack = applicationRequest.getTechStack();
         this.links = applicationRequest.getLinks();
         this.applicationStatus = applicationRequest.getApplicationStatus();
         this.track = applicationRequest.getTrack();
         updateNewAnswers(applicationRequest.getAnswers());
     }
+
+//    public void updateApplication(ApplicationRequest applicationRequest) {
+//        this.name = applicationRequest.getName();
+//        this.studentNumber = applicationRequest.getStudentNumber();
+//        this.major = applicationRequest.getMajor();
+//        this.email = applicationRequest.getEmail();
+//        this.phoneNumber = applicationRequest.getPhoneNumber();
+//        this.techStack = applicationRequest.getTechStack();
+//        this.links = applicationRequest.getLinks();
+//        this.applicationStatus = applicationRequest.getApplicationStatus();
+//        this.track = applicationRequest.getTrack();
+//        updateNewAnswers(applicationRequest.getAnswers());
+//    }
 
     private void updateNewAnswers(List<ApplicationAnswerDTO> newAnswersDTO) {
         Map<Integer, String> newAnswers = newAnswersDTO.stream()

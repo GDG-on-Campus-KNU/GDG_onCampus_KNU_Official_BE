@@ -33,7 +33,7 @@ public class ApplicationController {
                 .body(applicationService.saveApplication(jwtMemberDetail.getEmail(), applicationRequest));
     }
 
-    @PutMapping
+    @PatchMapping
     @Operation(summary="지원서 수정 API")
     public ResponseEntity<Long> updateApplication(@TokenMember JwtMemberDetail jwtMemberDetail, @RequestBody @Valid ApplicationRequest applicationRequest) {
         return ResponseEntity.ok()

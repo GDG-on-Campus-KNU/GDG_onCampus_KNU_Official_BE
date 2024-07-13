@@ -17,17 +17,19 @@ public class GlobalExceptionHandler {
         exception.printStackTrace();
 
         return ResponseEntity.status(exception.getErrorCode().getError())
-                .body(new ExceptionDto(exception.getErrorCode()));
+                .body(new ExceptionDto(exception.getErrorCode(), exception.getMessage()));
     }
 
     @ExceptionHandler(JwtException.class)
-    public ResponseEntity<String> jwtExceptionHandler(JwtException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    public ResponseEntity<ExceptionDto> jwtExceptionHandler(JwtException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ExceptionDto(ErrorCode.INVALID_PERMISSION, e.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> illegalArgumentExceptionHandler(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<ExceptionDto> illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionDto(ErrorCode.INVALID_INPUT, e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -23,8 +23,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional(readOnly = true)
     public ApplicationResponse getApplication(String email, String name, String studentNumber) {
         Member member = validateMember(email);
-        if (!member.getStudentNumber().equals(studentNumber)) {
-            throw new CustomException(ErrorCode.FORBIDDEN,"본인의 지원서만 접근 가능합니다.");
+        if (!member.getStudentNumber().equals(studentNumber) || !member.getName().equals(name)) {
+            throw new CustomException(ErrorCode.FORBIDDEN, "본인의 지원서만 접근 가능합니다.");
         }
         Application application = validateApplicationAccess(name, studentNumber);
         return new ApplicationResponse(application);
@@ -34,7 +34,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public Long saveApplication(String email, ApplicationRequest applicationRequest) {
         validateApplicationStatus(applicationRequest.getApplicationStatus());
-        // 새로운 로직
         Member member = validateMember(email);
         applicationRepository.findByNameAndStudentNumber(member.getName(), member.getStudentNumber())
                 .ifPresent(application -> {
@@ -67,7 +66,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private Application validateApplicationAccess(String name, String studentNumber) {
         Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "회원님의 지원서가 존재하지 않습니다."));
         if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
             throw new CustomException(ErrorCode.CONFLICT);
         }

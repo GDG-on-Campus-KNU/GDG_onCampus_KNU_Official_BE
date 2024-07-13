@@ -1,5 +1,7 @@
 package com.gdsc_knu.official_homepage.controller;
 
+import com.gdsc_knu.official_homepage.annotation.TokenMember;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
 import com.gdsc_knu.official_homepage.service.application.ApplicationService;
@@ -19,19 +21,22 @@ public class ApplicationController {
     private final ApplicationService applicationService;
     @GetMapping
     @Operation(summary="지원서 조회 API")
-    public ResponseEntity<ApplicationResponse> getApplication(@RequestParam String name, @RequestParam String studentNumber) {
-        return ResponseEntity.ok().body(applicationService.getApplication(name, studentNumber));
+    public ResponseEntity<ApplicationResponse> getApplication(@TokenMember JwtMemberDetail jwtMemberDetail, @RequestParam String name, @RequestParam String studentNumber) {
+        return ResponseEntity.ok()
+                .body(applicationService.getApplication(jwtMemberDetail.getEmail(), name, studentNumber));
     }
 
     @PostMapping
     @Operation(summary="지원서 등록 API")
-    public ResponseEntity<Long> postApplication(@RequestBody @Valid ApplicationRequest applicationRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(applicationService.saveApplication(applicationRequest));
+    public ResponseEntity<Long> postApplication(@TokenMember JwtMemberDetail jwtMemberDetail, @RequestBody @Valid ApplicationRequest applicationRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(applicationService.saveApplication(jwtMemberDetail.getEmail(), applicationRequest));
     }
 
-    @PutMapping
+    @PatchMapping
     @Operation(summary="지원서 수정 API")
-    public ResponseEntity<Long> updateApplication(@RequestBody @Valid ApplicationRequest applicationRequest) {
-        return ResponseEntity.ok().body(applicationService.updateApplication(applicationRequest));
+    public ResponseEntity<Long> updateApplication(@TokenMember JwtMemberDetail jwtMemberDetail, @RequestBody @Valid ApplicationRequest applicationRequest) {
+        return ResponseEntity.ok()
+                .body(applicationService.updateApplication(jwtMemberDetail.getEmail(), applicationRequest));
     }
 }

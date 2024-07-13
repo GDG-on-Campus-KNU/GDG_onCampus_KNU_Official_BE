@@ -2,60 +2,74 @@ package com.gdsc_knu.official_homepage.service.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
+import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
+    private final MemberRepository memberRepository;
+
     @Override
     @Transactional(readOnly = true)
-    public ApplicationResponse getApplication(String name, String studentNumber) {
-        Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원서입니다."));
-        if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
-            throw new CustomException(ErrorCode.ALREADY_SAVED_APPLICATION);
+    public ApplicationResponse getApplication(String email, String name, String studentNumber) {
+        Member member = validateMember(email);
+        if (!member.getStudentNumber().equals(studentNumber) || !member.getName().equals(name)) {
+            throw new CustomException(ErrorCode.FORBIDDEN, "본인의 지원서만 접근 가능합니다.");
         }
+        Application application = validateApplicationAccess(name, studentNumber);
         return new ApplicationResponse(application);
     }
 
     @Override
     @Transactional
-    public Long saveApplication(ApplicationRequest applicationRequest) {
-        checkValidApplicationStatus(applicationRequest.getApplicationStatus());
-        applicationRepository.findByStudentNumber(applicationRequest.getStudentNumber())
+    public Long saveApplication(String email, ApplicationRequest applicationRequest) {
+        validateApplicationStatus(applicationRequest.getApplicationStatus());
+        Member member = validateMember(email);
+        applicationRepository.findByNameAndStudentNumber(member.getName(), member.getStudentNumber())
                 .ifPresent(application -> {
-                    throw new IllegalArgumentException("이미 존재하는 지원서입니다.");
+                    throw new CustomException(ErrorCode.CONFLICT, "이미 작성한 지원서가 존재합니다.");
                 });
-        return applicationRepository.save(applicationRequest.toEntity()).getId();
+        return applicationRepository.save(new Application(member, applicationRequest)).getId();
     }
 
     @Override
     @Transactional
-    public Long updateApplication(ApplicationRequest applicationRequest) {
-        checkValidApplicationStatus(applicationRequest.getApplicationStatus());
-        Application application = applicationRepository.findByNameAndStudentNumber(applicationRequest.getName(), applicationRequest.getStudentNumber())
-                .orElseThrow(() -> new IllegalArgumentException("해당 지원서가 존재하지 않습니다."));
-        if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
-            throw new CustomException(ErrorCode.ALREADY_SAVED_APPLICATION);
-        }
-        application.updateApplication(applicationRequest);
+    public Long updateApplication(String email, ApplicationRequest applicationRequest) {
+        validateApplicationStatus(applicationRequest.getApplicationStatus());
+        Member member = validateMember(email);
+        Application application = validateApplicationAccess(member.getName(), member.getStudentNumber());
+        application.updateApplication(member, applicationRequest);
         applicationRepository.save(application);
         return application.getId();
     }
 
-    private void checkValidApplicationStatus(ApplicationStatus applicationStatus) {
+    private void validateApplicationStatus(ApplicationStatus applicationStatus) {
         if (applicationStatus.equals(ApplicationStatus.REJECTED) || applicationStatus.equals(ApplicationStatus.APPROVED)) {
-            throw new IllegalArgumentException("잘못된 요청입니다.");
+            throw new CustomException(ErrorCode.INVALID_INPUT, "올바르지 않은 지원서 요청입니다.");
         }
+    }
+
+    private Member validateMember(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    }
+
+    private Application validateApplicationAccess(String name, String studentNumber) {
+        Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "회원님의 지원서가 존재하지 않습니다."));
+        if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
+            throw new CustomException(ErrorCode.CONFLICT);
+        }
+        return application;
     }
 }

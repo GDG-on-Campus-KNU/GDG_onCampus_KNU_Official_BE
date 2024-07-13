@@ -60,12 +60,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    private Member validateMember (String email) {
+    private Member validateMember(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
     }
 
-    private Application validateApplicationAccess (String name, String studentNumber) {
+    private Application validateApplicationAccess(String name, String studentNumber) {
         Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
         if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {

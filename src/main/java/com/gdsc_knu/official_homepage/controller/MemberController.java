@@ -22,6 +22,16 @@ public class MemberController {
     @Operation(summary="신규가입 추가정보 입력 API")
     public void additionalInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
                                @RequestBody MemberInfoAdd request){
+        System.out.println("멤버정보");
+        System.out.println(jwtMemberDetail.getEmail());
+        System.out.println(jwtMemberDetail.getMember().getEmail());
+        System.out.println(jwtMemberDetail.getMember().getId());
+        System.out.println("dto정보");
+        System.out.println(request.getName());
+        System.out.println(request.getAge());
+        System.out.println(request.getMajor());
+        System.out.println(request.getStudentNumber());
+        System.out.println(request.getPhoneNumber());
         memberInfoService.addMemberInfo(jwtMemberDetail.getMember().getId(),request);
     }
 
@@ -35,6 +45,20 @@ public class MemberController {
     @Operation(summary="사용자 정보 수정 API")
     public void updateMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
                                  @RequestBody MemberInfoUpdate memberInfoUpdate){
+        System.out.println("멤버정보");
+        System.out.println(jwtMemberDetail.getEmail());
+        System.out.println(jwtMemberDetail.getMember().getEmail());
+        System.out.println(jwtMemberDetail.getMember().getId());
+        System.out.println("dto정보");
+        System.out.println(memberInfoUpdate.getName());
+        System.out.println(memberInfoUpdate.getProfileUrl());
+        System.out.println(memberInfoUpdate.getAge());
+        System.out.println(memberInfoUpdate.getMajor());
+        System.out.println(memberInfoUpdate.getStudentNumber());
+        System.out.println(memberInfoUpdate.getEmail());
+        System.out.println(memberInfoUpdate.getPhoneNumber());
+        System.out.println(memberInfoUpdate.getIntroduction());
+
         memberInfoService.updateMemberInfo(jwtMemberDetail.getMember().getId(), memberInfoUpdate);
     }
 }

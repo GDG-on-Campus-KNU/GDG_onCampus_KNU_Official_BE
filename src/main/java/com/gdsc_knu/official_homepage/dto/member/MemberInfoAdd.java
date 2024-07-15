@@ -8,4 +8,6 @@ public class MemberInfoAdd {
     private int age;
     private String studentNumber;
     private String major;
+
+    private String phoneNumber;
 }

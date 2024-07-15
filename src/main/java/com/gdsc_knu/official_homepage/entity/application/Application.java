@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,11 +60,11 @@ public class Application extends BaseTimeEntity {
         this.studentNumber = member.getStudentNumber();
         this.major = member.getMajor();
         this.email = member.getEmail();
-        this.phoneNumber = member.getStudentNumber(); // 폰 넘버 어떻게 하지?
+        this.phoneNumber = member.getPhoneNumber();
         this.techStack = applicationRequest.getTechStack();
         this.links = applicationRequest.getLinks();
         this.applicationStatus = applicationRequest.getApplicationStatus();
-        this.track = applicationRequest.getTrack(); // 나중에 멤버로 바뀔지도...?
+        this.track = applicationRequest.getTrack();
         this.answers = applicationRequest.getAnswers().stream()
                 .map(answers -> ApplicationAnswer.builder()
                         .questionNumber(answers.getQuestionNumber())
@@ -78,26 +77,13 @@ public class Application extends BaseTimeEntity {
         this.studentNumber = member.getStudentNumber();
         this.major = member.getMajor();
         this.email = member.getEmail();
-        this.phoneNumber = member.getStudentNumber(); // 폰 넘버 어떻게 하지?
+        this.phoneNumber = member.getPhoneNumber();
         this.techStack = applicationRequest.getTechStack();
         this.links = applicationRequest.getLinks();
         this.applicationStatus = applicationRequest.getApplicationStatus();
         this.track = applicationRequest.getTrack();
         updateNewAnswers(applicationRequest.getAnswers());
     }
-
-//    public void updateApplication(ApplicationRequest applicationRequest) {
-//        this.name = applicationRequest.getName();
-//        this.studentNumber = applicationRequest.getStudentNumber();
-//        this.major = applicationRequest.getMajor();
-//        this.email = applicationRequest.getEmail();
-//        this.phoneNumber = applicationRequest.getPhoneNumber();
-//        this.techStack = applicationRequest.getTechStack();
-//        this.links = applicationRequest.getLinks();
-//        this.applicationStatus = applicationRequest.getApplicationStatus();
-//        this.track = applicationRequest.getTrack();
-//        updateNewAnswers(applicationRequest.getAnswers());
-//    }
 
     private void updateNewAnswers(List<ApplicationAnswerDTO> newAnswersDTO) {
         Map<Integer, String> newAnswers = newAnswersDTO.stream()

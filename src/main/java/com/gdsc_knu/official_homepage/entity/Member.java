@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.entity;
 
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
+import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,9 @@ public class Member extends BaseTimeEntity{
     @Column(unique = true)
     private String email;
 
+    @Column(unique = true)
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -41,20 +45,22 @@ public class Member extends BaseTimeEntity{
     public void updateRole(Role role) {
         this.role = role;
     }
-    public void update(String name, String profileUrl, int age, String major, String studentNumber, String email, String introduction){
+    public void update(String name, String profileUrl, int age, String major, String studentNumber, String email, String phoneNumber, String introduction){
         this.name = name;
         this.profileUrl = profileUrl;
         this.age = age;
         this.major = major;
         this.studentNumber = studentNumber;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.introduction = introduction;
     }
-    public void addInfo(String name, int age, String major, String studentNumber){
+    public void addInfo(String name, int age, String major, String studentNumber, String phoneNumber) {
         this.name = name;
         this.age = age;
         this.major = major;
         this.studentNumber = studentNumber;
+        this.phoneNumber = phoneNumber;
         this.role = Role.ROLE_GUEST;
     }
 }

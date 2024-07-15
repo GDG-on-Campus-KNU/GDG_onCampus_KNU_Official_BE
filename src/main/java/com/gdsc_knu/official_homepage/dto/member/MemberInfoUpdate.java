@@ -14,5 +14,9 @@ public class MemberInfoUpdate {
     private String major;
     private String studentNumber;
     private String email;
+
+    private String phoneNumber;
     private String introduction;
+
+
 }

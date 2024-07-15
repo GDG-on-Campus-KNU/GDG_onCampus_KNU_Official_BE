@@ -47,6 +47,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 request.getMajor(),
                 request.getStudentNumber(),
                 request.getEmail(),
+                request.getPhoneNumber(),
                 request.getIntroduction());
         memberRepository.save(member);
     }
@@ -59,7 +60,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         member.addInfo(memberInfo.getName(),
                 memberInfo.getAge(),
                 memberInfo.getMajor(),
-                memberInfo.getStudentNumber());
+                memberInfo.getStudentNumber(),
+                memberInfo.getPhoneNumber());
         memberRepository.save(member);
     }
 }

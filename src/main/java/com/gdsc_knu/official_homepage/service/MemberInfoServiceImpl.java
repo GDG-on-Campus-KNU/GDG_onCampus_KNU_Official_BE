@@ -61,7 +61,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 memberInfo.getAge(),
                 memberInfo.getMajor(),
                 memberInfo.getStudentNumber(),
-                memberInfo.getPhoneNumber());
+                memberInfo.getPhoneNumber(),
+                memberInfo.getTrack());
         memberRepository.save(member);
     }
 }

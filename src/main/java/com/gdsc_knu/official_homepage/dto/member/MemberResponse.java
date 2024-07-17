@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MemberInfoResponse {
+public class MemberResponse {
     private String name;
     private String profileUrl;
     private int age;
@@ -17,7 +17,7 @@ public class MemberInfoResponse {
     private String email;
     private String introduction;
     private List<TeamInfoResponse> teamInfos;
-    public MemberInfoResponse(Member member, List<TeamInfoResponse> teamInfos){
+    public MemberResponse(Member member, List<TeamInfoResponse> teamInfos){
         this.name = member.getName();
         this.profileUrl = member.getProfileUrl();
         this.age = member.getAge();

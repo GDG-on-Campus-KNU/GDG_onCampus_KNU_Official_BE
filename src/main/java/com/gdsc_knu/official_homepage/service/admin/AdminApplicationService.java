@@ -5,6 +5,7 @@ import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRes;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
+import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,9 +30,18 @@ public class AdminApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationRes.Overview> getAllApplications(int page, int size){
-        Page<Application> applicationPage =
-                applicationRepository.findAllByApplicationStatus(PageRequest.of(page,size), ApplicationStatus.SAVED);
+    public PagingResponse<AdminApplicationRes.Overview> getAllApplications(int page, int size, boolean isMarked){
+        Page<Application> applicationPage = isMarked
+                ? applicationRepository.findAllByIsMarked(PageRequest.of(page,size))
+                : applicationRepository.findAllSummited(PageRequest.of(page,size));
+        return PagingResponse.from(applicationPage, AdminApplicationRes.Overview::from);
+    }
+
+    @Transactional(readOnly = true)
+    public PagingResponse<AdminApplicationRes.Overview> getAllApplicationsByOption(int page, int size, Track track, boolean isMarked){
+        Page<Application> applicationPage = isMarked
+                ? applicationRepository.findAllByTrackAndIsMarked(PageRequest.of(page,size), track)
+                : applicationRepository.findAllByTrack(PageRequest.of(page,size), track);
 
         return PagingResponse.from(applicationPage, AdminApplicationRes.Overview::from);
     }

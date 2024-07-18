@@ -1,11 +1,10 @@
 package com.gdsc_knu.official_homepage.service;
 
-import com.gdsc_knu.official_homepage.dto.member.MemberInfoAdd;
-import com.gdsc_knu.official_homepage.dto.member.MemberInfoUpdate;
-import com.gdsc_knu.official_homepage.dto.member.MemberInfoResponse;
+import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
+import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
 
 public interface MemberInfoService {
-    MemberInfoResponse getMemberInfo(Long id);
-    void updateMemberInfo(Long id, MemberInfoUpdate memberInfoUpdate);
-    void addMemberInfo(Long id, MemberInfoAdd memberInfoAdd);
+    MemberResponse getMemberInfo(Long id);
+    void updateMemberInfo(Long id, MemberRequest.Update memberInfoUpdate);
+    void addMemberInfo(Long id, MemberRequest.Append memberInfoAdd);
 }

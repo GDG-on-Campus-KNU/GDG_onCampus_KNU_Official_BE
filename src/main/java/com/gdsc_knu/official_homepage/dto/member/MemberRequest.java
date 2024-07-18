@@ -9,6 +9,7 @@ public class MemberRequest {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Append {
         private String name;
         private int age;
@@ -19,6 +20,7 @@ public class MemberRequest {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Update {
         private String name;
         private String profileUrl;

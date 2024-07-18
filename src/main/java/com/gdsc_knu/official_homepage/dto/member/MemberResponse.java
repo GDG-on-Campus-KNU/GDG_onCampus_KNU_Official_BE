@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.dto.member;
 
 import com.gdsc_knu.official_homepage.entity.Member;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ public class MemberResponse {
     private String studentNumber;
     private String email;
     private String introduction;
+    private Role role;
     private List<TeamInfoResponse> teamInfos;
     public MemberResponse(Member member, List<TeamInfoResponse> teamInfos){
         this.name = member.getName();
@@ -25,6 +27,7 @@ public class MemberResponse {
         this.studentNumber = member.getStudentNumber();
         this.email = member.getEmail();
         this.introduction = member.getIntroduction();
+        this.role = member.getRole();
         this.teamInfos = teamInfos;
     }
 }

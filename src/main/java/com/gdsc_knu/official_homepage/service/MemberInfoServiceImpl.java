@@ -58,8 +58,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 request.getAge(),
                 request.getMajor(),
                 request.getStudentNumber(),
-                request.getPhoneNumber(),
-                request.getTrack());
+                request.getPhoneNumber());
         memberRepository.save(member);
     }
 }

@@ -1,10 +1,12 @@
 package com.gdsc_knu.official_homepage.authentication.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
+import com.gdsc_knu.official_homepage.exception.ExceptionDto;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 // 인증이 필요한 모든 요청은 JwtFilter를 탐.
 @AllArgsConstructor
@@ -43,7 +46,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    try {
+                        response.setHeader("Content-Type","application/json;charset=utf-8");
+                        objectMapper.writeValue(response.getOutputStream(),new ExceptionDto(ErrorCode.NOT_FOUND));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return null;
+                });
+
         JwtMemberDetail jwtMemberDetail = new JwtMemberDetail(member,member.getEmail());
 
         // jwt 서명이 정상이면 Authentication객체를 만듦.

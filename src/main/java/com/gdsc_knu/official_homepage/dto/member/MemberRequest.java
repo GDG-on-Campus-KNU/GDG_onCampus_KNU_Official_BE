@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 public class MemberRequest {
 
     @Getter
+    @AllArgsConstructor
     public static class Append {
         private String name;
         private int age;
         private String studentNumber;
         private String major;
         private String phoneNumber;
-        private Track track;
     }
 
     @Getter

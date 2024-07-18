@@ -48,6 +48,10 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
 
+    private boolean isOpened = false;
+
+    private boolean isMarked = false;
+
     @Enumerated(EnumType.STRING)
     private Track track;
 
@@ -99,5 +103,17 @@ public class Application extends BaseTimeEntity {
                 oldAnswers.get(i).updateAnswer(newAnswers.get(i));
             }
         }
+    }
+
+    private void open() {
+        this.isOpened = true;
+    }
+
+    private void marked() {
+        this.isMarked = true;
+    }
+
+    private void unMarked() {
+        this.isMarked = false;
     }
 }

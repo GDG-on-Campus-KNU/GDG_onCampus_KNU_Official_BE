@@ -20,7 +20,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Optional<Application> findByStudentNumber(String studentNumber);
 
     @Query("SELECT " +
-            "COUNT(*) AS total, " +
+            "COUNT(CASE WHEN a.applicationStatus = 'SAVED' THEN 1 ELSE 0 END) AS total, " +
             "COUNT(CASE WHEN a.isOpened = true THEN 1 ELSE 0 END) AS openCount, " +
             "COUNT(CASE WHEN a.applicationStatus = 'APPROVED' THEN 1 ELSE 0 END) AS approvedCount " +
             "FROM Application a")

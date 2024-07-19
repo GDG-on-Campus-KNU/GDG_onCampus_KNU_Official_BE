@@ -48,9 +48,16 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
 
+    @Builder.Default
+    private boolean isOpened = false;
+
+    @Builder.Default
+    private boolean isMarked = false;
+
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "application_id")
     private List<ApplicationAnswer> answers = new ArrayList<>();
@@ -99,5 +106,17 @@ public class Application extends BaseTimeEntity {
                 oldAnswers.get(i).updateAnswer(newAnswers.get(i));
             }
         }
+    }
+
+    private void open() {
+        this.isOpened = true;
+    }
+
+    private void marked() {
+        this.isMarked = true;
+    }
+
+    private void unMarked() {
+        this.isMarked = false;
     }
 }

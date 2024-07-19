@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.dto;
+package com.gdsc_knu.official_homepage.dto.auth;
 
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;

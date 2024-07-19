@@ -43,6 +43,7 @@ public class AdminApplicationRes {
         private String major;
         private String track;
         private boolean isOpen;
+        private boolean isMarked;
 
         public static Overview from(Application application){
             return Overview.builder()
@@ -53,6 +54,7 @@ public class AdminApplicationRes {
                     .major(application.getMajor())
                     .track(application.getTrack().name())
                     .isOpen(application.isOpened())
+                    .isMarked(application.isMarked())
                     .build();
         }
     }

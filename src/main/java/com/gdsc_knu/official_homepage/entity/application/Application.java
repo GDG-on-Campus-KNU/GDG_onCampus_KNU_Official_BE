@@ -48,13 +48,16 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
 
+    @Builder.Default
     private boolean isOpened = false;
 
+    @Builder.Default
     private boolean isMarked = false;
 
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "application_id")
     private List<ApplicationAnswer> answers = new ArrayList<>();

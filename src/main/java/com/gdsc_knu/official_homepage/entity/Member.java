@@ -38,6 +38,7 @@ public class Member extends BaseTimeEntity{
 
     private String profileUrl;
 
+    @Column(length = 500)
     private String introduction;
 
     private Track track;

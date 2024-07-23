@@ -6,6 +6,7 @@ import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
+import com.gdsc_knu.official_homepage.service.fileupload.FileUploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl implements MemberInfoService {
     private final MemberRepository memberRepository;
-    private final ImageUploader imageUploader;
+    private final FileUploader fileUploader;
 
     @Override
     public MemberResponse getMemberInfo(Long id) {
@@ -40,8 +41,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        // String imageUrl = imageUploader.upload(request.getProfileUrl());
+        String imageUrl = fileUploader.upload(request.getProfileUrl());
         member.update(request.getName(),
+                imageUrl,
                 request.getAge(),
                 request.getMajor(),
                 request.getStudentNumber(),

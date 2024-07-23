@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.dto;
+package com.gdsc_knu.official_homepage.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

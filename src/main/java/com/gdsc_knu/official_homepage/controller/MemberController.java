@@ -7,8 +7,11 @@ import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
 import com.gdsc_knu.official_homepage.service.MemberInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Member", description = "사용자 정보 관련 API")
@@ -30,10 +33,11 @@ public class MemberController {
         return ResponseEntity.ok().body(memberInfoService.getMemberInfo(jwtMemberDetail.getMember().getId()));
     }
 
-    @PutMapping()
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="사용자 정보 수정 API")
     public void updateMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
-                                 @RequestBody MemberRequest.Update request){
+                                 @ModelAttribute MemberRequest.Update request){
         memberInfoService.updateMemberInfo(jwtMemberDetail.getMember().getId(), request);
     }
 }

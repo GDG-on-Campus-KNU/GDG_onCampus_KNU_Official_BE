@@ -14,15 +14,13 @@ import java.io.InputStream;
 import java.util.UUID;
 
 @Component
-@Profile({"prod","test","local"})
 @RequiredArgsConstructor
-public class S3FileUploader implements FileUploader{
+public class S3FileUploader{
     private final AmazonS3Client amazonS3Client;
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Override
     public String upload(MultipartFile file) {
         // 원본의 확장자만 추출하여 고유한 파일 이름 설정
         String filename = file.getOriginalFilename();

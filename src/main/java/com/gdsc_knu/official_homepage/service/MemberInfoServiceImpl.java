@@ -6,7 +6,7 @@ import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
-import com.gdsc_knu.official_homepage.service.fileupload.FileUploader;
+import com.gdsc_knu.official_homepage.service.fileupload.S3FileUploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl implements MemberInfoService {
     private final MemberRepository memberRepository;
-    private final FileUploader fileUploader;
+    private final S3FileUploader fileUploader;
 
     @Override
     public MemberResponse getMemberInfo(Long id) {

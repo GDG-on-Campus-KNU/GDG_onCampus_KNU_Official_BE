@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl implements MemberInfoService {
     private final MemberRepository memberRepository;
+    private final ImageUploader imageUploader;
 
     @Override
     public MemberResponse getMemberInfo(Long id) {
@@ -35,15 +36,15 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
     @Transactional
     @Override
-    public void updateMemberInfo(Long id, MemberRequest.Update request) {
+    public void updateMemberInfo(Long id , MemberRequest.Update request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        // String imageUrl = imageUploader.upload(request.getProfileUrl());
         member.update(request.getName(),
-                request.getProfileUrl(),
                 request.getAge(),
                 request.getMajor(),
                 request.getStudentNumber(),
-                request.getEmail(),
                 request.getPhoneNumber(),
                 request.getIntroduction());
         memberRepository.save(member);

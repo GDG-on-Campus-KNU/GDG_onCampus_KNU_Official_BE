@@ -41,12 +41,17 @@ public class Member extends BaseTimeEntity{
     @Column(length = 500)
     private String introduction;
 
+    @Enumerated(EnumType.STRING)
     private Track track;
 
     @OneToMany(mappedBy = "member")
     private final List<MemberTeam> memberTeams = new ArrayList<>();
     public void updateRole(Role role) {
         this.role = role;
+    }
+
+    public void updateTrack(Track track) {
+        this.track = track;
     }
     public void update(String name, int age, String major, String studentNumber, String phoneNumber, String introduction){
         this.name = name;

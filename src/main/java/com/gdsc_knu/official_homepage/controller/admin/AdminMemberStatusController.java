@@ -1,5 +1,7 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
+import com.gdsc_knu.official_homepage.annotation.TokenMember;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.admin.memberStatus.MemberDeleteRequest;
 import com.gdsc_knu.official_homepage.dto.admin.memberStatus.MemberInfoResponse;
@@ -20,24 +22,31 @@ public class AdminMemberStatusController {
 
     @GetMapping()
     public ResponseEntity<PagingResponse<MemberInfoResponse>> getAllMemberInfos(
+            @TokenMember JwtMemberDetail memberDetail,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(adminMemberStatusService.getAllMemberInfos(page, size));
     }
 
     @DeleteMapping()
-    public ResponseEntity<Void> deleteMember(@RequestBody MemberDeleteRequest memberDeleteRequest) {
+    public ResponseEntity<Void> deleteMember(
+            @TokenMember JwtMemberDetail memberDetail,
+            @RequestBody MemberDeleteRequest memberDeleteRequest) {
         adminMemberStatusService.deleteMember(memberDeleteRequest);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/role")
-    public ResponseEntity<Long> updateMemberRole(@RequestBody MemberRoleRequest memberRoleRequest) {
+    public ResponseEntity<Long> updateMemberRole(
+            @TokenMember JwtMemberDetail memberDetail,
+            @RequestBody MemberRoleRequest memberRoleRequest) {
         return ResponseEntity.ok(adminMemberStatusService.updateMemberRole(memberRoleRequest));
     }
 
     @PatchMapping("/track")
-    public ResponseEntity<Long> updateMemberTrack(@RequestBody MemberTrackRequest memberTrackRequest) {
+    public ResponseEntity<Long> updateMemberTrack(
+            @TokenMember JwtMemberDetail memberDetail,
+            @RequestBody MemberTrackRequest memberTrackRequest) {
         return ResponseEntity.ok(adminMemberStatusService.updateMemberTrack(memberTrackRequest));
     }
 }

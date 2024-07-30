@@ -24,13 +24,13 @@ public class MemberController {
     @Operation(summary="신규가입 추가정보 입력 API")
     public void additionalInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
                                @RequestBody MemberRequest.Append request){
-        memberInfoService.addMemberInfo(jwtMemberDetail.getMember().getId(),request);
+        memberInfoService.addMemberInfo(jwtMemberDetail.getId(),request);
     }
 
     @GetMapping()
     @Operation(summary="사용자 정보 조회 API")
     public ResponseEntity<MemberResponse> getMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
-        return ResponseEntity.ok().body(memberInfoService.getMemberInfo(jwtMemberDetail.getMember().getId()));
+        return ResponseEntity.ok().body(memberInfoService.getMemberInfo(jwtMemberDetail.getId()));
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -38,6 +38,6 @@ public class MemberController {
     @Operation(summary="사용자 정보 수정 API")
     public void updateMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
                                  @ModelAttribute MemberRequest.Update request){
-        memberInfoService.updateMemberInfo(jwtMemberDetail.getMember().getId(), request);
+        memberInfoService.updateMemberInfo(jwtMemberDetail.getId(), request);
     }
 }

@@ -5,6 +5,7 @@ import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenProvider;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class JwtTestController {
     // 현재 서버에 chaejm55@gmail.com 이메일 멤버가 입력되어있습니다.
     @GetMapping
     public ResponseEntity<TokenResponse> getJwtToken() {
-        return ResponseEntity.ok().body(jwtTokenProvider.issueTokens("chaejm55@gmail.com"));
+        return ResponseEntity.ok().body(jwtTokenProvider.issueTokens(1L, "chaejm55@gmail.com", Role.ROLE_CORE));
     }
 
     // 전달 받은 엑세스 토큰으로 멤버 MemberDetail(이메일)을 반환하는 테스트 컨트롤러입니다.

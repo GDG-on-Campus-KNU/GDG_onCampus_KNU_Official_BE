@@ -4,6 +4,7 @@ import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -28,21 +31,26 @@ public class JwtTokenProvider {
 
     // 리프레쉬 토큰을 받아 검증하여 토큰을 재발급 할때 사용하는 메서드입니다.
     public TokenResponse reissueTokens(String token) {
-        String email = jwtTokenValidator.checkRefreshToken(token);
-        return issueTokens(email);
+        JwtClaims jwtClaims = jwtTokenValidator.checkRefreshToken(token);
+        return issueTokens(jwtClaims.getId(), jwtClaims.getEmail(), jwtClaims.getRole());
     }
 
     // 로그인 시 토큰을 발급할때 사용하는 메서드입니다.
-    public TokenResponse issueTokens(String email) {
+    public TokenResponse issueTokens(Long id, String email, Role role) {
         long current = System.currentTimeMillis();
         Date accessTokenExpireTime = new Date(current + jwtAccessExpiration);
         Date refreshTokenExpireTime = new Date(current + jwtRefreshExpiration);
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
+        Map<String, Object> claims = new HashMap<>();
+        JwtClaims jwtClaims = JwtClaims.builder()
+                .id(id)
+                .email(email)
+                .role(role)
+                .build();
+        claims.put("jwtClaims", jwtClaims);
 
-        String accessToken = generateToken(accessTokenExpireTime, email);
-        String refreshToken = generateToken(refreshTokenExpireTime, email);
+        String accessToken = generateToken(accessTokenExpireTime, claims);
+        String refreshToken = generateToken(refreshTokenExpireTime, claims);
 
         saveRefreshToken(email, refreshToken);
 
@@ -53,11 +61,11 @@ public class JwtTokenProvider {
     }
 
     // 토큰 발급을 위해 토큰을 생성하여 반환해주는 메서드입니다.
-    private String generateToken(Date expiration, String email) {
+    private String generateToken(Date expiration, Map<String,?> claims) {
         Key secretKey = jwtTokenValidator.createSignature();
 
         return Jwts.builder()
-                .setSubject(email)
+                .setClaims(claims)
                 .setExpiration(expiration)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();

@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.authentication.jwt;
 
 import com.gdsc_knu.official_homepage.entity.Member;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,14 +17,15 @@ import java.util.Collection;
 @Builder
 @Hidden
 public class JwtMemberDetail implements UserDetails {
-    private Member member;
+    private Long id;
+    private Role role;
     private String email;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> String.valueOf(member.getRole()));
+        collection.add((GrantedAuthority) () -> String.valueOf(role));
         return collection;
     }
 
@@ -34,7 +36,7 @@ public class JwtMemberDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getName();
+        return email;
     }
 
     @Override

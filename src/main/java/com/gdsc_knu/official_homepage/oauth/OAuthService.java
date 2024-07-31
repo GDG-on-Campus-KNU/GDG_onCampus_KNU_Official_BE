@@ -49,7 +49,7 @@ public class OAuthService {
         Member member = memberRepository.findByEmail(googleUserInfo.getEmail())
                 .orElseGet(() -> saveNewMember(googleUserInfo));
 
-        TokenResponse response = jwtTokenProvider.issueTokens(member.getEmail());
+        TokenResponse response = jwtTokenProvider.issueTokens(member.getId(), member.getEmail(), member.getRole());
         return new LoginResponseDto(
                 member.getId(),
                 member.getRole()==Role.ROLE_TEMP,

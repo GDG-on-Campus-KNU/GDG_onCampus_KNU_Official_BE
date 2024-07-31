@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.authentication.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -42,22 +43,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String jwtToken = jwtTokenValidator.checkAccessToken(jwtHeader);
         Claims claims = jwtTokenValidator.extractClaims(jwtToken);
-        String email = claims.getSubject();
+
+        ObjectMapper mapper = new ObjectMapper();
+        JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    try {
-                        response.setHeader("Content-Type","application/json;charset=utf-8");
-                        objectMapper.writeValue(response.getOutputStream(),new ExceptionDto(ErrorCode.NOT_FOUND));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    return null;
-                });
-
-        JwtMemberDetail jwtMemberDetail = new JwtMemberDetail(member,member.getEmail());
+        JwtMemberDetail jwtMemberDetail = JwtMemberDetail.builder()
+                .id(jwtClaims.getId())
+                .email(jwtClaims.getEmail())
+                .role(jwtClaims.getRole())
+                .build();
 
         // jwt 서명이 정상이면 Authentication객체를 만듦.
         Authentication authentication =

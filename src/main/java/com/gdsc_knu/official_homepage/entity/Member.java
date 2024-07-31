@@ -50,17 +50,21 @@ public class Member extends BaseTimeEntity{
         this.role = role;
     }
 
+
     public void updateTrack(Track track) {
         this.track = track;
     }
-    public void update(String name, int age, String major, String studentNumber, String phoneNumber, String introduction){
+
+    public void update(String name, String profileUrl, int age, String major, String studentNumber, String phoneNumber, String introduction){
         this.name = name;
+        this.profileUrl = profileUrl;
         this.age = age;
         this.major = major;
         this.studentNumber = studentNumber;
         this.phoneNumber = phoneNumber;
         this.introduction = introduction;
     }
+  
     public void addInfo(String name, int age, String major, String studentNumber, String phoneNumber) {
         this.name = name;
         this.age = age;

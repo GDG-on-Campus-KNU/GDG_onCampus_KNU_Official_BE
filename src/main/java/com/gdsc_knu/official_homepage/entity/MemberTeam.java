@@ -21,4 +21,7 @@ public class MemberTeam {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Team team;
 
+    public void changeTeam(Team team) {
+        this.team = team;
+    }
 }

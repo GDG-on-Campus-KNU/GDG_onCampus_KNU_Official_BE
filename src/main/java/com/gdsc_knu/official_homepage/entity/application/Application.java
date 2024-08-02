@@ -57,6 +57,8 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    private String note;
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "application_id")

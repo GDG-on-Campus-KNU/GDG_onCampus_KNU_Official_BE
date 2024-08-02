@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRes;
+import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.service.admin.AdminApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ public class AdminApplicationController {
     private final AdminApplicationService applicationService;
     @GetMapping("applications/statistic")
     @Operation(summary="지원서류 통계데이터 조회 API")
-    public ResponseEntity<AdminApplicationRes.Statistics> getStatistic() {
+    public ResponseEntity<AdminApplicationResponse.Statistics> getStatistic() {
         return ResponseEntity.ok().body(applicationService.getStatistic());
     }
 
@@ -28,7 +28,7 @@ public class AdminApplicationController {
     @Operation(summary="조건별 지원 서류 조회 API", description = "직렬별, 마크여부에 따라 지원서류를 조회합니다.\n" +
             "마크된것만 조회하려면 isMarked=true로 설정하세요.\n" +
             "isMarked를 비워두거나 false로 설정하면 전체가 조회됩니다.(track도 마찬가지로 비워두면 전체)")
-    public ResponseEntity<PagingResponse<AdminApplicationRes.Overview>> getApplicationListByOption(
+    public ResponseEntity<PagingResponse<AdminApplicationResponse.Overview>> getApplicationListByOption(
             @RequestParam(value = "track", required = false) Track track,
             @RequestParam(value = "isMarked", required = false, defaultValue = "false") boolean isMarked,
             @RequestParam(value = "page", defaultValue = "0") int page,

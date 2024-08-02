@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRes;
+import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -21,9 +21,9 @@ public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
 
     @Transactional(readOnly = true)
-    public AdminApplicationRes.Statistics getStatistic() {
+    public AdminApplicationResponse.Statistics getStatistic() {
         ApplicationStatisticType statistic = applicationRepository.getStatistics();
-        return AdminApplicationRes.Statistics.of(
+        return AdminApplicationResponse.Statistics.of(
                 statistic.getTotal(),
                 statistic.getOpenCount(),
                 statistic.getTotal() - statistic.getOpenCount(),
@@ -33,10 +33,10 @@ public class AdminApplicationService {
 
 
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationRes.Overview> getAllApplicationsByOption(int page, int size, Track track, boolean isMarked){
+    public PagingResponse<AdminApplicationResponse.Overview> getAllApplicationsByOption(int page, int size, Track track, boolean isMarked){
         Page<Application> applicationPage
                 = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked);
-        return PagingResponse.from(applicationPage, AdminApplicationRes.Overview::from);
+        return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
     }
 
     @Transactional

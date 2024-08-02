@@ -110,7 +110,7 @@ public class Application extends BaseTimeEntity {
         }
     }
 
-    private void open() {
+    public void open() {
         this.isOpened = true;
     }
 

@@ -62,6 +62,8 @@ public class AdminApplicationService {
     public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        if (!application.isOpened())
+            application.open();
         return AdminApplicationResponse.Detail.from(application);
     }
 }

@@ -5,7 +5,7 @@ import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
 import com.gdsc_knu.official_homepage.service.admin.AdminTeamService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class AdminTeamController {
     private final AdminTeamService adminTeamService;
 
     @GetMapping()
-    public ResponseEntity<List<AdminTeamInfoResponse>> getTeamTags(@TokenMember JwtMemberDetail jwtMemberDetail) {
+    public ResponseEntity<List<AdminTeamResponse>> getTeamTags(@TokenMember JwtMemberDetail jwtMemberDetail) {
         return ResponseEntity.ok().body(adminTeamService.getTeamInfos());
     }
 

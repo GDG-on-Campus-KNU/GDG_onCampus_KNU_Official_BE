@@ -2,8 +2,9 @@ package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamInfoResponse;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
+import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
@@ -29,12 +30,17 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AdminTeamInfoResponse> getTeamInfos() {
+    public List<AdminTeamResponse> getTeamInfos() {
         return teamRepository.findAll().stream()
-                .map(team -> AdminTeamInfoResponse.builder()
+                .filter(team -> team.getParent() == null)
+                .map(team -> AdminTeamResponse.builder()
                         .id(team.getId())
                         .teamName(team.getTeamName())
-                        .teamPageUrl(team.getTeamPageUrl()).build())
+                        .teamPageUrl(team.getTeamPageUrl())
+                        .subTeams(team.getSubTeams().stream()
+                                .map(TeamInfoResponse::new)
+                                .toList())
+                        .build())
                 .toList();
     }
 
@@ -46,27 +52,23 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
         Team newTeam = teamRepository.save(Team.builder()
                 .teamName(teamName)
+                .subTeams(new ArrayList<>())
                 .teamPageUrl(createTeamPageUrl(teamName))
                 .build());
-        // 첫 생성 시 모든 인원 0팀으로 설정
-        Team initialSubTeam = Team.builder()
+        // 첫 생성 시 모든 인원 0팀으로 설정, url은 생성하지 않음
+        Team initialSubTeam = teamRepository.save(Team.builder()
                 .teamName("0팀")
-                .build();
+                .build());
         newTeam.addSubTeam(initialSubTeam);
-        List<Member> members;
-        if (track != null) { // 직렬별로 구분하는 스터디 팀이라면
-            members = memberRepository.findAllByTrack(track);
-        }
-        else {
-            members = memberRepository.findAll();
-        }
-        List<MemberTeam> memberTeams = new ArrayList<>();
-        for (Member member : members) {
-            memberTeams.add(MemberTeam.builder()
-                    .member(member)
-                    .team(newTeam)
-                    .build());
-        }
+        List<Member> members = (track != null)
+                ? memberRepository.findAllByTrack(track)
+                : memberRepository.findAll();
+        List<MemberTeam> memberTeams = members.stream()
+                .map(member -> MemberTeam.builder()
+                        .member(member)
+                        .team(newTeam)
+                        .build())
+                .toList();
         memberTeamRepository.saveAll(memberTeams);
 
         return newTeam.getId();
@@ -80,11 +82,11 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         if (parentTeam.getSubTeams().isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_INPUT, "상위 팀의 구성이 잘못 되었습니다.");
         }
-        Team newSubTeam = Team.builder()
-                .teamName(parentTeam.getTeamName() + " " + (parentTeam.getSubTeams().size() - 1) + "팀")
+        Team newSubTeam = teamRepository.save(Team.builder()
+                .teamName(parentTeam.getTeamName() + " " + parentTeam.getSubTeams().size() + "팀")
                 .teamPageUrl(createTeamPageUrl(
-                        parentTeam.getTeamName() + "_" + (parentTeam.getSubTeams().size() - 1) + "팀"))
-                .build();
+                        parentTeam.getTeamName() + "_" + parentTeam.getSubTeams().size() + "팀"))
+                .build());
         parentTeam.addSubTeam(newSubTeam);
 
         return newSubTeam.getId();

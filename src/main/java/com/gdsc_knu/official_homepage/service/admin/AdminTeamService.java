@@ -2,13 +2,13 @@ package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
 
 import java.util.List;
 
 public interface AdminTeamService {
-    List<AdminTeamInfoResponse> getTeamInfos();
+    List<AdminTeamResponse> getTeamInfos();
 
     Long createTeam(AdminTeamCreateRequest adminTeamCreateRequest);
 

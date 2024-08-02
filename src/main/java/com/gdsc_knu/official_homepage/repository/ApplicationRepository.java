@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ApplicationRepository extends JpaRepository<Application, Long> {
+public interface ApplicationRepository extends JpaRepository<Application, Long>, ApplicationQueryFactory{
     Optional<Application> findByNameAndStudentNumber(String name, String studentNumber);
     Optional<Application> findByStudentNumber(String studentNumber);
 

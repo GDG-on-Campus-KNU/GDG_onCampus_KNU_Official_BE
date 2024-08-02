@@ -88,12 +88,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     @Override
     @Transactional(readOnly = true)
     public List<AdminMemberResponse> getTeamMembers(Long teamId) {
-        return memberTeamRepository.findAllByTeamId(teamId).stream()
-                .map(memberTeam -> AdminMemberResponse.builder()
-                        .id(memberTeam.getMember().getId())
-                        .name(memberTeam.getMember().getName())
-                        .studentNumber(memberTeam.getMember().getStudentNumber()).build())
-                .toList();
+        return memberTeamRepository.findAllAdminMemberResponsesByTeamId(teamId);
     }
 
     @Override

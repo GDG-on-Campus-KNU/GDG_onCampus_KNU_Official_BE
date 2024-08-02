@@ -112,11 +112,15 @@ public class Application extends BaseTimeEntity {
         this.isOpened = true;
     }
 
-    private void marked() {
-        this.isMarked = true;
+    public void changeMark() {
+        this.isMarked = !this.isMarked;
     }
 
-    private void unMarked() {
-        this.isMarked = false;
+    public void approve() {
+        this.applicationStatus = ApplicationStatus.APPROVED;
+    }
+
+    public void reject() {
+        this.applicationStatus = ApplicationStatus.REJECTED;
     }
 }

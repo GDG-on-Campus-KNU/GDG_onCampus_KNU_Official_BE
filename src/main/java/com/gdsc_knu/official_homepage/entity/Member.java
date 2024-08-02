@@ -41,6 +41,7 @@ public class Member extends BaseTimeEntity{
     @Column(length = 500)
     private String introduction;
 
+    @Enumerated(EnumType.STRING)
     private Track track;
 
     @OneToMany(mappedBy = "member")
@@ -48,6 +49,12 @@ public class Member extends BaseTimeEntity{
     public void updateRole(Role role) {
         this.role = role;
     }
+
+
+    public void updateTrack(Track track) {
+        this.track = track;
+    }
+
     public void update(String name, String profileUrl, int age, String major, String studentNumber, String phoneNumber, String introduction){
         this.name = name;
         this.profileUrl = profileUrl;
@@ -57,6 +64,7 @@ public class Member extends BaseTimeEntity{
         this.phoneNumber = phoneNumber;
         this.introduction = introduction;
     }
+  
     public void addInfo(String name, int age, String major, String studentNumber, String phoneNumber) {
         this.name = name;
         this.age = age;

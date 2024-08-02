@@ -31,7 +31,7 @@ public class SecurityConfig {
     };
 
     private static final String[] CORE_AUTHENTICATION_LIST = {
-            "/api/jwt/core"
+            "/api/admin/**"
     };
 
     @Bean

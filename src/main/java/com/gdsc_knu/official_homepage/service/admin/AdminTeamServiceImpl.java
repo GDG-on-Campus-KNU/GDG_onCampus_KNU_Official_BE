@@ -55,11 +55,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
                 .subTeams(new ArrayList<>())
                 .teamPageUrl(createTeamPageUrl(teamName))
                 .build());
-        // 첫 생성 시 모든 인원 0팀으로 설정, url은 생성하지 않음
-        Team initialSubTeam = teamRepository.save(Team.builder()
-                .teamName("0팀")
-                .build());
-        newTeam.addSubTeam(initialSubTeam);
+
         List<Member> members = (track != null)
                 ? memberRepository.findAllByTrack(track)
                 : memberRepository.findAll();
@@ -79,13 +75,11 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     public Long createSubTeam(Long parentTeamId) {
         Team parentTeam = teamRepository.findById(parentTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "요청한 상위 팀이 존재하지 않습니다."));
-        if (parentTeam.getSubTeams().isEmpty()) {
-            throw new CustomException(ErrorCode.INVALID_INPUT, "상위 팀의 구성이 잘못 되었습니다.");
-        }
+
         Team newSubTeam = teamRepository.save(Team.builder()
-                .teamName(parentTeam.getTeamName() + " " + parentTeam.getSubTeams().size() + "팀")
+                .teamName(parentTeam.getTeamName() + " " + (parentTeam.getSubTeams().size() + 1) + "팀")
                 .teamPageUrl(createTeamPageUrl(
-                        parentTeam.getTeamName() + "_" + parentTeam.getSubTeams().size() + "팀"))
+                        parentTeam.getTeamName() + "_" + (parentTeam.getSubTeams().size() + 1 ) + "팀"))
                 .build());
         parentTeam.addSubTeam(newSubTeam);
 

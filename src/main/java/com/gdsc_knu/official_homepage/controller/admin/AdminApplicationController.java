@@ -69,5 +69,14 @@ public class AdminApplicationController {
     }
 
 
+    @PatchMapping("application/note")
+    @Operation(summary="지원서류 메모 API", description = "지원서류에 메모를 합니다.")
+    public ResponseEntity<Void> noteApplication(@RequestParam("id") Long id,
+                                                @RequestBody String note) {
+        applicationService.noteApplication(id, note);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 }

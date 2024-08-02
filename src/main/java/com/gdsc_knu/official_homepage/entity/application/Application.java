@@ -125,4 +125,8 @@ public class Application extends BaseTimeEntity {
     public void reject() {
         this.applicationStatus = ApplicationStatus.REJECTED;
     }
+
+    public void saveNote(String note) {
+        this.note = note;
+    }
 }

@@ -66,4 +66,11 @@ public class AdminApplicationService {
             application.open();
         return AdminApplicationResponse.Detail.from(application);
     }
+
+    @Transactional
+    public void noteApplication(Long id, String note) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        application.saveNote(note);
+    }
 }

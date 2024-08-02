@@ -34,7 +34,6 @@ public class AdminApplicationController {
             @RequestParam(value = "size", defaultValue = "10") int size)
 
     {
-        System.out.println("track: "+ track);
         return ResponseEntity.ok().body(applicationService.getAllApplicationsByOption(page, size, track, isMarked));
     }
 

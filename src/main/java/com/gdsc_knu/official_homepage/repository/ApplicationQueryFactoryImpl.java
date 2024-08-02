@@ -4,7 +4,6 @@ import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.application.QApplication;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
     private final JPAQueryFactory jpaQueryFactory;
-    BooleanBuilder builder = new BooleanBuilder();
     @Override
     public Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, boolean isMarked) {
         List<Application> applications = jpaQueryFactory
@@ -45,8 +43,6 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
 
 
     private BooleanExpression eqTrack(Track track) {
-        System.out.println("track-in: "+ track);
-        System.out.println("track-out: "+ (track == null ? null : QApplication.application.track.eq(track)));
         return track == null ? null : QApplication.application.track.eq(track);
     }
 

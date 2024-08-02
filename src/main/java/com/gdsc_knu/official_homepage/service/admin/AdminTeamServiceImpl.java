@@ -101,12 +101,17 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     @Override
     @Transactional
     public Long changeTeamMember(AdminTeamChangeRequest adminTeamChangeRequest) {
+        Long oldTeamId = adminTeamChangeRequest.getOldTeamId();
+        Long newTeamId = adminTeamChangeRequest.getNewTeamId();
         Long memberId = adminTeamChangeRequest.getMemberId();
-        Long teamId = adminTeamChangeRequest.getTeamId();
 
-        MemberTeam memberTeam = memberTeamRepository.findByMemberIdAndTeamId(memberId, teamId)
+        if (oldTeamId.equals(newTeamId)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, "동일한 팀으로 변경할 수 없습니다.");
+        }
+
+        MemberTeam memberTeam = memberTeamRepository.findByMemberIdAndTeamId(memberId, oldTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "잘못된 팀 변경 요청입니다."));
-        Team newTeam = teamRepository.findById(teamId)
+        Team newTeam = teamRepository.findById(newTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "옮길 팀이 존재하지 않습니다."));
         memberTeam.changeTeam(newTeam);
 

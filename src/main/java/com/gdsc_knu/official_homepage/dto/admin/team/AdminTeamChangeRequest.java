@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AdminTeamChangeRequest {
-    private Long teamId;
+    private Long oldTeamId;
+    private Long newTeamId;
     private Long memberId;
 }

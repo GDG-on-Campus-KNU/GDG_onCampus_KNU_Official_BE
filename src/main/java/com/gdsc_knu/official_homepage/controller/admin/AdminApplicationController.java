@@ -35,7 +35,7 @@ public class AdminApplicationController {
             @RequestParam(value = "size", defaultValue = "10") int size)
 
     {
-        return ResponseEntity.ok().body(applicationService.getAllApplicationsByOption(page, size, track, isMarked));
+        return ResponseEntity.ok().body(applicationService.getApplicationsByOption(page, size, track, isMarked));
     }
 
 
@@ -56,11 +56,16 @@ public class AdminApplicationController {
     }
 
     /**
-     * Swagger에서 표시를 위함.
-     * 개발 후 삭제 예정
+     * Swagger에서 표시를 위함. (개발 후 삭제 예정)
      */
     public enum Status {
         APPROVED, REJECTED
+    }
+
+    @GetMapping("application")
+    @Operation(summary="지원서류 상세 조회 API", description = "지원서류의 상세정보를 조회합니다.")
+    public ResponseEntity<AdminApplicationResponse.Detail> getApplicationDetail(@RequestParam("id") Long id) {
+        return ResponseEntity.ok().body(applicationService.getApplicationDetail(id));
     }
 
 

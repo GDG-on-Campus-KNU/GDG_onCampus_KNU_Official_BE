@@ -33,7 +33,7 @@ public class AdminApplicationService {
 
 
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationResponse.Overview> getAllApplicationsByOption(int page, int size, Track track, boolean isMarked){
+    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, boolean isMarked){
         Page<Application> applicationPage
                 = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked);
         return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
@@ -55,5 +55,13 @@ public class AdminApplicationService {
             application.approve();
         else if (status.equals(ApplicationStatus.REJECTED.name()))
             application.reject();
+    }
+
+
+    @Transactional(readOnly = true)
+    public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        return AdminApplicationResponse.Detail.from(application);
     }
 }

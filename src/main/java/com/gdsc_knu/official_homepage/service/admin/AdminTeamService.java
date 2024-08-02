@@ -1,19 +1,20 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamInfoResponse;
-import com.gdsc_knu.official_homepage.entity.enumeration.Track;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
 
 import java.util.List;
 
 public interface AdminTeamService {
     List<AdminTeamInfoResponse> getTeamInfos();
 
-    Long createTeam(String teamName, Track track);
+    Long createTeam(AdminTeamCreateRequest adminTeamCreateRequest);
 
-    Long createSubTeam(Long teamId);
+    Long createSubTeam(Long parentTeamId);
 
-    List<AdminMemberResponse> getTeamMembers(Long parentTeamId);
+    List<AdminMemberResponse> getTeamMembers(Long teamId);
 
-    Long changeTeamMember(Long teamId, Long memberId);
+    Long changeTeamMember(AdminTeamChangeRequest adminTeamChangeRequest);
 }

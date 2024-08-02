@@ -1,7 +1,9 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
@@ -38,7 +40,10 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
     @Override
     @Transactional
-    public Long createTeam(String teamName, Track track) {
+    public Long createTeam(AdminTeamCreateRequest adminTeamCreateRequest) {
+        String teamName = adminTeamCreateRequest.getTeamName();
+        Track track = adminTeamCreateRequest.getTrack();
+
         Team newTeam = teamRepository.save(Team.builder()
                 .teamName(teamName)
                 .teamPageUrl(createTeamPageUrl(teamName))
@@ -93,7 +98,10 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
     @Override
     @Transactional
-    public Long changeTeamMember(Long teamId, Long memberId) {
+    public Long changeTeamMember(AdminTeamChangeRequest adminTeamChangeRequest) {
+        Long memberId = adminTeamChangeRequest.getMemberId();
+        Long teamId = adminTeamChangeRequest.getTeamId();
+
         MemberTeam memberTeam = memberTeamRepository.findByMemberIdAndTeamId(memberId, teamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "잘못된 팀 변경 요청입니다."));
         Team newTeam = teamRepository.findById(teamId)

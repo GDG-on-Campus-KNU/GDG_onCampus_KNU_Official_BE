@@ -13,4 +13,5 @@ public class AdminMemberResponse {
     private Long id;
     private String name;
     private String studentNumber;
+    private String profileUrl;
 }

@@ -79,7 +79,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         Team newSubTeam = teamRepository.save(Team.builder()
                 .teamName(parentTeam.getTeamName() + " " + (parentTeam.getSubTeams().size() + 1) + "팀")
                 .teamPageUrl(createTeamPageUrl(
-                        parentTeam.getTeamName() + "_" + (parentTeam.getSubTeams().size() + 1 ) + "팀"))
+                        parentTeam.getTeamName() + "-" + (parentTeam.getSubTeams().size() + 1 ) + "팀"))
                 .build());
         parentTeam.addSubTeam(newSubTeam);
 

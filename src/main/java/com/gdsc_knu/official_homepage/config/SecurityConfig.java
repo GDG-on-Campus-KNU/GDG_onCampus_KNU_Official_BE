@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.config;
 
 import com.gdsc_knu.official_homepage.authentication.filter.JwtFilter;
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtTokenValidator jwtTokenValidator;
+    private final JwtValidator jwtValidator;
     private final MemberRepository memberRepository;
 
     private static final String[] WHITE_LIST = {
@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtFilter(jwtTokenValidator,memberRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtValidator, memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers(MEMBER_AUTHENTICATION_LIST).hasRole("MEMBER")
                         .requestMatchers(CORE_AUTHENTICATION_LIST).hasRole("CORE")

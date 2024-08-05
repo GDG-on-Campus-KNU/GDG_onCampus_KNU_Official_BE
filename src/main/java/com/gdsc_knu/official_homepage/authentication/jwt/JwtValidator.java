@@ -3,12 +3,8 @@ package com.gdsc_knu.official_homepage.authentication.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
-import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import io.jsonwebtoken.*;
 import jakarta.xml.bind.DatatypeConverter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,7 +14,7 @@ import java.security.Key;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenValidator {
+public class JwtValidator {
 
     @Value("${jwt.secret}")
     private String jwtSecret;

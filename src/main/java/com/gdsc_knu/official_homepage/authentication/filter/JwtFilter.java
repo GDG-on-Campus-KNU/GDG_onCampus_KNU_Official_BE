@@ -3,11 +3,7 @@ package com.gdsc_knu.official_homepage.authentication.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
-import com.gdsc_knu.official_homepage.entity.Member;
-import com.gdsc_knu.official_homepage.exception.CustomException;
-import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.exception.ExceptionDto;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -21,12 +17,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 // 인증이 필요한 모든 요청은 JwtFilter를 탐.
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private JwtTokenValidator jwtTokenValidator;
+    private JwtValidator jwtValidator;
     private MemberRepository memberRepository;
 
     @Override
@@ -41,8 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwtToken = jwtTokenValidator.checkAccessToken(jwtHeader);
-        Claims claims = jwtTokenValidator.extractClaims(jwtToken);
+        String jwtToken = jwtValidator.checkAccessToken(jwtHeader);
+        Claims claims = jwtValidator.extractClaims(jwtToken);
 
         ObjectMapper mapper = new ObjectMapper();
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);

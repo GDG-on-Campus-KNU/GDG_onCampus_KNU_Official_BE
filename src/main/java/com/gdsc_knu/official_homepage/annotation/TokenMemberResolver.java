@@ -2,8 +2,8 @@ package com.gdsc_knu.official_homepage.annotation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
@@ -22,7 +22,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 @Component
 public class TokenMemberResolver implements HandlerMethodArgumentResolver {
-    private final JwtTokenValidator jwtTokenValidator;
+    private final JwtValidator jwtValidator;
     private final MemberRepository memberRepository;
 
     @Override
@@ -35,9 +35,9 @@ public class TokenMemberResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String token = webRequest.getHeader("Authorization");
 
-        String jwtToken = jwtTokenValidator.checkAccessToken(token);
+        String jwtToken = jwtValidator.checkAccessToken(token);
 
-        Claims claims = jwtTokenValidator.extractClaims(jwtToken);
+        Claims claims = jwtValidator.extractClaims(jwtToken);
         ObjectMapper mapper = new ObjectMapper();
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 

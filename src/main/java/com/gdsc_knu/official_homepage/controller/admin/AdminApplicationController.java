@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Admin Application", description = "서류확인 관련 API")
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/application")
 @RequiredArgsConstructor
 public class AdminApplicationController {
     private final AdminApplicationService applicationService;
-    @GetMapping("applications/statistic")
+    @GetMapping("statistic")
     @Operation(summary="지원서류 통계데이터 조회 API")
     public ResponseEntity<AdminApplicationResponse.Statistics> getStatistic() {
         return ResponseEntity.ok().body(applicationService.getStatistic());
     }
 
 
-    @GetMapping("applications")
+    @GetMapping
     @Operation(summary="조건별 지원 서류 조회 API", description = "직렬별, 마크여부에 따라 지원서류를 조회합니다.\n" +
             "마크된것만 조회하려면 isMarked=true로 설정하세요.\n" +
             "isMarked를 비워두거나 false로 설정하면 전체가 조회됩니다.(track도 마찬가지로 비워두면 전체)")
@@ -39,7 +39,7 @@ public class AdminApplicationController {
     }
 
 
-    @PatchMapping("application/mark")
+    @PatchMapping("mark")
     @Operation(summary="지원서류 마킹 API", description = "지원서류를 마킹합니다.")
     public ResponseEntity<Void> markApplication(@RequestParam("id") Long id) {
         applicationService.markApplication(id);
@@ -47,7 +47,7 @@ public class AdminApplicationController {
     }
 
 
-    @PatchMapping("application/status")
+    @PatchMapping("status")
     @Operation(summary="지원서류 합격/불합격 API", description = "지원서류의 합격/불합격을 결정합니다.")
     public ResponseEntity<Void> decideApplication(@RequestParam("id") Long id,
                                                   @RequestParam("status") Status status){
@@ -62,14 +62,14 @@ public class AdminApplicationController {
         APPROVED, REJECTED
     }
 
-    @GetMapping("application")
+    @GetMapping("detail")
     @Operation(summary="지원서류 상세 조회 API", description = "지원서류의 상세정보를 조회합니다.")
     public ResponseEntity<AdminApplicationResponse.Detail> getApplicationDetail(@RequestParam("id") Long id) {
         return ResponseEntity.ok().body(applicationService.getApplicationDetail(id));
     }
 
 
-    @PatchMapping("application/note")
+    @PatchMapping("note")
     @Operation(summary="지원서류 메모 API", description = "지원서류에 메모를 합니다.")
     public ResponseEntity<Void> noteApplication(@RequestParam("id") Long id,
                                                 @RequestBody String note) {

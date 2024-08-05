@@ -23,35 +23,27 @@ public class AdminTeamController {
     private final AdminTeamService adminTeamService;
 
     @GetMapping()
-    public ResponseEntity<List<AdminTeamResponse>> getTeamTags(@TokenMember JwtMemberDetail jwtMemberDetail) {
+    public ResponseEntity<List<AdminTeamResponse>> getTeamTags() {
         return ResponseEntity.ok().body(adminTeamService.getTeamInfos());
     }
 
     @PostMapping()
-    public ResponseEntity<Long> createTeam(
-            @TokenMember JwtMemberDetail jwtMemberDetail,
-            @RequestBody AdminTeamCreateRequest adminTeamCreateRequest) {
+    public ResponseEntity<Long> createTeam(@RequestBody AdminTeamCreateRequest adminTeamCreateRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createTeam(adminTeamCreateRequest));
     }
 
     @PostMapping("/{teamId}/subTeam")
-    public ResponseEntity<Long> createSubTeam(
-            @TokenMember JwtMemberDetail jwtMemberDetail,
-            @PathVariable("teamId") Long parentTeamId) {
+    public ResponseEntity<Long> createSubTeam(@PathVariable("teamId") Long parentTeamId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createSubTeam(parentTeamId));
     }
 
     @GetMapping("/{teamId}")
-    public ResponseEntity<List<AdminMemberResponse>> getTeamMembers(
-            @TokenMember JwtMemberDetail jwtMemberDetail,
-            @PathVariable("teamId") Long teamId) {
+    public ResponseEntity<List<AdminMemberResponse>> getTeamMembers(@PathVariable("teamId") Long teamId) {
         return ResponseEntity.ok().body(adminTeamService.getTeamMembers(teamId));
     }
 
     @PutMapping()
-    public ResponseEntity<Long> changeTeamMember(
-            @TokenMember JwtMemberDetail jwtMemberDetail,
-            @RequestBody AdminTeamChangeRequest adminTeamChangeRequest) {
+    public ResponseEntity<Long> changeTeamMember(@RequestBody AdminTeamChangeRequest adminTeamChangeRequest) {
         return ResponseEntity.ok().body(adminTeamService.changeTeamMember(adminTeamChangeRequest));
     }
 }

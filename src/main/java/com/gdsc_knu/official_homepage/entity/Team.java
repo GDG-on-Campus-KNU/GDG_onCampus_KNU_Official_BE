@@ -19,6 +19,7 @@ public class Team {
     private String teamPageUrl;
 
     @OneToMany(mappedBy = "team")
+    @Builder.Default
     private List<MemberTeam> memberTeams = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

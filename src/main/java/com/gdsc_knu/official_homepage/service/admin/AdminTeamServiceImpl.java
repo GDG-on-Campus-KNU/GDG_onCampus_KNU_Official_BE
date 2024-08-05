@@ -52,7 +52,6 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
         Team newTeam = teamRepository.save(Team.builder()
                 .teamName(teamName)
-                .subTeams(new ArrayList<>())
                 .teamPageUrl(createTeamPageUrl(teamName))
                 .build());
 

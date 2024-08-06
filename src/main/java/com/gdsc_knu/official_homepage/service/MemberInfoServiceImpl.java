@@ -41,7 +41,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        String imageUrl = fileUploader.upload(request.getProfileUrl());
+        String imageUrl = request.getProfileUrl() != null ?
+                fileUploader.upload(request.getProfileUrl()) : member.getProfileUrl();
         member.update(request.getName(),
                 imageUrl,
                 request.getAge(),

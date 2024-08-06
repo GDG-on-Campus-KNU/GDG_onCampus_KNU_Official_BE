@@ -66,6 +66,8 @@ public class JwtTokenValidator {
                     .getBody();
         } catch (ExpiredJwtException e) {
             throw new JwtException("만료된 토큰입니다.");
+        } catch (JwtException e) {
+            throw new JwtException("JWT의 디지털 서명이 일치하지 않습니다.", e);
         }
     }
     protected Key createSignature() {

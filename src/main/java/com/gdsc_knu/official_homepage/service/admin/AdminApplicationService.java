@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRes;
+import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -13,15 +13,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
 
     @Transactional(readOnly = true)
-    public AdminApplicationRes.Statistics getStatistic() {
+    public AdminApplicationResponse.Statistics getStatistic() {
         ApplicationStatisticType statistic = applicationRepository.getStatistics();
-        return AdminApplicationRes.Statistics.of(
+        return AdminApplicationResponse.Statistics.of(
                 statistic.getTotal(),
                 statistic.getOpenCount(),
                 statistic.getTotal() - statistic.getOpenCount(),
@@ -29,20 +31,46 @@ public class AdminApplicationService {
                 statistic.getTotal() - statistic.getApprovedCount());
     }
 
+
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationRes.Overview> getAllApplications(int page, int size, boolean isMarked){
-        Page<Application> applicationPage = isMarked
-                ? applicationRepository.findAllByIsMarked(PageRequest.of(page,size))
-                : applicationRepository.findAllSummited(PageRequest.of(page,size));
-        return PagingResponse.from(applicationPage, AdminApplicationRes.Overview::from);
+    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, boolean isMarked){
+        Page<Application> applicationPage
+                = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked);
+        return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
     }
 
-    @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationRes.Overview> getAllApplicationsByOption(int page, int size, Track track, boolean isMarked){
-        Page<Application> applicationPage = isMarked
-                ? applicationRepository.findAllByTrackAndIsMarked(PageRequest.of(page,size), track)
-                : applicationRepository.findAllByTrack(PageRequest.of(page,size), track);
+    @Transactional
+    public void markApplication(Long id) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        application.changeMark();
+    }
 
-        return PagingResponse.from(applicationPage, AdminApplicationRes.Overview::from);
+
+    @Transactional
+    public void decideApplication(Long id, String status) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        if (status.equals(ApplicationStatus.APPROVED.name()))
+            application.approve();
+        else if (status.equals(ApplicationStatus.REJECTED.name()))
+            application.reject();
+    }
+
+
+    @Transactional(readOnly = true)
+    public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        if (!application.isOpened())
+            application.open();
+        return AdminApplicationResponse.Detail.from(application);
+    }
+
+    @Transactional
+    public void noteApplication(Long id, String note) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+        application.saveNote(note);
     }
 }

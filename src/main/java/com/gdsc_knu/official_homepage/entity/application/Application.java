@@ -57,6 +57,8 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    private String note;
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "application_id")
@@ -108,15 +110,23 @@ public class Application extends BaseTimeEntity {
         }
     }
 
-    private void open() {
+    public void open() {
         this.isOpened = true;
     }
 
-    private void marked() {
-        this.isMarked = true;
+    public void changeMark() {
+        this.isMarked = !this.isMarked;
     }
 
-    private void unMarked() {
-        this.isMarked = false;
+    public void approve() {
+        this.applicationStatus = ApplicationStatus.APPROVED;
+    }
+
+    public void reject() {
+        this.applicationStatus = ApplicationStatus.REJECTED;
+    }
+
+    public void saveNote(String note) {
+        this.note = note;
     }
 }

@@ -1,12 +1,11 @@
 package com.gdsc_knu.official_homepage.service.fileupload;
 
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +15,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class S3FileUploader{
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3;
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
@@ -36,11 +35,11 @@ public class S3FileUploader{
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
 
-            amazonS3Client.putObject(new PutObjectRequest(bucket, uniqueFilename, inputStream, metadata));
+            amazonS3.putObject(new PutObjectRequest(bucket, uniqueFilename, inputStream, metadata));
         } catch (Exception e) {
             throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
         }
 
-        return amazonS3Client.getUrl(bucket, uniqueFilename).toString();
+        return amazonS3.getUrl(bucket, uniqueFilename).toString();
     }
 }

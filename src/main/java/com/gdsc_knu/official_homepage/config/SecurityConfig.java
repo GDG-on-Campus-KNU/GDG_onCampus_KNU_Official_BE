@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.filter.JwtFilter;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 public class SecurityConfig {
     private final JwtValidator jwtValidator;
     private final MemberRepository memberRepository;
+    private final ObjectMapper objectMapper;
 
     private static final String[] WHITE_LIST = {
             "/**",
@@ -41,7 +43,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtFilter(jwtValidator, memberRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtValidator, memberRepository, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers(MEMBER_AUTHENTICATION_LIST).hasRole("MEMBER")
                         .requestMatchers(CORE_AUTHENTICATION_LIST).hasRole("CORE")

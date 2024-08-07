@@ -15,7 +15,9 @@ public enum ErrorCode {
     INVALID_PERMISSION(401,HttpStatus.UNAUTHORIZED, "권한이 없습니다"),
     INVALID_INPUT(400, HttpStatus.BAD_REQUEST,"잘못된 요청입니다."),
     CONFLICT(409, HttpStatus.CONFLICT, "이미 최종 제출된 지원서 입니다."),
-    FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
+    FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+    JWT_EXPIRED(401, HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
+    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
 
     private int status;
     private HttpStatus error;

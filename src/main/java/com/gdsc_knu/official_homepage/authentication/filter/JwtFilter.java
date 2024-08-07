@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
+import com.gdsc_knu.official_homepage.exception.ExceptionDto;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -21,8 +24,9 @@ import java.io.IOException;
 // 인증이 필요한 모든 요청은 JwtFilter를 탐.
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private JwtValidator jwtValidator;
-    private MemberRepository memberRepository;
+    private final JwtValidator jwtValidator;
+    private final MemberRepository memberRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -35,9 +39,15 @@ public class JwtFilter extends OncePerRequestFilter {
             chain.doFilter(request,response);
             return;
         }
-
-        String jwtToken = jwtValidator.checkAccessToken(jwtHeader);
-        Claims claims = jwtValidator.extractClaims(jwtToken);
+        String jwtToken = null;
+        Claims claims = null;
+        try {
+            jwtToken = jwtValidator.checkAccessToken(jwtHeader);
+            claims = jwtValidator.extractClaims(jwtToken);
+        } catch (CustomException e) {
+           handleFilterException(response, e);
+           return;
+        }
 
         ObjectMapper mapper = new ObjectMapper();
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
@@ -56,6 +66,14 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         chain.doFilter(request,response);
+    }
 
+    private void handleFilterException(HttpServletResponse response, CustomException e) throws IOException {
+        ErrorCode errorCode = e.getErrorCode();
+        response.setStatus(errorCode.getStatus());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        ExceptionDto exceptionDto = new ExceptionDto(e.getErrorCode());
+        response.getWriter().write(objectMapper.writeValueAsString(exceptionDto));
     }
 }

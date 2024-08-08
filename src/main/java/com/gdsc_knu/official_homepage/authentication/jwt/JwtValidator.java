@@ -50,7 +50,7 @@ public class JwtValidator {
                 .orElseThrow(() -> new CustomException(ErrorCode.JWT_INVALID));
         if (!redisToken.getRefreshToken().equals(checkedToken)) {
             redisRepository.delete(redisToken);
-            throw new CustomException(ErrorCode.JWT_INVALID);
+            throw new CustomException(ErrorCode.JWT_INCORRECT);
         }
         redisRepository.delete(redisToken);
         return jwtClaims;

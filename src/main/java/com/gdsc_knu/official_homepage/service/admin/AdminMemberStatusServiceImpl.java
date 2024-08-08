@@ -79,4 +79,13 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 })
                 .reduce(0L, Long::sum);
     }
+
+    @Override
+    public PagingResponse<MemberInfoResponse> getMemberByName(String name, int page, int size) {
+        Page<Member> memberPage
+                = memberRepository.findByNameContaining(PageRequest.of(page, size), name);
+        return PagingResponse.from(memberPage, MemberInfoResponse::from);
+    }
+
+
 }

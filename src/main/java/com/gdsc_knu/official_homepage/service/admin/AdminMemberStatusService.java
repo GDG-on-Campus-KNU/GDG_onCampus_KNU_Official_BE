@@ -16,4 +16,6 @@ public interface AdminMemberStatusService {
     public Long updateMemberRole(MemberRoleRequest memberRoleRequest);
 
     public Long updateMemberTrack(MemberTrackRequest memberTrackRequest);
+
+    PagingResponse<MemberInfoResponse> getMemberByName(String name, int page, int size);
 }

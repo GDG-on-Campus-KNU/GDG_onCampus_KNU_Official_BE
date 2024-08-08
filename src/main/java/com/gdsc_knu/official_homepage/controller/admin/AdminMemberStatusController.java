@@ -30,6 +30,15 @@ public class AdminMemberStatusController {
         return ResponseEntity.ok(adminMemberStatusService.getAllMemberInfos(page, size));
     }
 
+    @GetMapping()
+    @Operation(summary = "이름검색으로 멤버 정보 조회 API")
+    public ResponseEntity<PagingResponse<MemberInfoResponse>> getMemberByName(
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(adminMemberStatusService.getMemberByName(name, page, size));
+    }
+
     @DeleteMapping()
     @Operation(summary = "회원 삭제 API")
     public ResponseEntity<Void> deleteMember(

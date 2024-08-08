@@ -81,6 +81,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PagingResponse<MemberInfoResponse> getMemberByName(String name, int page, int size) {
         Page<Member> memberPage
                 = memberRepository.findByNameContaining(PageRequest.of(page, size), name);

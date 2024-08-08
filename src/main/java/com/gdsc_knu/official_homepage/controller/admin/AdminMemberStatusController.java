@@ -30,7 +30,7 @@ public class AdminMemberStatusController {
         return ResponseEntity.ok(adminMemberStatusService.getAllMemberInfos(page, size));
     }
 
-    @GetMapping()
+    @GetMapping("search")
     @Operation(summary = "이름검색으로 멤버 정보 조회 API")
     public ResponseEntity<PagingResponse<MemberInfoResponse>> getMemberByName(
             @RequestParam(value = "name") String name,

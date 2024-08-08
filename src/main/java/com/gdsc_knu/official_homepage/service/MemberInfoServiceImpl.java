@@ -28,7 +28,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         List<TeamInfoResponse> teamInfos = member.getMemberTeams().stream()
                 .map(memberTeam -> {
                     Team team = memberTeam.getTeam();
-                    return new TeamInfoResponse(team.getTeamName(), team.getTeamPageUrl());
+                    return new TeamInfoResponse(team.getId(), team.getTeamName(), team.getTeamPageUrl());
                 })
                 .collect(Collectors.toList());
 

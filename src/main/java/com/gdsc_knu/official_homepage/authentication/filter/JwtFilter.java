@@ -4,10 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
-import com.gdsc_knu.official_homepage.exception.CustomException;
-import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.exception.ExceptionDto;
-import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,9 +20,7 @@ import java.io.IOException;
 // 인증이 필요한 모든 요청은 JwtFilter를 탐.
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final JwtValidator jwtValidator;
-    private final MemberRepository memberRepository;
-    private final ObjectMapper objectMapper;
+    private JwtValidator jwtValidator;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -36,44 +30,36 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 인증이 필요없는 요청은 바로 리턴(이 필터에 안걸려도 인증은 리졸버를 통해 수행함)
         if (jwtHeader==null){
+            request.setAttribute("exception", "엑세스 토큰이 존재하지 않습니다.");
             chain.doFilter(request,response);
             return;
         }
-        String jwtToken = null;
-        Claims claims = null;
+
         try {
-            jwtToken = jwtValidator.checkAccessToken(jwtHeader);
-            claims = jwtValidator.extractClaims(jwtToken);
-        } catch (CustomException e) {
-           handleFilterException(response, e);
-           return;
+            String jwtToken = jwtValidator.checkAccessToken(jwtHeader);
+            Claims claims = jwtValidator.extractClaims(jwtToken);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
+
+
+            JwtMemberDetail jwtMemberDetail = JwtMemberDetail.builder()
+                    .id(jwtClaims.getId())
+                    .email(jwtClaims.getEmail())
+                    .role(jwtClaims.getRole())
+                    .build();
+
+            // jwt 서명이 정상이면 Authentication객체를 만듦.
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(jwtMemberDetail, null, jwtMemberDetail.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (RuntimeException e) {
+            request.setAttribute("exception", e.getMessage());
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
-
-
-        JwtMemberDetail jwtMemberDetail = JwtMemberDetail.builder()
-                .id(jwtClaims.getId())
-                .email(jwtClaims.getEmail())
-                .role(jwtClaims.getRole())
-                .build();
-
-        // jwt 서명이 정상이면 Authentication객체를 만듦.
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(jwtMemberDetail, null, jwtMemberDetail.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         chain.doFilter(request,response);
-    }
 
-    private void handleFilterException(HttpServletResponse response, CustomException e) throws IOException {
-        ErrorCode errorCode = e.getErrorCode();
-        response.setStatus(errorCode.getStatus());
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        ExceptionDto exceptionDto = new ExceptionDto(e.getErrorCode());
-        response.getWriter().write(objectMapper.writeValueAsString(exceptionDto));
     }
 }

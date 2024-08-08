@@ -46,4 +46,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
     @Query("SELECT a FROM Application a " +
             "WHERE a.applicationStatus = 'SAVED'")
     Page<Application> findAllSummited(Pageable pageable);
+
+
+    Page<Application> findByNameContaining(Pageable pageable, String name);
 }

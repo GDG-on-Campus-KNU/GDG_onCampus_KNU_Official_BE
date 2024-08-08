@@ -17,7 +17,8 @@ public enum ErrorCode {
     CONFLICT(409, HttpStatus.CONFLICT, "이미 최종 제출된 지원서 입니다."),
     FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     JWT_EXPIRED(401, HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
-    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    JWT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다.");
 
     private int status;
     private HttpStatus error;

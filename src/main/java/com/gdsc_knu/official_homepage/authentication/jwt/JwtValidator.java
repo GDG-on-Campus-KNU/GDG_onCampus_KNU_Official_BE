@@ -23,6 +23,7 @@ public class JwtValidator {
     private String jwtSecret;
 
     private final RedisRepository redisRepository;
+    private final ObjectMapper objectMapper;
 
     // 토큰의 형식을 검사하는 private 메서드입니다.
     private String checkToken(String token) {
@@ -43,8 +44,7 @@ public class JwtValidator {
         String checkedToken = checkToken(token);
         Claims claims = extractClaims(checkedToken);
 
-        ObjectMapper mapper = new ObjectMapper();
-        JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
+        JwtClaims jwtClaims = objectMapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
         RedisToken redisToken = redisRepository.findById(jwtClaims.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.JWT_INVALID));

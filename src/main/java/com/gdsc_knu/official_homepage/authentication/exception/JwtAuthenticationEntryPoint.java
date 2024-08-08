@@ -6,6 +6,7 @@ import com.gdsc_knu.official_homepage.exception.ExceptionDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -15,7 +16,10 @@ import java.io.IOException;
 
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    private final ObjectMapper objectMapper;
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
@@ -23,7 +27,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             response.setContentType("application/json; charset=UTF-8");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-            ObjectMapper objectMapper = new ObjectMapper();
             ExceptionDto exceptionDto = new ExceptionDto(ErrorCode.INVALID_PERMISSION, request.getAttribute("exception").toString());
             objectMapper.writeValue(response.getOutputStream(), exceptionDto);
         }

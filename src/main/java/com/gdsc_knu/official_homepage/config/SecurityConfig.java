@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.exception.JwtAccessDeniedHandler;
 import com.gdsc_knu.official_homepage.authentication.exception.JwtAuthenticationEntryPoint;
 import com.gdsc_knu.official_homepage.authentication.filter.JwtFilter;
@@ -24,6 +25,7 @@ public class SecurityConfig {
     private final JwtValidator jwtValidator;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final ObjectMapper objectMapper;
 
 
     private static final String[] WHITE_LIST = {
@@ -44,7 +46,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtFilter(jwtValidator), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtValidator, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)

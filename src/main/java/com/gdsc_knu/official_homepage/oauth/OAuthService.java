@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.oauth;
 
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenProvider;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtProvider;
 import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleToken;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleUserInfo;
@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class OAuthService {
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final RestTemplate restTemplate = new RestTemplate();
     /**
      * 1. code로 액세스 토큰 받아오기
@@ -49,7 +49,7 @@ public class OAuthService {
         Member member = memberRepository.findByEmail(googleUserInfo.getEmail())
                 .orElseGet(() -> saveNewMember(googleUserInfo));
 
-        TokenResponse response = jwtTokenProvider.issueTokens(member.getId(), member.getEmail(), member.getRole());
+        TokenResponse response = jwtProvider.issueTokens(member.getId(), member.getEmail(), member.getRole());
         return new LoginResponseDto(
                 member.getId(),
                 member.getRole()==Role.ROLE_TEMP,

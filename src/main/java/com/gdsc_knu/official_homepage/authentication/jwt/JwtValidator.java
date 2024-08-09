@@ -3,12 +3,11 @@ package com.gdsc_knu.official_homepage.authentication.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisRepository;
 import com.gdsc_knu.official_homepage.authentication.redis.RedisToken;
-import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.xml.bind.DatatypeConverter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,17 +17,18 @@ import java.security.Key;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenValidator {
+public class JwtValidator {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     private final RedisRepository redisRepository;
+    private final ObjectMapper objectMapper;
 
     // 토큰의 형식을 검사하는 private 메서드입니다.
     private String checkToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("유효하지 않은 형식의 토큰입니다.");
+            throw new CustomException(ErrorCode.JWT_INVALID);
         }
         // Bearer 제거
         return token.substring(7);
@@ -44,14 +44,13 @@ public class JwtTokenValidator {
         String checkedToken = checkToken(token);
         Claims claims = extractClaims(checkedToken);
 
-        ObjectMapper mapper = new ObjectMapper();
-        JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
+        JwtClaims jwtClaims = objectMapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
         RedisToken redisToken = redisRepository.findById(jwtClaims.getEmail())
-                .orElseThrow(() -> new JwtException("유효하지 않은 리프레시 토큰입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.JWT_INVALID));
         if (!redisToken.getRefreshToken().equals(checkedToken)) {
             redisRepository.delete(redisToken);
-            throw new JwtException("요청한 리프레시 토큰이 저장된 토큰과 다릅니다.");
+            throw new CustomException(ErrorCode.JWT_INCORRECT);
         }
         redisRepository.delete(redisToken);
         return jwtClaims;
@@ -65,9 +64,9 @@ public class JwtTokenValidator {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new JwtException("만료된 토큰입니다.");
-        } catch (JwtException e) {
-            throw new JwtException("JWT의 디지털 서명이 일치하지 않습니다.", e);
+            throw new CustomException(ErrorCode.JWT_EXPIRED);
+        } catch (SignatureException e) {
+            throw new CustomException(ErrorCode.JWT_INVALID);
         }
     }
     protected Key createSignature() {

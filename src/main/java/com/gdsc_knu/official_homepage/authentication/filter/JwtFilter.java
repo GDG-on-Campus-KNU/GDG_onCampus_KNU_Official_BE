@@ -3,13 +3,14 @@ package com.gdsc_knu.official_homepage.authentication.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtTokenValidator;
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +21,8 @@ import java.io.IOException;
 // 인증이 필요한 모든 요청은 JwtFilter를 탐.
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private JwtTokenValidator jwtTokenValidator;
+    private JwtValidator jwtValidator;
+    private ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -36,11 +38,10 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         try {
-            String jwtToken = jwtTokenValidator.checkAccessToken(jwtHeader);
-            Claims claims = jwtTokenValidator.extractClaims(jwtToken);
+            String jwtToken = jwtValidator.checkAccessToken(jwtHeader);
+            Claims claims = jwtValidator.extractClaims(jwtToken);
 
-            ObjectMapper mapper = new ObjectMapper();
-            JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
+            JwtClaims jwtClaims = objectMapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
 
             JwtMemberDetail jwtMemberDetail = JwtMemberDetail.builder()

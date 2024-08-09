@@ -10,18 +10,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Permission", description = "사용자 상태(ROLE) 관련 API")
+@Tag(name = "Permission")
 @RestController
-@RequestMapping("api/user/permission")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class RoleController {
     private final PermissionSerivce permissionSerivce;
-    @PatchMapping("approve")
-    @Operation(summary="MEMBER 승인 API")
-    public ResponseEntity<String> approveMember(@TokenMember JwtMemberDetail jwtMemberDetail,
-                                        @RequestBody UserRoleRequest userRoleRequest){
-        Long count = permissionSerivce.approveMember(userRoleRequest);
-        return ResponseEntity.ok().body(count+"명의 멤버가 승인되었습니다.");
+
+    @PatchMapping("core")
+    @Operation(summary="❗core 권한으로 테스트하기 위한 임시 API ❗", description = "매번 sql update 하기 번거로워서 임시로 만듦")
+    public ResponseEntity<String> coreMember(@TokenMember JwtMemberDetail jwtMemberDetail){
+        permissionSerivce.toCore(jwtMemberDetail.getId());
+        return ResponseEntity.ok().body(jwtMemberDetail.getUsername() + " core로 변경되었습니다.");
     }
 
 }

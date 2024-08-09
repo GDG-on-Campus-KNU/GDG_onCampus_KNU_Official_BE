@@ -39,6 +39,17 @@ public class AdminApplicationController {
     }
 
 
+    @GetMapping("search")
+    @Operation(summary="지원서류 이름 검색 API", description = "이름으로 지원서류를 조회합니다.")
+    public ResponseEntity<PagingResponse<AdminApplicationResponse.Overview>> getApplicationByName(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size)
+    {
+        return ResponseEntity.ok().body(applicationService.getApplicationsByName(page, size, name));
+    }
+
+
     @PatchMapping("mark")
     @Operation(summary="지원서류 마킹 API", description = "지원서류를 마킹합니다.")
     public ResponseEntity<Void> markApplication(@RequestParam("id") Long id) {

@@ -73,4 +73,12 @@ public class AdminApplicationService {
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
         application.saveNote(note);
     }
+
+
+    @Transactional(readOnly = true)
+    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByName(int page, int size, String name){
+        Page<Application> applicationPage
+                = applicationRepository.findByNameContaining(PageRequest.of(page,size), name);
+        return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
+    }
 }

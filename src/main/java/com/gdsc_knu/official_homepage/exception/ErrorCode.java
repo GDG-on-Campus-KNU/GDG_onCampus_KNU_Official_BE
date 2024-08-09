@@ -18,7 +18,8 @@ public enum ErrorCode {
     FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     JWT_EXPIRED(401, HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
-    JWT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다.");
+    JWT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다."),
+    FAILED_UPLOAD(500, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
 
     private int status;
     private HttpStatus error;

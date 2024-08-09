@@ -6,7 +6,6 @@ import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
-import com.gdsc_knu.official_homepage.service.fileupload.S3FileUploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl implements MemberInfoService {
     private final MemberRepository memberRepository;
-    private final S3FileUploader fileUploader;
+    private final S3Service s3Service;
 
     @Override
     public MemberResponse getMemberInfo(Long id) {
@@ -41,7 +40,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        String imageUrl = fileUploader.upload(request.getProfileUrl());
+        String imageUrl = request.getProfileUrl() != null ?
+                s3Service.upload(request.getProfileUrl()) : member.getProfileUrl();
         member.update(request.getName(),
                 imageUrl,
                 request.getAge(),

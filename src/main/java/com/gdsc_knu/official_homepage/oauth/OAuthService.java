@@ -16,6 +16,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
@@ -43,7 +46,8 @@ public class OAuthService {
     }
 
     public LoginResponseDto getGoogleAccessToken(String code) {
-        GoogleToken googleToken = getAccessToken(code);
+        String decode = URLDecoder.decode(code, StandardCharsets.UTF_8);
+        GoogleToken googleToken = getAccessToken(decode);
         GoogleUserInfo googleUserInfo = getUserInfo(googleToken.getAccess_token());
 
         Member member = memberRepository.findByEmail(googleUserInfo.getEmail())

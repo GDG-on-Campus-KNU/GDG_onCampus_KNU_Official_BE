@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.dto.admin.application;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -44,6 +45,7 @@ public class AdminApplicationResponse {
     public static class Overview {
         private Long id;
         private String name;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         @JsonSerialize(using = LocalDateTimeSerializer.class)
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime submittedAt;
@@ -80,6 +82,7 @@ public class AdminApplicationResponse {
         private String phoneNumber;
         private String email;
         private String track;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         @JsonSerialize(using = LocalDateTimeSerializer.class)
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime submittedAt;

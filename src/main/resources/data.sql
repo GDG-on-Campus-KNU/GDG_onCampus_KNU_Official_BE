@@ -1,4 +1,4 @@
-insert into `application` (application_id, name, student_number, major, email, phone_number, tech_stack, application_status, is_opened, is_marked, track)
+insert ignore into `application` (application_id, name, student_number, major, email, phone_number, tech_stack, application_status, is_opened, is_marked, track)
 values (1, '철수', '2018001', '컴퓨터 사이언스', 'email1@email.com', 010-0000-0000, 'Java, Spring', 'TEMPORAL', false, false, 'BACK_END'),
        (2, '영희', '2018002', '컴퓨터 사이언스', 'email2@email.com', 010-0000-0001, 'Java, Spring', 'TEMPORAL', false, false, 'BACK_END'),
        (12, '철희', '2018007', '컴퓨터 사이언스', 'email7@email.com', 010-0000-0007, 'Java, Spring', 'TEMPORAL', false, false, 'FRONT_END'),

@@ -24,7 +24,12 @@ public class AdminTeamController {
     private final AdminTeamService adminTeamService;
 
     @GetMapping()
-    @Operation(summary = "모든 팀 정보 조회 API", description = "존재하는 모든 팀의 정보를 조회 합니다.")
+    @Operation(summary = "모든 팀 정보 조회 API",
+            description = """
+                    존재하는 모든 팀의 정보를 조회합니다.
+                    
+                    하위팀은 부모 팀 내부의 리스트로 조회됩니다.
+                    """)
     public ResponseEntity<List<AdminTeamResponse>> getTeamTags() {
         return ResponseEntity.ok().body(adminTeamService.getTeamInfos());
     }

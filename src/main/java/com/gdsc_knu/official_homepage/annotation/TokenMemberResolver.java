@@ -42,8 +42,6 @@ public class TokenMemberResolver implements HandlerMethodArgumentResolver {
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
         String email = jwtClaims.getEmail();
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         return JwtMemberDetail.builder()
                 .email(email)

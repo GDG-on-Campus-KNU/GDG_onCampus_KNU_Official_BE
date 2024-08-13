@@ -24,7 +24,6 @@ public class AdminMemberStatusController {
     @GetMapping()
     @Operation(summary = "모든 멤버 정보 조회 API")
     public ResponseEntity<PagingResponse<MemberInfoResponse>> getAllMemberInfos(
-            @TokenMember JwtMemberDetail memberDetail,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(adminMemberStatusService.getAllMemberInfos(page, size));
@@ -41,26 +40,20 @@ public class AdminMemberStatusController {
 
     @DeleteMapping()
     @Operation(summary = "회원 삭제 API")
-    public ResponseEntity<Void> deleteMember(
-            @TokenMember JwtMemberDetail memberDetail,
-            @RequestBody MemberDeleteRequest memberDeleteRequest) {
+    public ResponseEntity<Void> deleteMember(@RequestBody MemberDeleteRequest memberDeleteRequest) {
         adminMemberStatusService.deleteMember(memberDeleteRequest);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/role")
     @Operation(summary = "회원 권한 수정 API")
-    public ResponseEntity<Long> updateMemberRole(
-            @TokenMember JwtMemberDetail memberDetail,
-            @RequestBody MemberRoleRequest memberRoleRequest) {
+    public ResponseEntity<Long> updateMemberRole(@RequestBody MemberRoleRequest memberRoleRequest) {
         return ResponseEntity.ok(adminMemberStatusService.updateMemberRole(memberRoleRequest));
     }
 
     @PatchMapping("/track")
     @Operation(summary = "회원 직렬 수정 API")
-    public ResponseEntity<Long> updateMemberTrack(
-            @TokenMember JwtMemberDetail memberDetail,
-            @RequestBody MemberTrackRequest memberTrackRequest) {
+    public ResponseEntity<Long> updateMemberTrack(@RequestBody MemberTrackRequest memberTrackRequest) {
         return ResponseEntity.ok(adminMemberStatusService.updateMemberTrack(memberTrackRequest));
     }
 }

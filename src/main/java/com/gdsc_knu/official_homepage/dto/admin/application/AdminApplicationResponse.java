@@ -1,5 +1,9 @@
 package com.gdsc_knu.official_homepage.dto.admin.application;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import lombok.AllArgsConstructor;
@@ -40,6 +44,8 @@ public class AdminApplicationResponse {
     public static class Overview {
         private Long id;
         private String name;
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime submittedAt;
         private String studentNumber;
         private String major;
@@ -74,6 +80,8 @@ public class AdminApplicationResponse {
         private String phoneNumber;
         private String email;
         private String track;
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime submittedAt;
         private String techStack;
         private String link;

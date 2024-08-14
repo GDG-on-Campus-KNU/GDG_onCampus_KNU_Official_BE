@@ -21,4 +21,10 @@ public class ExceptionDto {
         this.data = error.getError();
     }
 
+    public ExceptionDto(HttpStatus httpStatus, String message) {
+        this.code = httpStatus.value();
+        this.message = message;
+        this.data = httpStatus;
+    }
+
 }

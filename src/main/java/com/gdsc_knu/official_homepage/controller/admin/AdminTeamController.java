@@ -1,11 +1,6 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
-import com.gdsc_knu.official_homepage.annotation.TokenMember;
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.*;
 import com.gdsc_knu.official_homepage.service.admin.AdminTeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,8 +19,13 @@ public class AdminTeamController {
     private final AdminTeamService adminTeamService;
 
     @GetMapping()
-    @Operation(summary = "모든 팀 정보 조회 API", description = "존재하는 모든 팀의 정보를 조회 합니다.")
-    public ResponseEntity<List<AdminTeamResponse>> getTeamTags() {
+    @Operation(summary = "모든 팀 정보 조회 API",
+            description = """
+                    존재하는 모든 팀의 정보를 조회합니다.
+                    
+                    서브팀은 부모 팀 내부의 리스트로 조회됩니다.
+                    """)
+    public ResponseEntity<List<AdminTeamResponse.Team>> getTeamTags() {
         return ResponseEntity.ok().body(adminTeamService.getTeamInfos());
     }
 
@@ -39,8 +39,8 @@ public class AdminTeamController {
                     
                     트랙 입력이 없으면 전체 멤버를 직렬과 상관 없이 해당 팀에 소속 시킵니다.
                     """)
-    public ResponseEntity<Long> createTeam(@RequestBody AdminTeamCreateRequest adminTeamCreateRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createTeam(adminTeamCreateRequest));
+    public ResponseEntity<Long> createTeam(@RequestBody AdminTeamRequest.Create createRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createTeam(createRequest));
     }
 
     @PostMapping("/{teamId}/subTeam")
@@ -64,9 +64,9 @@ public class AdminTeamController {
                     
                     이름, 학번, 프로필 이미지 url을 반환합니다.
                     
-                    미배치 팀원은 부모 팀에 속해있으며, 배치된 팀원은 서브 팀에 속해있습니다.
+                    미배치된 팀원은 부모 팀에 속해있으며, 배치된 팀원은 서브 팀에 속해있습니다.
                     """)
-    public ResponseEntity<List<AdminMemberResponse>> getTeamMembers(@PathVariable("teamId") Long teamId) {
+    public ResponseEntity<List<AdminTeamResponse.TeamMember>> getTeamMembers(@PathVariable("teamId") Long teamId) {
         return ResponseEntity.ok().body(adminTeamService.getTeamMembers(teamId));
     }
 
@@ -78,7 +78,7 @@ public class AdminTeamController {
                     
                     존재하지 않거나 동일한 팀으로 이동할 수 없습니다.
                     """)
-    public ResponseEntity<Long> changeTeamMember(@RequestBody AdminTeamChangeRequest adminTeamChangeRequest) {
-        return ResponseEntity.ok().body(adminTeamService.changeTeamMember(adminTeamChangeRequest));
+    public ResponseEntity<Long> changeTeamMember(@RequestBody AdminTeamRequest.Update updateRequest) {
+        return ResponseEntity.ok().body(adminTeamService.changeTeamMember(updateRequest));
     }
 }

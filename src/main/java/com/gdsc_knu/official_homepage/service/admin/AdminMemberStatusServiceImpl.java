@@ -1,10 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberResponse;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberDeleteRequest;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberRoleUpdateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberTrackUpdateRequest;
+import com.gdsc_knu.official_homepage.dto.admin.memberStatus.*;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -41,24 +38,24 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
 
     /**
      * 회원 정보를 일괄 삭제함
-     * @param adminMemberDeleteRequest (삭제할 회원 id 리스트)
+     * @param deleteRequest (삭제할 회원 id 리스트)
      */
     @Override
     @Transactional
-    public void deleteMember(AdminMemberDeleteRequest adminMemberDeleteRequest) {
-        memberRepository.deleteAllById(adminMemberDeleteRequest.getUserIds());
+    public void deleteMember(AdminMemberRequest.Delete deleteRequest) {
+        memberRepository.deleteAllById(deleteRequest.getUserIds());
     }
 
     /**
     * 회원들의 권한을 일괄 변경함
-    * @param adminMemberRoleUpdateRequest (변경할 회원 id 리스트, 변경할 권한)
+    * @param roleUpdateRequest (변경할 회원 id 리스트, 변경할 권한)
     * @return Long 변경된 회원 수
     */
     @Override
     @Transactional
-    public Long updateMemberRole(AdminMemberRoleUpdateRequest adminMemberRoleUpdateRequest) {
-        List<Long> userIds = adminMemberRoleUpdateRequest.getUserIds();
-        Role newRole = adminMemberRoleUpdateRequest.getRole();
+    public Long updateMemberRole(AdminMemberRequest.RoleUpdate roleUpdateRequest) {
+        List<Long> userIds = roleUpdateRequest.getUserIds();
+        Role newRole = roleUpdateRequest.getRole();
 
         return userIds.stream()
                 .map(userId -> {
@@ -77,14 +74,14 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
 
     /**
      * 회원들의 직렬을 일괄 변경함
-     * @param adminMemberTrackUpdateRequest (변경할 회원 id 리스트, 변경할 직렬)
+     * @param trackUpdateRequest (변경할 회원 id 리스트, 변경할 직렬)
      * @return Long 변경된 회원 수
      */
     @Override
     @Transactional
-    public Long updateMemberTrack(AdminMemberTrackUpdateRequest adminMemberTrackUpdateRequest) {
-        List<Long> userIds = adminMemberTrackUpdateRequest.getUserIds();
-        Track newTrack = adminMemberTrackUpdateRequest.getTrack();
+    public Long updateMemberTrack(AdminMemberRequest.TrackUpdate trackUpdateRequest) {
+        List<Long> userIds = trackUpdateRequest.getUserIds();
+        Track newTrack = trackUpdateRequest.getTrack();
 
         return userIds.stream()
                 .map(userId -> {

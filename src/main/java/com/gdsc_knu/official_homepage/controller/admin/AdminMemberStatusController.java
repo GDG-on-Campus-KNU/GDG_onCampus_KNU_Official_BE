@@ -1,10 +1,7 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberDeleteRequest;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberResponse;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberRoleUpdateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.AdminMemberTrackUpdateRequest;
+import com.gdsc_knu.official_homepage.dto.admin.memberStatus.*;
 import com.gdsc_knu.official_homepage.service.admin.AdminMemberStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,20 +35,20 @@ public class AdminMemberStatusController {
 
     @DeleteMapping()
     @Operation(summary = "회원 삭제 API", description = "요청한 멤버들을 일괄 삭제(회원 탈퇴)합니다.")
-    public ResponseEntity<Void> deleteMember(@RequestBody AdminMemberDeleteRequest adminMemberDeleteRequest) {
-        adminMemberStatusService.deleteMember(adminMemberDeleteRequest);
+    public ResponseEntity<Void> deleteMember(@RequestBody AdminMemberRequest.Delete deleteRequest) {
+        adminMemberStatusService.deleteMember(deleteRequest);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/role")
     @Operation(summary = "회원 권한 수정 API", description = "요청한 멤버들의 권한을 일괄 변경합니다.")
-    public ResponseEntity<Long> updateMemberRole(@RequestBody AdminMemberRoleUpdateRequest adminMemberRoleUpdateRequest) {
-        return ResponseEntity.ok(adminMemberStatusService.updateMemberRole(adminMemberRoleUpdateRequest));
+    public ResponseEntity<Long> updateMemberRole(@RequestBody AdminMemberRequest.RoleUpdate roleUpdateRequest) {
+        return ResponseEntity.ok(adminMemberStatusService.updateMemberRole(roleUpdateRequest));
     }
 
     @PatchMapping("/track")
     @Operation(summary = "회원 직렬 수정 API", description = "요청한 멤버들의 직렬을 일괄 변경합니다.")
-    public ResponseEntity<Long> updateMemberTrack(@RequestBody AdminMemberTrackUpdateRequest adminMemberTrackUpdateRequest) {
-        return ResponseEntity.ok(adminMemberStatusService.updateMemberTrack(adminMemberTrackUpdateRequest));
+    public ResponseEntity<Long> updateMemberTrack(@RequestBody AdminMemberRequest.TrackUpdate trackUpdateRequest) {
+        return ResponseEntity.ok(adminMemberStatusService.updateMemberTrack(trackUpdateRequest));
     }
 }

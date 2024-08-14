@@ -1,9 +1,6 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamMemberResponse;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamUpdateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.*;
 import com.gdsc_knu.official_homepage.service.admin.AdminTeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +25,7 @@ public class AdminTeamController {
                     
                     서브팀은 부모 팀 내부의 리스트로 조회됩니다.
                     """)
-    public ResponseEntity<List<AdminTeamResponse>> getTeamTags() {
+    public ResponseEntity<List<AdminTeamResponse.Team>> getTeamTags() {
         return ResponseEntity.ok().body(adminTeamService.getTeamInfos());
     }
 
@@ -42,8 +39,8 @@ public class AdminTeamController {
                     
                     트랙 입력이 없으면 전체 멤버를 직렬과 상관 없이 해당 팀에 소속 시킵니다.
                     """)
-    public ResponseEntity<Long> createTeam(@RequestBody AdminTeamCreateRequest adminTeamCreateRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createTeam(adminTeamCreateRequest));
+    public ResponseEntity<Long> createTeam(@RequestBody AdminTeamRequest.Create createRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createTeam(createRequest));
     }
 
     @PostMapping("/{teamId}/subTeam")
@@ -69,7 +66,7 @@ public class AdminTeamController {
                     
                     미배치된 팀원은 부모 팀에 속해있으며, 배치된 팀원은 서브 팀에 속해있습니다.
                     """)
-    public ResponseEntity<List<AdminTeamMemberResponse>> getTeamMembers(@PathVariable("teamId") Long teamId) {
+    public ResponseEntity<List<AdminTeamResponse.TeamMember>> getTeamMembers(@PathVariable("teamId") Long teamId) {
         return ResponseEntity.ok().body(adminTeamService.getTeamMembers(teamId));
     }
 
@@ -81,7 +78,7 @@ public class AdminTeamController {
                     
                     존재하지 않거나 동일한 팀으로 이동할 수 없습니다.
                     """)
-    public ResponseEntity<Long> changeTeamMember(@RequestBody AdminTeamUpdateRequest adminTeamUpdateRequest) {
-        return ResponseEntity.ok().body(adminTeamService.changeTeamMember(adminTeamUpdateRequest));
+    public ResponseEntity<Long> changeTeamMember(@RequestBody AdminTeamRequest.Update updateRequest) {
+        return ResponseEntity.ok().body(adminTeamService.changeTeamMember(updateRequest));
     }
 }

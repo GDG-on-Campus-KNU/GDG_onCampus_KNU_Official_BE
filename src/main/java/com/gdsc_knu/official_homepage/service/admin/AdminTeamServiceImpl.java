@@ -1,9 +1,6 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamMemberResponse;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamUpdateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.*;
 import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
@@ -33,10 +30,10 @@ public class AdminTeamServiceImpl implements AdminTeamService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<AdminTeamResponse> getTeamInfos() {
+    public List<AdminTeamResponse.Team> getTeamInfos() {
         return teamRepository.findAll().stream()
                 .filter(team -> team.getParent() == null)
-                .map(team -> AdminTeamResponse.builder()
+                .map(team -> AdminTeamResponse.Team.builder()
                         .id(team.getId())
                         .teamName(team.getTeamName())
                         .teamPageUrl(team.getTeamPageUrl())
@@ -49,14 +46,14 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
     /**
      * 새로운 부모 팀을 생성함. 직렬을 지정 하면 해당 직렬의 회원만 해당 팀에 소속
-     * @param adminTeamCreateRequest 새로운 부모 팀 생성 요청 (팀 이름, 트랙)
+     * @param createRequest 새로운 부모 팀 생성 요청 (팀 이름, 트랙)
      * @return Long 새로 생성된 팀의 id
      */
     @Override
     @Transactional
-    public Long createTeam(AdminTeamCreateRequest adminTeamCreateRequest) {
-        String teamName = adminTeamCreateRequest.getTeamName();
-        Track track = adminTeamCreateRequest.getTrack();
+    public Long createTeam(AdminTeamRequest.Create createRequest) {
+        String teamName = createRequest.getTeamName();
+        Track track = createRequest.getTrack();
 
         Team newTeam = teamRepository.save(Team.builder()
                 .teamName(teamName)
@@ -101,25 +98,26 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     /**
      * 팀의 멤버 정보를 가져옴
      * @param teamId 팀의 id
-     * @return List<AdminTeamMemberResponse> 팀의 멤버 정보 (id, 이름, 학번, 프로필 이미지 url)
+     * @return List<AdminTeamResponse.TeamMember> 팀의 멤버 정보 (id, 이름, 학번, 프로필 이미지 url)
      */
     @Override
     @Transactional(readOnly = true)
-    public List<AdminTeamMemberResponse> getTeamMembers(Long teamId) {
-        return memberTeamRepository.findAllAdminMemberResponsesByTeamId(teamId);
+    public List<AdminTeamResponse.TeamMember> getTeamMembers(Long teamId) {
+        return memberTeamRepository.findAllByTeamId(teamId);
     }
 
     /**
      * 멤버의 소속 팀을 변경함
-     * @param adminTeamUpdateRequest 멤버 소속 팀 변경 요청 (기존 팀 id, 새로운 팀 id, 멤버 id)
+     *
+     * @param updateRequest 멤버 소속 팀 변경 요청 (기존 팀 id, 새로운 팀 id, 멤버 id)
      * @return Long 변경된 멤버_팀 중간 테이블 id
      */
     @Override
     @Transactional
-    public Long changeTeamMember(AdminTeamUpdateRequest adminTeamUpdateRequest) {
-        Long oldTeamId = adminTeamUpdateRequest.getOldTeamId();
-        Long newTeamId = adminTeamUpdateRequest.getNewTeamId();
-        Long memberId = adminTeamUpdateRequest.getMemberId();
+    public Long changeTeamMember(AdminTeamRequest.Update updateRequest) {
+        Long oldTeamId = updateRequest.getOldTeamId();
+        Long newTeamId = updateRequest.getNewTeamId();
+        Long memberId = updateRequest.getMemberId();
 
         if (oldTeamId.equals(newTeamId)) {
             throw new CustomException(ErrorCode.INVALID_INPUT, "동일한 팀으로 변경할 수 없습니다.");

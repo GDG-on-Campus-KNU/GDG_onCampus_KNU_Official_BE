@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,7 +24,8 @@ public class AdminMemberResponse {
     private String studentNumber;
     private String email;
     private String phoneNumber;
-    private List<TeamInfoResponse> teams;
+    @Builder.Default
+    private List<TeamInfoResponse> teams = new ArrayList<>();
     private Role role;
 
     public static AdminMemberResponse from(Member member) {

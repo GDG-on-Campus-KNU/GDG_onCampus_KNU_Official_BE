@@ -27,7 +27,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
      * 전체 회원 정보를 가져옴
      * @param page 페이지 번호(기본 값 0)
      * @param size 페이지 크기(기본 값 10)
-     * @return PagingResponse<AdminTeamMemberResponse> 전체 회원 정보
+     * @return PagingResponse<AdminTeamResponse.TeamMember> 전체 회원 정보
      */
     @Override
     @Transactional(readOnly = true)
@@ -103,7 +103,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
      * @param name 검색할 이름
      * @param page 페이지 번호(기본 값 0)
      * @param size 페이지 크기(기본 값 10)
-     * @return PagingResponse<AdminTeamMemberResponse> 검색된 회원 정보
+     * @return PagingResponse<AdminTeamResponse.TeamMember> 검색된 회원 정보
      */
     @Override
     @Transactional(readOnly = true)

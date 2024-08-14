@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdminTeamChangeRequest {
-    private Long oldTeamId;
-    private Long newTeamId;
-    private Long memberId;
+public class AdminTeamMemberResponse {
+    private Long id;
+    private String name;
+    private String studentNumber;
+    private String profileUrl;
 }

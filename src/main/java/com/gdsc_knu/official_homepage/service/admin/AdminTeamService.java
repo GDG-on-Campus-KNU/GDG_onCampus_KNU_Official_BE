@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminMemberResponse;
-import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamChangeRequest;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamMemberResponse;
+import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamUpdateRequest;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamCreateRequest;
 
@@ -14,7 +14,7 @@ public interface AdminTeamService {
 
     Long createSubTeam(Long parentTeamId);
 
-    List<AdminMemberResponse> getTeamMembers(Long teamId);
+    List<AdminTeamMemberResponse> getTeamMembers(Long teamId);
 
-    Long changeTeamMember(AdminTeamChangeRequest adminTeamChangeRequest);
+    Long changeTeamMember(AdminTeamUpdateRequest adminTeamUpdateRequest);
 }

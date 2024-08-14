@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.dto.admin.memberStatus;
 
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDeleteRequest {
+public class AdminMemberRoleUpdateRequest {
     private List<Long> userIds;
+    private Role role;
 }

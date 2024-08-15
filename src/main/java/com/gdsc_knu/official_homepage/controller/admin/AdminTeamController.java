@@ -49,7 +49,7 @@ public class AdminTeamController {
                     """
                     서브 팀 의미: 'Study-BE 1팀', 'Study-BE 2팀', ... 'Study-BE x팀' 형태로 뒤에 숫자로 나눠진 소분류 팀.
                     
-                    부모 팀의 ID를 입력 받아 해당 팀의 하위 팀을 생성 합니다.
+                    부모 팀의 ID를 입력 받아 해당 팀의 서브 팀을 생성 합니다.
                     """)
 
     public ResponseEntity<Long> createSubTeam(@PathVariable("parentTeamId") Long parentTeamId) {
@@ -80,5 +80,29 @@ public class AdminTeamController {
                     """)
     public ResponseEntity<Long> changeTeamMember(@RequestBody AdminTeamRequest.Update updateRequest) {
         return ResponseEntity.ok().body(adminTeamService.changeTeamMember(updateRequest));
+    }
+
+    @DeleteMapping("/{parentTeamId}")
+    @Operation(summary = "부모 팀 삭제 API",
+            description =
+                    """
+                    부모 팀 ID를 입력 받아 해당 부모 팀을 삭제합니다.
+                    
+                    부모 팀을 삭제하면 해당 팀의 모든 서브 팀도 함께 삭제됩니다.
+                    """)
+    public ResponseEntity<Void> deleteParentTeam(@PathVariable("parentTeamId") Long parentTeamId) {
+        adminTeamService.deleteParentTeam(parentTeamId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{subTeamId}/subTeam")
+    @Operation(summary = "서브 팀 삭제 API",
+            description =
+                    """
+                    서브 팀 ID를 입력 받아 해당 서브 팀을 삭제합니다.
+                    """)
+    public ResponseEntity<Void> deleteSubTeam(@PathVariable("subTeamId") Long subTeamId) {
+        adminTeamService.deleteSubTeam(subTeamId);
+        return ResponseEntity.ok().build();
     }
 }

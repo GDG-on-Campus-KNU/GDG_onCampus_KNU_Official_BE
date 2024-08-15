@@ -51,7 +51,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
      */
     @Override
     @Transactional
-    public Long createTeam(AdminTeamRequest.Create createRequest) {
+    public Long createParentTeam(AdminTeamRequest.Create createRequest) {
         String teamName = createRequest.getTeamName();
         Track track = createRequest.getTrack();
 
@@ -130,6 +130,24 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         memberTeam.changeTeam(newTeam);
 
         return memberTeamRepository.save(memberTeam).getId();
+    }
+
+    /**
+     * 부모 팀을 삭제함, 부모 팀에 속한 서브 팀도 함께 삭제됨
+     * @param parentTeamId 부모 팀 id
+     */
+    @Override
+    public void deleteParentTeam(Long parentTeamId) {
+        memberTeamRepository.deleteById(parentTeamId);
+    }
+
+    /**
+     * 서브 팀을 삭제함
+     * @param subTeamId 서브 팀 id
+     */
+    @Override
+    public void deleteSubTeam(Long subTeamId) {
+        memberTeamRepository.deleteById(subTeamId);
     }
 
     /**

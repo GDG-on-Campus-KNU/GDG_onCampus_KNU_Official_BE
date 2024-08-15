@@ -27,6 +27,7 @@ public class Team {
     private Team parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Team> subTeams = new ArrayList<>();
 
     public void addSubTeam(Team subteam) {

@@ -40,10 +40,10 @@ public class AdminTeamController {
                     트랙 입력이 없으면 전체 멤버를 직렬과 상관 없이 해당 팀에 소속 시킵니다.
                     """)
     public ResponseEntity<Long> createTeam(@RequestBody AdminTeamRequest.Create createRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createTeam(createRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createParentTeam(createRequest));
     }
 
-    @PostMapping("/{teamId}/subTeam")
+    @PostMapping("/{parentTeamId}/subTeam")
     @Operation(summary = "서브 팀 생성 API",
             description =
                     """
@@ -52,7 +52,7 @@ public class AdminTeamController {
                     부모 팀의 ID를 입력 받아 해당 팀의 하위 팀을 생성 합니다.
                     """)
 
-    public ResponseEntity<Long> createSubTeam(@PathVariable("teamId") Long parentTeamId) {
+    public ResponseEntity<Long> createSubTeam(@PathVariable("parentTeamId") Long parentTeamId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminTeamService.createSubTeam(parentTeamId));
     }
 

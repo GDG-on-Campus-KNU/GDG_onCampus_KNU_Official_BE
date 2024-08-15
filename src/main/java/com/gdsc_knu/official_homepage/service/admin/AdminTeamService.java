@@ -7,11 +7,15 @@ import java.util.List;
 public interface AdminTeamService {
     List<AdminTeamResponse.Team> getTeamInfos();
 
-    Long createTeam(AdminTeamRequest.Create createRequest);
+    Long createParentTeam(AdminTeamRequest.Create createRequest);
 
     Long createSubTeam(Long parentTeamId);
 
     List<AdminTeamResponse.TeamMember> getTeamMembers(Long teamId);
 
     Long changeTeamMember(AdminTeamRequest.Update updateRequest);
+
+    void deleteParentTeam(Long parentTeamId);
+
+    void deleteSubTeam(Long parentTeamId);
 }

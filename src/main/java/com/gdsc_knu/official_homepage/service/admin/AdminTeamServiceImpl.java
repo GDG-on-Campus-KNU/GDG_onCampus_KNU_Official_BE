@@ -156,17 +156,27 @@ public class AdminTeamServiceImpl implements AdminTeamService {
      * @param parentTeamId 부모 팀 id
      */
     @Override
+    @Transactional
     public void deleteParentTeam(Long parentTeamId) {
-        memberTeamRepository.deleteById(parentTeamId);
+        teamRepository.deleteById(parentTeamId);
     }
 
     /**
      * 해당 부모 팀의 마지막 서브 팀을 삭제함
-     * @param subTeamId 서브 팀 id
+     * @param parentTeamId 삭제할 마지막 서브 팀의 부모 팀 id
      */
     @Override
-    public void deleteSubTeam(Long subTeamId) {
-        memberTeamRepository.deleteById(subTeamId);
+    @Transactional
+    public void deleteSubTeam(Long parentTeamId) {
+        Team parentTeam = teamRepository.findById(parentTeamId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "요청한 부모 팀이 존재하지 않습니다."));
+        List<Team> subTeams = parentTeam.getSubTeams();
+        if (subTeams.isEmpty()) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, "삭제할 서브 팀이 존재하지 않습니다.");
+        }
+        long deleteSubTeamId = subTeams.get(parentTeam.getSubTeams().size() - 1).getId();
+        subTeams.remove(subTeams.size() - 1);
+        teamRepository.deleteById(deleteSubTeamId);
     }
 
     /**

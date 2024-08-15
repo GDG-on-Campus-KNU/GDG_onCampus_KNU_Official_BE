@@ -95,14 +95,14 @@ public class AdminTeamController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{subTeamId}/subTeam")
+    @DeleteMapping("/{parentTeamId}/subTeam")
     @Operation(summary = "서브 팀 삭제 API",
             description =
                     """
-                    서브 팀 ID를 입력 받아 해당 서브 팀을 삭제합니다.
+                    부모 팀 ID를 입력 받아 해당 부모 팀의 마지막 서브 팀을 삭제합니다.
                     """)
-    public ResponseEntity<Void> deleteSubTeam(@PathVariable("subTeamId") Long subTeamId) {
-        adminTeamService.deleteSubTeam(subTeamId);
+    public ResponseEntity<Void> deleteSubTeam(@PathVariable("parentTeamId") Long parentTeamId) {
+        adminTeamService.deleteSubTeam(parentTeamId);
         return ResponseEntity.ok().build();
     }
 }

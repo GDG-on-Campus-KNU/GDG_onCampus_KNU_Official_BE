@@ -15,7 +15,7 @@ public interface AdminTeamService {
 
     Long changeTeamMember(AdminTeamRequest.Update updateRequest);
 
-    void deleteParentTeam(Long ParentTeamId);
+    void deleteParentTeam(Long parentTeamId);
 
-    void deleteSubTeam(Long subTeamId);
+    void deleteSubTeam(Long parentTeamId);
 }

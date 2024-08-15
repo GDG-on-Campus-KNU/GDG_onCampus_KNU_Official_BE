@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -115,18 +116,36 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     @Override
     @Transactional
     public Long changeTeamMember(AdminTeamRequest.Update updateRequest) {
-        Long oldTeamId = updateRequest.getOldTeamId();
-        Long newTeamId = updateRequest.getNewTeamId();
-        Long memberId = updateRequest.getMemberId();
+        long oldTeamId = updateRequest.getOldTeamId();
+        long newTeamId = updateRequest.getNewTeamId();
+        long memberId = updateRequest.getMemberId();
 
-        if (oldTeamId.equals(newTeamId)) {
+        if (oldTeamId == newTeamId) {
             throw new CustomException(ErrorCode.INVALID_INPUT, "동일한 팀으로 변경할 수 없습니다.");
         }
 
         MemberTeam memberTeam = memberTeamRepository.findByMemberIdAndTeamId(memberId, oldTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "잘못된 팀 변경 요청입니다."));
+        Team oldTeam = teamRepository.findById(oldTeamId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "기존 팀이 존재하지 않습니다."));
         Team newTeam = teamRepository.findById(newTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "옮길 팀이 존재하지 않습니다."));
+        long newTeamParentId = newTeam.getParent() == null ? -1 : newTeam.getParent().getId();
+        if (oldTeam.getParent() == null) { // 기존 팀이 부모 팀인 경우
+            if (newTeamParentId == -1 || oldTeamId != newTeamParentId) {
+                // 다른 부모 팀으로 이동, 또는 다른 부모 팀의 서브 팀으로 이동 금지
+                throw new CustomException(ErrorCode.INVALID_INPUT, "다른 부모팀으로 변경할 수 없습니다.");
+            }
+        }
+        else { // 기존 팀이 서브 팀인 경우
+            long oldTeamParentId = oldTeam.getParent().getId();
+            if ((newTeamParentId == -1 && oldTeamParentId != newTeamId)
+                    || (newTeamParentId != -1 && oldTeamParentId != newTeamParentId)) {
+                // 다른 부모 팀으로 이동, 또는 다른 부모 팀의 서브 팀으로 이동 금지
+                throw new CustomException(ErrorCode.INVALID_INPUT, "다른 부모팀으로 변경할 수 없습니다.");
+            }
+        }
+
         memberTeam.changeTeam(newTeam);
 
         return memberTeamRepository.save(memberTeam).getId();
@@ -142,7 +161,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     }
 
     /**
-     * 서브 팀을 삭제함
+     * 해당 부모 팀의 마지막 서브 팀을 삭제함
      * @param subTeamId 서브 팀 id
      */
     @Override

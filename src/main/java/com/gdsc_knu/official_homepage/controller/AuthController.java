@@ -1,5 +1,7 @@
 package com.gdsc_knu.official_homepage.controller;
 
+import com.gdsc_knu.official_homepage.authentication.jwt.JwtProvider;
+import com.gdsc_knu.official_homepage.dto.jwt.TokenResponse;
 import com.gdsc_knu.official_homepage.dto.oauth.AuthorizationCode;
 import com.gdsc_knu.official_homepage.dto.oauth.LoginResponseDto;
 import com.gdsc_knu.official_homepage.oauth.OAuthService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final OAuthService oAuthService;
+    private final JwtProvider jwtProvider;
 
     /**
      * 로컬 환경에서 google oauth 테스트를 위함.
@@ -34,4 +37,8 @@ public class AuthController {
         return ResponseEntity.ok().body(oAuthService.getGoogleAccessToken(code.getCode()));
     }
 
+    @GetMapping("/api/jwt/reissue")
+    public ResponseEntity<TokenResponse> reissueTokens(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().body(jwtProvider.reissueTokens(token));
+    }
 }

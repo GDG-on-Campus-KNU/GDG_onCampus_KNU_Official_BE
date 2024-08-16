@@ -175,6 +175,11 @@ public class AdminTeamServiceImpl implements AdminTeamService {
             throw new CustomException(ErrorCode.INVALID_INPUT, "삭제할 서브 팀이 존재하지 않습니다.");
         }
         long deleteSubTeamId = subTeams.get(parentTeam.getSubTeams().size() - 1).getId();
+        // 삭제 될 서브 팀에 속한 멤버들을 부모 팀으로 이동
+        List<MemberTeam> memberTeams = memberTeamRepository.findAllMemberTeamByTeamId(deleteSubTeamId);
+        for (MemberTeam memberTeam : memberTeams) {
+            memberTeam.changeTeam(parentTeam);
+        }
         subTeams.remove(subTeams.size() - 1);
         teamRepository.deleteById(deleteSubTeamId);
     }

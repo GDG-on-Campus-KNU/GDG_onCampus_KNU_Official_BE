@@ -38,6 +38,7 @@ public class AuthController {
     }
 
     @GetMapping("/api/jwt/reissue")
+    @Operation(summary = "토큰 재발급 API", description = "리프레시 토큰을 이용하여 엑세스 토큰과 리프레시 토큰을 재발급합니다.")
     public ResponseEntity<TokenResponse> reissueTokens(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(jwtProvider.reissueTokens(token));
     }

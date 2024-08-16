@@ -54,7 +54,7 @@ public class MailService {
             mailSender.send(message);
         } catch (MessagingException e) {
             // 예외 발생 시 로그 기록
-            log.error(email + "의 메일 전송에 실패하였습니다. " + e.getMessage());
+            log.error(email+ " 의 메일 전송에 실패하였습니다. " + e.getMessage());
         }
     }
 

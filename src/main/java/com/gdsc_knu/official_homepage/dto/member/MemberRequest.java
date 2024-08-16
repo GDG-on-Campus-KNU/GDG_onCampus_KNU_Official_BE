@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,7 @@ public class MemberRequest {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Append {
         @NotBlank(message = "이름을 입력해주세요.")
         private String name;
@@ -31,6 +33,7 @@ public class MemberRequest {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Update {
         @NotBlank(message = "이름을 입력해주세요.")
         private String name;
@@ -46,7 +49,6 @@ public class MemberRequest {
         @NotBlank(message = "학번을 입력해주세요.")
         private String studentNumber;
 
-        @NotBlank(message = "전화번호을 입력해주세요.")
         private String phoneNumber;
 
         private String introduction;

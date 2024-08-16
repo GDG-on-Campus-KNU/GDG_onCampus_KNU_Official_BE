@@ -1,10 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.MemberDeleteRequest;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.MemberInfoResponse;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.MemberRoleRequest;
-import com.gdsc_knu.official_homepage.dto.admin.memberStatus.MemberTrackRequest;
+import com.gdsc_knu.official_homepage.dto.admin.memberStatus.*;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -25,24 +22,40 @@ import java.util.List;
 @Slf4j
 public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
     private final MemberRepository memberRepository;
+
+    /**
+     * 전체 회원 정보를 가져옴
+     * @param page 페이지 번호(기본 값 0)
+     * @param size 페이지 크기(기본 값 10)
+     * @return PagingResponse<AdminTeamResponse.TeamMember> 전체 회원 정보
+     */
     @Override
     @Transactional(readOnly = true)
-    public PagingResponse<MemberInfoResponse> getAllMemberInfos(int page, int size) {
+    public PagingResponse<AdminMemberResponse> getAllMemberInfos(int page, int size) {
         Page<Member> memberPage = memberRepository.findAll(PageRequest.of(page, size));
-        return PagingResponse.from(memberPage, MemberInfoResponse::from);
+        return PagingResponse.from(memberPage, AdminMemberResponse::from);
     }
 
+    /**
+     * 회원 정보를 일괄 삭제함
+     * @param deleteRequest (삭제할 회원 id 리스트)
+     */
     @Override
     @Transactional
-    public void deleteMember(MemberDeleteRequest memberDeleteRequest) {
-        memberRepository.deleteAllById(memberDeleteRequest.getUserIds());
+    public void deleteMember(AdminMemberRequest.Delete deleteRequest) {
+        memberRepository.deleteAllById(deleteRequest.getUserIds());
     }
 
+    /**
+    * 회원들의 권한을 일괄 변경함
+    * @param roleUpdateRequest (변경할 회원 id 리스트, 변경할 권한)
+    * @return Long 변경된 회원 수
+    */
     @Override
     @Transactional
-    public Long updateMemberRole(MemberRoleRequest memberRoleRequest) {
-        List<Long> userIds = memberRoleRequest.getUserIds();
-        Role newRole = memberRoleRequest.getRole();
+    public Long updateMemberRole(AdminMemberRequest.RoleUpdate roleUpdateRequest) {
+        List<Long> userIds = roleUpdateRequest.getUserIds();
+        Role newRole = roleUpdateRequest.getRole();
 
         return userIds.stream()
                 .map(userId -> {
@@ -59,11 +72,16 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 .reduce(0L, Long::sum);
     }
 
+    /**
+     * 회원들의 직렬을 일괄 변경함
+     * @param trackUpdateRequest (변경할 회원 id 리스트, 변경할 직렬)
+     * @return Long 변경된 회원 수
+     */
     @Override
     @Transactional
-    public Long updateMemberTrack(MemberTrackRequest memberTrackRequest) {
-        List<Long> userIds = memberTrackRequest.getUserIds();
-        Track newTrack = memberTrackRequest.getTrack();
+    public Long updateMemberTrack(AdminMemberRequest.TrackUpdate trackUpdateRequest) {
+        List<Long> userIds = trackUpdateRequest.getUserIds();
+        Track newTrack = trackUpdateRequest.getTrack();
 
         return userIds.stream()
                 .map(userId -> {
@@ -80,12 +98,19 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 .reduce(0L, Long::sum);
     }
 
+    /**
+     * 이름 검색으로 회원 정보를 가져옴
+     * @param name 검색할 이름
+     * @param page 페이지 번호(기본 값 0)
+     * @param size 페이지 크기(기본 값 10)
+     * @return PagingResponse<AdminTeamResponse.TeamMember> 검색된 회원 정보
+     */
     @Override
     @Transactional(readOnly = true)
-    public PagingResponse<MemberInfoResponse> getMemberByName(String name, int page, int size) {
+    public PagingResponse<AdminMemberResponse> getMemberByName(String name, int page, int size) {
         Page<Member> memberPage
                 = memberRepository.findByNameContaining(PageRequest.of(page, size), name);
-        return PagingResponse.from(memberPage, MemberInfoResponse::from);
+        return PagingResponse.from(memberPage, AdminMemberResponse::from);
     }
 
 

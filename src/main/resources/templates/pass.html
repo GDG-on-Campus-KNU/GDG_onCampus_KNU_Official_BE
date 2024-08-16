@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable.css" />
+    <title>Title</title>
+    <style>
+        .title {
+            text-align: center;
+            color: #ffffff;
+            margin: 0px;
+            padding-top: 20px;
+            font-size: 35px;
+            font-weight: bold;
+        }
+        .small-title {
+            text-align: center;
+            color: #ffffff;
+            margin: 0px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .highlight {
+            display: inline;
+            box-shadow: inset 0 -25px 0 #2263D0;
+        }
+        .wrapper {
+            background-color: #4285F4;
+            width: 100%;
+            height: 100vh;
+            background-image:
+                    linear-gradient(rgb(58,125,233) 2px, transparent 2px),
+                    linear-gradient(90deg, rgb(58,125,233) 2px, transparent 2px);
+            background-size: 25px 25px, 25px 25px;
+            background-position: -2px -2px, -2px -2px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            margin: 20px;
+            padding: 30px;
+        }
+        .boldText {
+            font-weight: bold;
+            margin: 0px;
+        }
+        .colorText {
+            font-weight: bold;
+            color: #4285F4;
+        }
+        p {
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        body {
+            margin: 0px;
+            font-family: "Pretendard Variable", Pretendard, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <p class="title"><span class="highlight"> 최종 합격 축하드립니다! </span></p>
+        <p class="small-title">Congratulations on your success!</p>
+        <div class="container">
+            <p class="boldText"><span class="boldText" th:text="${name}">지원자</span>님 안녕하세요. GDSC KNU입니다.</p>
+            <p>우선 GDSC KNU4기에 관심을 가지고 지원해 주셔서 감사드리며,</p>
+            <p class="colorText">GDSC KNU 4기에 선정되신 것을 진심으로 축하드립니다!</p>
+            <p>귀하께 9월 20일 금요일까지 GDSC KNU 4기 단체 톡방에 초대드릴 예정입니다.</p>
+            <p>이후 추가적인 안내사항들은 단체 톡방에서 공지드릴 예정이오니 참고바라며 문의사항은 인스타그램 공식 계정(@gdsc.knu)으로 언제든 연락 바랍니다.</p>
+            <p>다시 한 번 축하드리며 앞으로의 1년동안 많은 것을 얻어가시길 바랍니다.</p>
+            <p>감사합니다.</p>
+            <p class="boldText">GDSC KNU 드림</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -39,6 +39,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .ifPresent(application -> {
                     throw new CustomException(ErrorCode.CONFLICT, "이미 작성한 지원서가 존재합니다.");
                 });
+        member.updateTrack(applicationRequest.getTrack());
         return applicationRepository.save(new Application(member, applicationRequest)).getId();
     }
 

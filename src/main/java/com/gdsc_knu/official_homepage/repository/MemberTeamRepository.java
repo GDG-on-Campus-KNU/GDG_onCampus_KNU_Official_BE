@@ -18,4 +18,5 @@ public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
             "WHERE mt.team.id = :teamId")
     List<AdminTeamResponse.TeamMember> findAllByTeamId(@Param("teamId") Long teamId);
 
+    List<MemberTeam> findAllMemberTeamByTeamId(Long teamId);
 }

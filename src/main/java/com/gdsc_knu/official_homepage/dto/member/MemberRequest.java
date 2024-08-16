@@ -49,7 +49,6 @@ public class MemberRequest {
         @NotBlank(message = "학번을 입력해주세요.")
         private String studentNumber;
 
-        @NotBlank(message = "전화번호을 입력해주세요.")
         private String phoneNumber;
 
         private String introduction;

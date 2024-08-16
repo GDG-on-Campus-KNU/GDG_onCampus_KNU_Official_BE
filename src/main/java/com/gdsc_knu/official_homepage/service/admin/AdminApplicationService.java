@@ -7,6 +7,7 @@ import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
+import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
+    private final MailService mailService;
 
     @Transactional(readOnly = true)
     public AdminApplicationResponse.Statistics getStatistic() {
@@ -51,10 +53,15 @@ public class AdminApplicationService {
     public void decideApplication(Long id, String status) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        if (status.equals(ApplicationStatus.APPROVED.name()))
+        if (status.equals(ApplicationStatus.APPROVED.name())){
             application.approve();
-        else if (status.equals(ApplicationStatus.REJECTED.name()))
+            mailService.sendOne(application);
+        }
+
+        else if (status.equals(ApplicationStatus.REJECTED.name())){
             application.reject();
+            mailService.sendOne(application);
+        }
     }
 
 

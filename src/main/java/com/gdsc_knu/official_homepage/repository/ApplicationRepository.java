@@ -2,12 +2,14 @@ package com.gdsc_knu.official_homepage.repository;
 
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
+import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +25,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
     ApplicationStatisticType getStatistics();
 
     Page<Application> findByNameContaining(Pageable pageable, String name);
+
+    List<Application> findByApplicationStatusIn(List<ApplicationStatus> applicationStatus);
 }

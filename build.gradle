@@ -64,6 +64,12 @@ dependencies {
     //serialize
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    //smtp
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {

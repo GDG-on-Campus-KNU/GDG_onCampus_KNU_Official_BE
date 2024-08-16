@@ -39,6 +39,11 @@ public class MailService {
         }
     }
 
+    public void sendOne(Application application) {
+        String mailTemplate = createTemplate(application);
+        sendMail(application.getEmail(), mailTemplate);
+    }
+
     private void sendMail(String email, String mailTemplate) {
         try {
             String title = "GDSC KNU 지원 결과 안내";

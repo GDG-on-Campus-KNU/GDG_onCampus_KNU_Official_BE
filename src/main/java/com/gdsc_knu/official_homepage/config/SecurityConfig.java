@@ -32,7 +32,7 @@ public class SecurityConfig {
             "/**",
     };
     private static final String[] MEMBER_AUTHENTICATION_LIST = {
-            "/api/jwt/member"
+
     };
 
     private static final String[] CORE_AUTHENTICATION_LIST = {
@@ -52,7 +52,6 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers(MEMBER_AUTHENTICATION_LIST).hasRole("MEMBER")
                         .requestMatchers(CORE_AUTHENTICATION_LIST).hasRole("CORE")
                         .anyRequest().permitAll()
                 );

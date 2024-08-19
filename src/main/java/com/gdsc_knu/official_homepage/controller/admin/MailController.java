@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
 import com.gdsc_knu.official_homepage.service.MailService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MailController {
     private final MailService mailService;
 
+    @Hidden
     @GetMapping("/mail")
     @Operation(summary = "최종 합/불 지원자마다 메일 발송 API")
     public void mailTest() {

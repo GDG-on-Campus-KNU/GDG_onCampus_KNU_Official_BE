@@ -1,7 +1,5 @@
 package com.gdsc_knu.official_homepage.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gdsc_knu.official_homepage.authentication.jwt.JwtClaims;
 import com.gdsc_knu.official_homepage.dto.DiscordMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +21,6 @@ import java.util.List;
 public class DiscordClient {
     @Value("${logging.discord.webhook-url}")
     private String webhookUrl;
-    private final ObjectMapper objectMapper;
 
     public void sendErrorAlert(Exception e, String message, HttpStatus status, HttpServletRequest request) {
         DiscordMessage discordMessage = createMessage(e, message, status, request);
@@ -81,8 +78,7 @@ public class DiscordClient {
             String[] split_string = token.split("\\.");
             String base64EncodedBody = split_string[1];
             String body = new String(Base64.getDecoder().decode(base64EncodedBody));
-            JwtClaims jwtClaims = objectMapper.readValue(body, JwtClaims.class);
-            return jwtClaims.getEmail();
+            return body.substring(12);
 
         } catch (Exception e) {
             return "사용자 정보를 찾을 수 없습니다.";

@@ -34,6 +34,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         return new MemberResponse(member,teamInfos);
     }
 
+    //TODO: 이미지 업로드 트랜젝션 밖으로 이동 필요
     @Transactional
     @Override
     public void updateMemberInfo(Long id , MemberRequest.Update request) {

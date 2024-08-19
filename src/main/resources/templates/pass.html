@@ -8,10 +8,13 @@
         .title {
             text-align: center;
             color: #ffffff;
-            margin: 0px;
-            padding-top: 20px;
             font-size: 35px;
             font-weight: bold;
+            width: fit-content;
+            background: linear-gradient(to top, #2263D0 70%, transparent 70%);
+            text-decoration: none;
+            margin: auto;
+            display: block;
         }
         .small-title {
             text-align: center;
@@ -19,10 +22,6 @@
             margin: 0px;
             font-size: 15px;
             font-weight: bold;
-        }
-        .highlight {
-            display: inline;
-            box-shadow: inset 0 -25px 0 #2263D0;
         }
         .wrapper {
             background-color: #4285F4;
@@ -55,18 +54,31 @@
         body {
             margin: 0px;
             font-family: "Pretendard Variable", Pretendard, sans-serif;
+            align-items: center;
+        }
+        .logo {
+            width: 35px;
+            padding-top: 15px;
+            padding-bottom: 5px;
+            object-fit: contain;
+            margin: auto;
+            display: block;
+        }
+        img {
+            margin: 0px;
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <p class="title"><span class="highlight"> 최종 합격 축하드립니다! </span></p>
+        <img class="logo" src="https://gdsc-official.s3.ap-northeast-2.amazonaws.com/don't-delete/logo-white.png" alt="logo" />
+        <p class="title">최종 합격 축하드립니다!</p>
         <p class="small-title">Congratulations on your success!</p>
         <div class="container">
             <p class="boldText"><span class="boldText" th:text="${name}">지원자</span>님 안녕하세요. GDSC KNU입니다.</p>
             <p>우선 GDSC KNU4기에 관심을 가지고 지원해 주셔서 감사드리며,</p>
             <p class="colorText">GDSC KNU 4기에 선정되신 것을 진심으로 축하드립니다!</p>
-            <p>귀하께 9월 20일 금요일까지 GDSC KNU 4기 단체 톡방에 초대드릴 예정입니다.</p>
+            <p>귀하께 9월 20일 금요일까지 GDSC KNU 4기 단체 톡방에 초대드릴 예정입니다.😀</p>
             <p>이후 추가적인 안내사항들은 단체 톡방에서 공지드릴 예정이오니 참고바라며 문의사항은 인스타그램 공식 계정(@gdsc.knu)으로 언제든 연락 바랍니다.</p>
             <p>다시 한 번 축하드리며 앞으로의 1년동안 많은 것을 얻어가시길 바랍니다.</p>
             <p>감사합니다.</p>

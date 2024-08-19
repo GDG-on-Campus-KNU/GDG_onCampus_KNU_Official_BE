@@ -4,4 +4,5 @@ public interface ApplicationStatisticType {
     Integer getTotal();
     Integer getOpenCount();
     Integer getApprovedCount();
+    Integer getRejectedCount();
 }

@@ -19,8 +19,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
 
     @Query("SELECT " +
             "COUNT(CASE WHEN a.applicationStatus != 'TEMPORAL' THEN 1 END) AS total, " +
-            "COUNT(CASE WHEN a.isOpened = true THEN 1 END) AS openCount, " +
-            "COUNT(CASE WHEN a.applicationStatus = 'APPROVED' THEN 1 END) AS approvedCount " +
+            "COUNT(CASE WHEN a.isOpened = true AND a.applicationStatus != 'TEMPORAL' THEN 1 END) AS openCount, " +
+            "COUNT(CASE WHEN a.applicationStatus = 'APPROVED' THEN 1 END) AS approvedCount, " +
+            "COUNT(CASE WHEN a.applicationStatus = 'REJECTED' THEN 1 END) AS rejectedCount " +
             "FROM Application a")
     ApplicationStatisticType getStatistics();
 

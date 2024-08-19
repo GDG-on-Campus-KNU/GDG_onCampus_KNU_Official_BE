@@ -33,8 +33,7 @@ jobs:
         run: |
           mkdir -p ./src/main/resources
           cd ./src/main/resources
-          echo "${{ secrets.APPLICATION }}" > application.yml
-          echo "${{ secrets.APPLICATION_MAIN }}" > application-main.yml
+          echo "${{ secrets.APPLICATION_MAIN }}" >> application.yml
 
       # apply caching
       - name: Gradle Caching

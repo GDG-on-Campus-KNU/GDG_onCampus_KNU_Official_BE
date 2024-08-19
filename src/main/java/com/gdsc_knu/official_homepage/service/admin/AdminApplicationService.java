@@ -49,6 +49,7 @@ public class AdminApplicationService {
     }
 
 
+    //TODO: 메일 발송 부분 트랜젝션 밖으로 이동 필요
     @Transactional
     public void decideApplication(Long id, String status) {
         Application application = applicationRepository.findById(id)
@@ -65,7 +66,7 @@ public class AdminApplicationService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));

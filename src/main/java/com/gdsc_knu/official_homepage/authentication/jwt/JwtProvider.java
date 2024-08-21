@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtProvider {
-    private final long jwtAccessExpiration = 1000 * 60 * 60 * 24; // 1일
+    private final long jwtAccessExpiration = 1000 * 10; // 10초
     private final long jwtRefreshExpiration = 1000 * 60 * 60 * 24 * 14; // 1주
 
     private final RedisRepository redisRepository;

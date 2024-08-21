@@ -3,6 +3,7 @@ package com.gdsc_knu.official_homepage.service.admin;
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
+import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -14,7 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +37,20 @@ public class AdminApplicationService {
                 statistic.getTotal() - statistic.getOpenCount(),
                 statistic.getApprovedCount(),
                 statistic.getRejectedCount());
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Track, Integer> getTrackStatistic() {
+        List<ApplicationTrackType> trackStatistics = applicationRepository.getGroupByTrack();
+        return Arrays.stream(Track.values())
+                .collect(Collectors.toMap(track -> track, track -> getTrackCount(trackStatistics, track)));
+    }
+
+    private Integer getTrackCount(List<ApplicationTrackType> trackStatistics, Track track) {
+        return trackStatistics.stream()
+                .filter(data -> data.getTrack().equals(track.name()))
+                .map(ApplicationTrackType::getCount)
+                .findFirst().orElse(0);
     }
 
 

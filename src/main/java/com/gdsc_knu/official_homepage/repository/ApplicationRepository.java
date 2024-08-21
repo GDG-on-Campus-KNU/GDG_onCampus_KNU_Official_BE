@@ -27,10 +27,11 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
     ApplicationStatisticType getStatistics();
 
 
-    @Query("SELECT a.track, COUNT(*) " +
+    @Query("SELECT a.track as track, COUNT(*) as count " +
             "FROM Application a " +
+            "WHERE a.applicationStatus != 'TEMPORAL' " +
             "GROUP BY a.track")
-    ApplicationTrackType getGroupByTrack();
+    List<ApplicationTrackType> getGroupByTrack();
 
     Page<Application> findByNameContaining(Pageable pageable, String name);
 

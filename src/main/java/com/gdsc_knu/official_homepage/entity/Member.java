@@ -36,6 +36,7 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(length = 2048)
     private String profileUrl;
 
     @Column(length = 500)

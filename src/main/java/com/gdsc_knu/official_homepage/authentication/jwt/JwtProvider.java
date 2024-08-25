@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -19,8 +20,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtProvider {
-    private final long jwtAccessExpiration = 1000 * 60 * 60 * 24; // 1일
-    private final long jwtRefreshExpiration = 1000 * 60 * 60 * 24 * 14; // 1주
+    @Value("${jwt.access-token-expiration}")
+    private final long jwtAccessExpiration;
+    @Value("${jwt.refresh-token-expiration}")
+    private final long jwtRefreshExpiration;
 
     private final RedisRepository redisRepository;
     private final JwtValidator jwtValidator;

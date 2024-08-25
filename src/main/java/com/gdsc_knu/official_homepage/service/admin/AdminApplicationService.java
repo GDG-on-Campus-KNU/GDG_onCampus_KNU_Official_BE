@@ -40,10 +40,18 @@ public class AdminApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public Map<Track, Integer> getTrackStatistic() {
+    public Map<String, Integer> getTrackStatistic() {
         List<ApplicationTrackType> trackStatistics = applicationRepository.getGroupByTrack();
-        return Arrays.stream(Track.values())
-                .collect(Collectors.toMap(track -> track, track -> getTrackCount(trackStatistics, track)));
+        int totalCount = trackStatistics.stream()
+                .mapToInt(ApplicationTrackType::getCount)
+                .sum();
+
+        Map<String, Integer> trackStatisticCountMap = Arrays.stream(Track.values())
+                .collect(Collectors.toMap(Enum::name, track -> getTrackCount(trackStatistics, track)));
+
+        trackStatisticCountMap.put("TOTAL", totalCount);
+
+        return trackStatisticCountMap;
     }
 
     private Integer getTrackCount(List<ApplicationTrackType> trackStatistics, Track track) {

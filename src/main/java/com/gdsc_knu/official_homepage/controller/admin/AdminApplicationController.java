@@ -26,8 +26,8 @@ public class AdminApplicationController {
     }
 
     @GetMapping("statistic/track")
-    @Operation(summary="직렬별 지원서류 개수 조회 API")
-    public ResponseEntity<Map<Track, Integer>> getTrackStatistic() {
+    @Operation(summary="직렬별, 전체 지원서류 개수 조회 API")
+    public ResponseEntity<Map<String, Integer>> getTrackStatistic() {
         return ResponseEntity.ok().body(applicationService.getTrackStatistic());
     }
 

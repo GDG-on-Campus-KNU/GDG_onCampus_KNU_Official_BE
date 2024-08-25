@@ -21,9 +21,9 @@ import java.util.Map;
 @Slf4j
 public class JwtProvider {
     @Value("${jwt.access-token-expiration}")
-    private final long jwtAccessExpiration;
+    private long jwtAccessExpiration;
     @Value("${jwt.refresh-token-expiration}")
-    private final long jwtRefreshExpiration;
+    private long jwtRefreshExpiration;
 
     private final RedisRepository redisRepository;
     private final JwtValidator jwtValidator;

@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.repository;
 
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
+import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,13 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
             "COUNT(CASE WHEN a.applicationStatus = 'REJECTED' THEN 1 END) AS rejectedCount " +
             "FROM Application a")
     ApplicationStatisticType getStatistics();
+
+
+    @Query("SELECT a.track as track, COUNT(*) as count " +
+            "FROM Application a " +
+            "WHERE a.applicationStatus != 'TEMPORAL' " +
+            "GROUP BY a.track")
+    List<ApplicationTrackType> getGroupByTrack();
 
     Page<Application> findByNameContaining(Pageable pageable, String name);
 

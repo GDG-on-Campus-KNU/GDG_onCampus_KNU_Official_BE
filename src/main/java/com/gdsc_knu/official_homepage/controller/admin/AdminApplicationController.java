@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Tag(name = "Admin Application", description = "서류확인 관련 API")
 @RestController
 @RequestMapping("/api/admin/application")
@@ -21,6 +23,12 @@ public class AdminApplicationController {
     @Operation(summary="지원서류 통계데이터 조회 API")
     public ResponseEntity<AdminApplicationResponse.Statistics> getStatistic() {
         return ResponseEntity.ok().body(applicationService.getStatistic());
+    }
+
+    @GetMapping("statistic/track")
+    @Operation(summary="직렬별, 전체 지원서류 개수 조회 API")
+    public ResponseEntity<Map<String, Integer>> getTrackStatistic() {
+        return ResponseEntity.ok().body(applicationService.getTrackStatistic());
     }
 
 

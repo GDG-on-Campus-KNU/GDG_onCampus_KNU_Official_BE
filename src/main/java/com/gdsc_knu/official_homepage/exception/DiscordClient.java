@@ -30,21 +30,19 @@ public class DiscordClient {
 
     private DiscordMessage createMessage(Exception e, String message, HttpStatus status, HttpServletRequest request) {
         DiscordMessage.Embed embed = DiscordMessage.Embed.builder()
-                .title("⚠ 오류 정보")
-                .description("❗**발생 시간** \n" + LocalDateTime.now() +
+                .description(
+                        "❗**사용자 정보** \n" + getUserToken(request) +
                         "\n\n" +
-                        "❗**http request** \n" + extractHttpRequest(request) +
+                        "❗**요청 API** \n" + getRequestAPI(request) +
                         "\n\n" +
                         "❗**상태 코드** \n" + status +
                         "\n\n" +
-                        "❗**오류 메세지** \n" + "[" + e.getClass().getName() + "]: " + message +
-                        "\n\n" +
-                        "❗**추가 정보** \n" + getStackTrace(e)
+                        "❗**오류 메세지** \n" + "[" + e.getClass().getName() + "]: " + message
                         )
                 .build();
 
         DiscordMessage response = DiscordMessage.builder()
-                .content("## 오류 발생")
+                .content("## ⚠오류 발생")
                 .embeds(List.of(embed))
                 .build();
 
@@ -57,31 +55,38 @@ public class DiscordClient {
         return stringWriter.toString().substring(0,800);
     }
 
-    private String extractHttpRequest(HttpServletRequest request) {
+    private String getRequestAPI(HttpServletRequest request) {
         String fullPath = request.getMethod() + " " + request.getRequestURL();
 
         String queryString = request.getQueryString();
-        if (queryString != null) {
-            fullPath += "?" + queryString;
-        }
-
-        if (request.getHeader("Authorization") != null) {
-            return fullPath + "\n사용자 이메일: " + parseUser(request.getHeader("Authorization"));
-        }
-
-        return fullPath;
+        return queryString != null
+                ? fullPath + "?" + queryString
+                : fullPath;
     }
 
 
-    private String parseUser(String token) {
+
+    private String getUserToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        String userAgent = getUserAgent(request);
+
+        if (token == null) {
+            return "사용자 토큰이 없음" + userAgent;
+        }
         try {
             String[] split_string = token.split("\\.");
             String base64EncodedBody = split_string[1];
             String body = new String(Base64.getDecoder().decode(base64EncodedBody));
-            return body.substring(12);
-
+            return body.substring(13) + userAgent;
         } catch (Exception e) {
-            return "사용자 정보를 찾을 수 없습니다.";
+            return "사용자 정보 가져오는데 실패함" + userAgent;
         }
+    }
+
+    private String getUserAgent(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent");
+        return userAgent != null
+                ? "\n\nUser-Agent: " + userAgent
+                : "";
     }
 }

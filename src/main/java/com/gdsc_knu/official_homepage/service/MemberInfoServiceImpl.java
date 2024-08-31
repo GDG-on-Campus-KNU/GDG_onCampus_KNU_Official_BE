@@ -38,12 +38,12 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     public void updateMemberInfo(Long id , MemberRequest.Update request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
-        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 
         String imageUrl = request.getProfileUrl() != null
-                ? s3Service.upload(request.getProfileUrl())
+                ? s3Service.upload(request.getProfileUrl(), member.getEmail().split("@")[0])
                 : member.getProfileUrl();
 
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.executeWithoutResult(status ->
             member.update(request.getName(),
                           imageUrl,

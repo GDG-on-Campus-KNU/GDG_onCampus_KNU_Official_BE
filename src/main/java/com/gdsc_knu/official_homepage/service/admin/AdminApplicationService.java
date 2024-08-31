@@ -76,15 +76,15 @@ public class AdminApplicationService {
 
     //TODO: 메일 발송 부분 트랜젝션 밖으로 이동 필요
     @Transactional
-    public void decideApplication(Long id, String status) {
+    public void decideApplication(Long id, ApplicationStatus status) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        if (status.equals(ApplicationStatus.APPROVED.name())){
+        if (status == ApplicationStatus.APPROVED){
             application.approve();
             mailService.sendOne(application);
         }
 
-        else if (status.equals(ApplicationStatus.REJECTED.name())){
+        else if (status == ApplicationStatus.REJECTED){
             application.reject();
             mailService.sendOne(application);
         }

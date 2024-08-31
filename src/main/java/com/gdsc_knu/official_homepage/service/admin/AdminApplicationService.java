@@ -40,15 +40,21 @@ public class AdminApplicationService {
         Map<String, Integer> trackCountMap = trackStatistics.stream()
                 .collect(Collectors.toMap(ApplicationTrackType::getTrack, ApplicationTrackType::getCount));
 
+        addDefaultTrack(trackCountMap);
+        addTotalCount(trackCountMap);
+        return trackCountMap;
+    }
+
+    private void addDefaultTrack(Map<String, Integer> trackCountMap){
         Arrays.stream(Track.values())
                 .forEach(track -> trackCountMap.putIfAbsent(track.name(), 0));
+    }
 
-        int totalCount = trackStatistics.stream()
-                .mapToInt(ApplicationTrackType::getCount)
+    private void addTotalCount(Map<String, Integer> trackCountMap){
+        int totalCount = trackCountMap.values().stream()
+                .mapToInt(Integer::intValue)
                 .sum();
         trackCountMap.put("TOTAL", totalCount);
-
-        return trackCountMap;
     }
 
 

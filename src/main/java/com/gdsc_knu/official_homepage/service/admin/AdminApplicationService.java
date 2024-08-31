@@ -36,24 +36,21 @@ public class AdminApplicationService {
     @Transactional(readOnly = true)
     public Map<String, Integer> getTrackStatistic() {
         List<ApplicationTrackType> trackStatistics = applicationRepository.getGroupByTrack();
+
+        Map<String, Integer> trackCountMap = trackStatistics.stream()
+                .collect(Collectors.toMap(ApplicationTrackType::getTrack, ApplicationTrackType::getCount));
+
+        Arrays.stream(Track.values())
+                .forEach(track -> trackCountMap.putIfAbsent(track.name(), 0));
+
         int totalCount = trackStatistics.stream()
                 .mapToInt(ApplicationTrackType::getCount)
                 .sum();
+        trackCountMap.put("TOTAL", totalCount);
 
-        Map<String, Integer> trackStatisticCountMap = Arrays.stream(Track.values())
-                .collect(Collectors.toMap(Enum::name, track -> getTrackCount(trackStatistics, track)));
-
-        trackStatisticCountMap.put("TOTAL", totalCount);
-
-        return trackStatisticCountMap;
+        return trackCountMap;
     }
 
-    private Integer getTrackCount(List<ApplicationTrackType> trackStatistics, Track track) {
-        return trackStatistics.stream()
-                .filter(data -> data.getTrack().equals(track.name()))
-                .map(ApplicationTrackType::getCount)
-                .findFirst().orElse(0);
-    }
 
 
     @Transactional(readOnly = true)

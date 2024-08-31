@@ -30,7 +30,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String jwtHeader = request.getHeader("Authorization");
 
-        // 인증이 필요없는 요청은 바로 리턴(이 필터에 안걸려도 인증은 리졸버를 통해 수행함)
         if (jwtHeader==null){
             request.setAttribute("exception", "엑세스 토큰이 존재하지 않습니다.");
             chain.doFilter(request,response);
@@ -42,7 +41,6 @@ public class JwtFilter extends OncePerRequestFilter {
             Claims claims = jwtValidator.extractClaims(jwtToken);
 
             JwtClaims jwtClaims = objectMapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
-
 
             JwtMemberDetail jwtMemberDetail = JwtMemberDetail.builder()
                     .id(jwtClaims.getId())

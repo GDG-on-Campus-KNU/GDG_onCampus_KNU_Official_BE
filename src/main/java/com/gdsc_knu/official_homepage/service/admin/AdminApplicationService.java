@@ -30,13 +30,7 @@ public class AdminApplicationService {
     @Transactional(readOnly = true)
     public AdminApplicationResponse.Statistics getStatistic() {
         ApplicationStatisticType statistic = applicationRepository.getStatistics();
-        //TODO: Builder를 바로 사용하는게 가독성 좋을거 같음
-        return AdminApplicationResponse.Statistics.of(
-                statistic.getTotal(),
-                statistic.getOpenCount(),
-                statistic.getTotal() - statistic.getOpenCount(),
-                statistic.getApprovedCount(),
-                statistic.getRejectedCount());
+        return AdminApplicationResponse.Statistics.from(statistic);
     }
 
     @Transactional(readOnly = true)

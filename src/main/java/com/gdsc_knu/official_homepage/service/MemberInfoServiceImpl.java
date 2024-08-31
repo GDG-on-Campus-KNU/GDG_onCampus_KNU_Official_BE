@@ -2,7 +2,6 @@ package com.gdsc_knu.official_homepage.service;
 
 import com.gdsc_knu.official_homepage.dto.member.*;
 import com.gdsc_knu.official_homepage.entity.Member;
-import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
@@ -29,10 +28,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         List<TeamInfoResponse> teamInfos = member.getMemberTeams().stream()
-                .map(memberTeam -> {
-                    Team team = memberTeam.getTeam();
-                    return new TeamInfoResponse(team.getId(), team.getTeamName(), team.getTeamPageUrl());
-                })
+                .map(memberTeam -> new TeamInfoResponse(memberTeam.getTeam()))
                 .collect(Collectors.toList());
 
         return new MemberResponse(member,teamInfos);
@@ -44,8 +40,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
         TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 
-        String imageUrl = request.getProfileUrl() != null ?
-                s3Service.upload(request.getProfileUrl()) : member.getProfileUrl();
+        String imageUrl = request.getProfileUrl() != null
+                ? s3Service.upload(request.getProfileUrl())
+                : member.getProfileUrl();
 
         transactionTemplate.executeWithoutResult(status ->
             member.update(request.getName(),
@@ -64,9 +61,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
         member.addInfo(request.getName(),
-                request.getAge(),
-                request.getMajor(),
-                request.getStudentNumber(),
-                request.getPhoneNumber());
+                       request.getAge(),
+                       request.getMajor(),
+                       request.getStudentNumber(),
+                       request.getPhoneNumber());
     }
 }

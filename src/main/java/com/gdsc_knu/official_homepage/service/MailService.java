@@ -28,6 +28,9 @@ public class MailService {
 
     @Value("${spring.mail.username}")
     private String sender;
+    private static final String MAIL_TITLE = "GDSC KNU 지원 결과 안내";
+    private static final String PASS_TEMPLATE = "pass";
+    private static final String FAIL_TEMPLATE = "fail";
 
     public void send() {
         List<Application> applications = applicationRepository.findByApplicationStatusIn(
@@ -46,14 +49,12 @@ public class MailService {
 
     private void sendMail(String email, String mailTemplate) {
         try {
-            String title = "GDSC KNU 지원 결과 안내";
-
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "utf-8");
 
             messageHelper.setFrom(sender);
             messageHelper.setTo(email);
-            messageHelper.setSubject(title);
+            messageHelper.setSubject(MAIL_TITLE);
             messageHelper.setText(mailTemplate, true);
 
             mailSender.send(message);
@@ -66,7 +67,7 @@ public class MailService {
     private String createTemplate(Application application) {
         Context context = new Context();
         context.setVariable("name", application.getName());
-        String templateName = application.getApplicationStatus() == ApplicationStatus.APPROVED ? "pass" : "fail";
+        String templateName = application.getApplicationStatus() == ApplicationStatus.APPROVED ? PASS_TEMPLATE : FAIL_TEMPLATE;
         return templateEngine.process(templateName, context);
     }
 

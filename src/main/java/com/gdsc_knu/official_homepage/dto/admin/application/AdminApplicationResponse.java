@@ -27,13 +27,13 @@ public class AdminApplicationResponse {
         private Integer approvedCount;
         private Integer rejectedCount;
 
-        public static Statistics of(int total, int openCount, int notOpenCount, int approvedCount, int rejectedCount) {
+        public static Statistics from(ApplicationStatisticType applicationStatisticType) {
             return Statistics.builder()
-                    .total(total)
-                    .openCount(openCount)
-                    .notOpenCount(notOpenCount)
-                    .approvedCount(approvedCount)
-                    .rejectedCount(rejectedCount)
+                    .total(applicationStatisticType.getTotal())
+                    .openCount(applicationStatisticType.getOpenCount())
+                    .notOpenCount(applicationStatisticType.getTotal() - applicationStatisticType.getOpenCount())
+                    .approvedCount(applicationStatisticType.getApprovedCount())
+                    .rejectedCount(applicationStatisticType.getRejectedCount())
                     .build();
         }
     }

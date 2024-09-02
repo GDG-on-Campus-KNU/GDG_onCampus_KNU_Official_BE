@@ -37,7 +37,7 @@ public class DiscordClient {
                         "\n\n" +
                         "❗**상태 코드** \n" + status +
                         "\n\n" +
-                        "❗**오류 메세지** \n" + "[" + e.getClass().getName() + "]: " + message
+                        "❗**오류 메세지** \n" + getStackTrace(e)
                         )
                 .build();
 
@@ -52,7 +52,7 @@ public class DiscordClient {
     private String getStackTrace(Exception e) {
         StringWriter stringWriter = new StringWriter();
         e.printStackTrace(new PrintWriter(stringWriter));
-        return stringWriter.toString().substring(0,800);
+        return stringWriter.toString().substring(0,300);
     }
 
     private String getRequestAPI(HttpServletRequest request) {
@@ -68,25 +68,24 @@ public class DiscordClient {
 
     private String getUserToken(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
-        String userAgent = getUserAgent(request);
 
         if (token == null) {
-            return "사용자 토큰이 없음" + userAgent;
+            return "사용자 토큰이 없음";
         }
         try {
             String[] split_string = token.split("\\.");
             String base64EncodedBody = split_string[1];
             String body = new String(Base64.getDecoder().decode(base64EncodedBody));
-            return body.substring(13) + userAgent;
+            return body.substring(13);
         } catch (Exception e) {
-            return "사용자 정보 가져오는데 실패함" + userAgent;
+            return "사용자 정보 가져오는데 실패함";
         }
     }
 
     private String getUserAgent(HttpServletRequest request) {
         String userAgent = request.getHeader("User-Agent");
         return userAgent != null
-                ? "\n\nUser-Agent: " + userAgent
+                ? "User-Agent: " + userAgent
                 : "";
     }
 }

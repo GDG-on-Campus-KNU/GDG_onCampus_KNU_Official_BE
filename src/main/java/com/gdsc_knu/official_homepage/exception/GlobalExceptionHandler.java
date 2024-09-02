@@ -27,7 +27,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> ahiExceptionHandler(CustomException e, HttpServletRequest request) {
         e.printStackTrace();
-        discordClient.sendErrorAlert(e, e.getMessage(), e.getErrorCode().getError(), request);
+        if (e.getErrorCode() != ErrorCode.JWT_EXPIRED)
+            discordClient.sendErrorAlert(e, e.getMessage(), e.getErrorCode().getError(), request);
         log.error(e.getMessage());
         return ResponseEntity.status(e.getErrorCode().getError())
                 .body(new ExceptionDto(e.getErrorCode(), e.getMessage()));

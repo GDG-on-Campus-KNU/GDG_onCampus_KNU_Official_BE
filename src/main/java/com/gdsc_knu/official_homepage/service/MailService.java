@@ -19,8 +19,8 @@ import org.thymeleaf.TemplateEngine;
 
 import org.thymeleaf.context.Context;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -39,17 +39,20 @@ public class MailService {
     private static final String FAIL_TEMPLATE = "fail";
     private static final String REDIS_KEY = "FAILED_MAIL_SET";
 
-    public void send() {
-        List<Application> applications = applicationRepository.findByApplicationStatusIn(
-                Arrays.asList(ApplicationStatus.APPROVED, ApplicationStatus.REJECTED)
-        );
-        for (Application application : applications) {
-            String mailTemplate = createTemplate(application);
-            sendMail(application.getEmail(), mailTemplate);
-        }
+    public Set<Object> sendAllFailed() {
+        Set<Object> failedEmailSet = redisRepository.getData(REDIS_KEY);
+        List<Application> applications = applicationRepository.findByEmailIn(failedEmailSet);
+        applications.forEach(this::sendEach);
+
+        return failedEmailSet;
     }
 
-    public void sendOne(Application application) {
+    public List<String> getFailedMailList() {
+        Set<Object> failedEmailSet = redisRepository.getData(REDIS_KEY);
+        return failedEmailSet.stream().map(Object::toString).toList();
+    }
+
+    public void sendEach(Application application) {
         String mailTemplate = createTemplate(application);
         sendMail(application.getEmail(), mailTemplate);
         redisRepository.deleteData(REDIS_KEY, application.getEmail());
@@ -61,7 +64,6 @@ public class MailService {
      */
     private void sendMail(String email, String mailTemplate) {
         try {
-//            throw new MessagingException("OMG");
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "utf-8");
 

@@ -81,12 +81,12 @@ public class AdminApplicationService {
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
         if (status == ApplicationStatus.APPROVED){
             application.approve();
-            mailService.sendOne(application);
+            mailService.sendEach(application);
         }
 
         else if (status == ApplicationStatus.REJECTED){
             application.reject();
-            mailService.sendOne(application);
+            mailService.sendEach(application);
         }
     }
 

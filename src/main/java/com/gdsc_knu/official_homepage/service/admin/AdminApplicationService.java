@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
+    private final PlatformTransactionManager transactionManager;
 
     @Transactional(readOnly = true)
     public AdminApplicationResponse.Statistics getStatistic() {
@@ -74,19 +77,26 @@ public class AdminApplicationService {
     }
 
 
-    //TODO: 메일 발송 부분 트랜젝션 밖으로 이동 필요
-    @Transactional
     public void decideApplication(Long id, ApplicationStatus status) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        if (status == ApplicationStatus.APPROVED){
-            application.approve();
-            mailService.sendEach(application);
-        }
+        sendNotificationMail(application, status);
+        updateApplicationStatus(application, status);
+    }
 
-        else if (status == ApplicationStatus.REJECTED){
+    private void sendNotificationMail(Application application, ApplicationStatus status) {
+        if (status == ApplicationStatus.APPROVED || status == ApplicationStatus.REJECTED)
+            mailService.sendEach(application, status);
+        else
+            throw new IllegalArgumentException("올바르지 않은 지원서류 상태입니다.");
+    }
+
+    private void updateApplicationStatus(Application application, ApplicationStatus status) {
+        if (status == ApplicationStatus.APPROVED) {
+            application.approve();
+        }
+        else if (status == ApplicationStatus.REJECTED) {
             application.reject();
-            mailService.sendEach(application);
         }
     }
 

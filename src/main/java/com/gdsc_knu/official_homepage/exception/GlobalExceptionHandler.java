@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.exception;
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -115,6 +116,14 @@ public class GlobalExceptionHandler {
         discordClient.sendErrorAlert(e, e.getMessage(), HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionDto(HttpStatus.BAD_REQUEST, "입력값이 잘못되었습니다.: " + e.getMessage()));
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ExceptionDto> messagingExceptionHandler(MessagingException e, HttpServletRequest request) {
+        log.error(e.getMessage());
+        discordClient.sendErrorAlert(e, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 
 

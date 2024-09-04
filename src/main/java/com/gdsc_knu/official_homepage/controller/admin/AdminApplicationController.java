@@ -80,10 +80,10 @@ public class AdminApplicationController {
             
             합불에 따라 메일이 발송됩니다.
             """)
-    public ResponseEntity<Void> decideApplication(@RequestParam("id") Long id,
-                                                  @RequestParam("status") ApplicationStatus status){
+    public ResponseEntity<AdminApplicationResponse.Result> decideApplication(@RequestParam("id") Long id,
+                                                          @RequestParam("status") ApplicationStatus status){
         applicationService.decideApplication(id, status);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().body(AdminApplicationResponse.Result.from(HttpStatus.OK, "지원서류의 " + status + " 처리가 완료되었습니다."));
     }
 
 

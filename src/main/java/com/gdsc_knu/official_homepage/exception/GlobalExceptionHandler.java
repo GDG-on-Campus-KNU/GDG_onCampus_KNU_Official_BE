@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -120,6 +121,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<ExceptionDto> messagingExceptionHandler(MessagingException e, HttpServletRequest request) {
+        log.error(e.getMessage());
+        discordClient.sendErrorAlert(e, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+    }
+
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<ExceptionDto> mailExceptionHandler(MailException e, HttpServletRequest request) {
         log.error(e.getMessage());
         discordClient.sendErrorAlert(e, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

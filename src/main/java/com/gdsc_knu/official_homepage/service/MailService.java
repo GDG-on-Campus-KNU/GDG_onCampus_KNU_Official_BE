@@ -42,7 +42,7 @@ public class MailService {
     public Set<Object> sendAllFailed() {
         Set<Object> failedEmailSet = redisRepository.getData(REDIS_KEY);
         List<Application> applications = applicationRepository.findByEmailIn(failedEmailSet);
-        applications.forEach(application -> sendEach(application, application.getApplicationStatus()));
+        applications.forEach(this::sendEach);
 
         return failedEmailSet;
     }
@@ -52,8 +52,8 @@ public class MailService {
         return failedEmailSet.stream().map(Object::toString).toList();
     }
 
-    public void sendEach(Application application, ApplicationStatus status) {
-        String mailTemplate = createTemplate(application, status);
+    public void sendEach(Application application) {
+        String mailTemplate = createTemplate(application);
         sendMail(application.getEmail(), mailTemplate);
         redisRepository.deleteData(REDIS_KEY, application.getEmail());
     }
@@ -79,10 +79,10 @@ public class MailService {
         }
     }
 
-    private String createTemplate(Application application, ApplicationStatus status) {
+    private String createTemplate(Application application) {
         Context context = new Context();
         context.setVariable("name", application.getName());
-        String templateName = status == ApplicationStatus.APPROVED ? PASS_TEMPLATE : FAIL_TEMPLATE;
+        String templateName = application.getApplicationStatus() == ApplicationStatus.APPROVED ? PASS_TEMPLATE : FAIL_TEMPLATE;
         return templateEngine.process(templateName, context);
     }
 

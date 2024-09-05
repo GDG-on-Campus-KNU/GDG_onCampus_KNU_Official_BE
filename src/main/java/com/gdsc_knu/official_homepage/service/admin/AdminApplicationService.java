@@ -80,24 +80,21 @@ public class AdminApplicationService {
     public void decideApplication(Long id, ApplicationStatus status) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        sendNotificationMail(application, status);
         updateApplicationStatus(application, status);
-    }
-
-    private void sendNotificationMail(Application application, ApplicationStatus status) {
-        if (status == ApplicationStatus.APPROVED || status == ApplicationStatus.REJECTED)
-            mailService.sendEach(application, status);
-        else
-            throw new IllegalArgumentException("올바르지 않은 지원서류 상태입니다.");
+        mailService.sendEach(application);
     }
 
     private void updateApplicationStatus(Application application, ApplicationStatus status) {
-        if (status == ApplicationStatus.APPROVED) {
-            application.approve();
-        }
-        else if (status == ApplicationStatus.REJECTED) {
-            application.reject();
-        }
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            if (status == ApplicationStatus.APPROVED) {
+                application.approve();
+            } else if (status == ApplicationStatus.REJECTED) {
+                application.reject();
+            } else {
+                throw new IllegalArgumentException("제출 완료된 서류만 합격/불합격을 결정할 수 있습니다.");
+            }
+        });
     }
 
 

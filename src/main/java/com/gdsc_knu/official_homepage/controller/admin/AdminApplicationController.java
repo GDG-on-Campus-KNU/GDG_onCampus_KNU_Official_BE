@@ -4,6 +4,8 @@ import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.service.admin.AdminApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Tag(name = "Admin Application", description = "서류확인 관련 API")
@@ -20,6 +23,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminApplicationController {
     private final AdminApplicationService applicationService;
+    private static final LocalDate ACTIVE_DATE = LocalDate.of(2024,9,14);
+
     @GetMapping("statistic")
     @Operation(summary="지원서류 통계데이터 조회 API")
     public ResponseEntity<AdminApplicationResponse.Statistics> getStatistic() {
@@ -79,9 +84,14 @@ public class AdminApplicationController {
             지원서류의 최종합격/불합격을 결정합니다.
             
             합불에 따라 메일이 발송됩니다.
+            
+            2024.09.14 이후로 처리가 가능합니다.
             """)
     public ResponseEntity<AdminApplicationResponse.Result> decideApplication(@RequestParam("id") Long id,
                                                           @RequestParam("status") ApplicationStatus status){
+        if (LocalDate.now().isBefore(ACTIVE_DATE)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, "합격, 불합격 처리 기간이 아닙니다.");
+        }
         applicationService.decideApplication(id, status);
         return ResponseEntity.ok().body(AdminApplicationResponse.Result.from(HttpStatus.OK, "지원서류의 " + status + " 처리가 완료되었습니다."));
     }

@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
+    private final PlatformTransactionManager transactionManager;
 
     @Transactional(readOnly = true)
     public AdminApplicationResponse.Statistics getStatistic() {
@@ -74,20 +77,24 @@ public class AdminApplicationService {
     }
 
 
-    //TODO: 메일 발송 부분 트랜젝션 밖으로 이동 필요
-    @Transactional
     public void decideApplication(Long id, ApplicationStatus status) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        if (status == ApplicationStatus.APPROVED){
-            application.approve();
-            mailService.sendOne(application);
-        }
+        updateApplicationStatus(application, status);
+        mailService.sendEach(application);
+    }
 
-        else if (status == ApplicationStatus.REJECTED){
-            application.reject();
-            mailService.sendOne(application);
-        }
+    private void updateApplicationStatus(Application application, ApplicationStatus status) {
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            if (status == ApplicationStatus.APPROVED) {
+                application.approve();
+            } else if (status == ApplicationStatus.REJECTED) {
+                application.reject();
+            } else {
+                throw new IllegalArgumentException("제출 완료된 서류만 합격/불합격을 결정할 수 있습니다.");
+            }
+        });
     }
 
 

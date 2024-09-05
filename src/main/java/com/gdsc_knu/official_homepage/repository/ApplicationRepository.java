@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long>, ApplicationQueryFactory{
@@ -36,4 +37,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
     Page<Application> findByNameContaining(Pageable pageable, String name);
 
     List<Application> findByApplicationStatusIn(List<ApplicationStatus> applicationStatus);
+
+    List<Application> findByEmailIn(Set<Object> email);
 }

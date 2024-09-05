@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -125,6 +126,23 @@ public class AdminApplicationResponse {
                         .build();
             }
 
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class Result {
+        private int code;
+        private String message;
+        private HttpStatus data;
+
+        public static Result from(HttpStatus status, String message) {
+            return Result.builder()
+                    .code(status.value())
+                    .message(message)
+                    .data(status)
+                    .build();
         }
     }
 }

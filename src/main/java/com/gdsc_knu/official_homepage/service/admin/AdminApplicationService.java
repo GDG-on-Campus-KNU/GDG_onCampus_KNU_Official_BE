@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,40 +28,38 @@ import java.util.stream.Collectors;
 public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
+    private final PlatformTransactionManager transactionManager;
 
     @Transactional(readOnly = true)
     public AdminApplicationResponse.Statistics getStatistic() {
         ApplicationStatisticType statistic = applicationRepository.getStatistics();
-        //TODO: Builder를 바로 사용하는게 가독성 좋을거 같음
-        return AdminApplicationResponse.Statistics.of(
-                statistic.getTotal(),
-                statistic.getOpenCount(),
-                statistic.getTotal() - statistic.getOpenCount(),
-                statistic.getApprovedCount(),
-                statistic.getRejectedCount());
+        return AdminApplicationResponse.Statistics.from(statistic);
     }
 
     @Transactional(readOnly = true)
     public Map<String, Integer> getTrackStatistic() {
         List<ApplicationTrackType> trackStatistics = applicationRepository.getGroupByTrack();
-        int totalCount = trackStatistics.stream()
-                .mapToInt(ApplicationTrackType::getCount)
+
+        Map<String, Integer> trackCountMap = trackStatistics.stream()
+                .collect(Collectors.toMap(ApplicationTrackType::getTrack, ApplicationTrackType::getCount));
+
+        addDefaultTrack(trackCountMap);
+        addTotalCount(trackCountMap);
+        return trackCountMap;
+    }
+
+    private void addDefaultTrack(Map<String, Integer> trackCountMap){
+        Arrays.stream(Track.values())
+                .forEach(track -> trackCountMap.putIfAbsent(track.name(), 0));
+    }
+
+    private void addTotalCount(Map<String, Integer> trackCountMap){
+        int totalCount = trackCountMap.values().stream()
+                .mapToInt(Integer::intValue)
                 .sum();
-
-        Map<String, Integer> trackStatisticCountMap = Arrays.stream(Track.values())
-                .collect(Collectors.toMap(Enum::name, track -> getTrackCount(trackStatistics, track)));
-
-        trackStatisticCountMap.put("TOTAL", totalCount);
-
-        return trackStatisticCountMap;
+        trackCountMap.put("TOTAL", totalCount);
     }
 
-    private Integer getTrackCount(List<ApplicationTrackType> trackStatistics, Track track) {
-        return trackStatistics.stream()
-                .filter(data -> data.getTrack().equals(track.name()))
-                .map(ApplicationTrackType::getCount)
-                .findFirst().orElse(0);
-    }
 
 
     @Transactional(readOnly = true)
@@ -77,20 +77,24 @@ public class AdminApplicationService {
     }
 
 
-    //TODO: 메일 발송 부분 트랜젝션 밖으로 이동 필요
-    @Transactional
-    public void decideApplication(Long id, String status) {
+    public void decideApplication(Long id, ApplicationStatus status) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        if (status.equals(ApplicationStatus.APPROVED.name())){
-            application.approve();
-            mailService.sendOne(application);
-        }
+        updateApplicationStatus(application, status);
+        mailService.sendEach(application);
+    }
 
-        else if (status.equals(ApplicationStatus.REJECTED.name())){
-            application.reject();
-            mailService.sendOne(application);
-        }
+    private void updateApplicationStatus(Application application, ApplicationStatus status) {
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            if (status == ApplicationStatus.APPROVED) {
+                application.approve();
+            } else if (status == ApplicationStatus.REJECTED) {
+                application.reject();
+            } else {
+                throw new IllegalArgumentException("제출 완료된 서류만 합격/불합격을 결정할 수 있습니다.");
+            }
+        });
     }
 
 

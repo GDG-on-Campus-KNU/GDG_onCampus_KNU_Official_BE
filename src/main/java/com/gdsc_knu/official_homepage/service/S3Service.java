@@ -28,19 +28,18 @@ public class S3Service {
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${spring.profiles.active:default}")
+    private String activeProfile;
+
 
     @Retryable(
             maxAttempts = 2,
             backoff = @Backoff(delay = 1000),
             recover = "recover"
     )
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String username) {
         // 원본의 확장자만 추출하여 고유한 파일 이름 설정
-        String filename = file.getOriginalFilename();
-        String extension =
-                filename != null ? filename.substring(filename.lastIndexOf("."))
-                        : "";
-        String uniqueFilename = UUID.randomUUID() + extension;
+        String filename = getFilePath(file.getOriginalFilename(), username);
 
         // 파일의 InputStream을 가져와 업로드
         try (InputStream inputStream = file.getInputStream()) {
@@ -49,14 +48,24 @@ public class S3Service {
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
 
-            amazonS3.putObject(new PutObjectRequest(bucket, uniqueFilename, inputStream, metadata));
+            amazonS3.putObject(new PutObjectRequest(bucket, filename, inputStream, metadata));
 
         } catch (IOException e) {
             log.warn("이미지 업로드에 실패하여 다시 시도합니다.");
             throw new CustomException(ErrorCode.FAILED_UPLOAD);
         }
 
-        return amazonS3.getUrl(bucket, uniqueFilename).toString();
+        return amazonS3.getUrl(bucket, filename).toString();
+    }
+
+
+    private String getFilePath(String filename, String username) {
+        String extension = filename != null
+                ? filename.substring(filename.lastIndexOf("."))
+                : "";
+        String uniqueFilename = username + "-" + UUID.randomUUID();
+        String path = activeProfile + "/";
+        return path + uniqueFilename + extension;
     }
 
 

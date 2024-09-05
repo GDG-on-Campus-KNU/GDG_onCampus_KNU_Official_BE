@@ -5,17 +5,17 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Test
+name: Test main branch
 
 on:
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ]
 
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
 
@@ -34,7 +34,7 @@ jobs:
           mkdir -p ./src/main/resources
           cd ./src/main/resources
           echo "${{ secrets.APPLICATION }}" > application.yml
-          echo "${{ secrets.APPLICATION_TEST }}" > application-test.yml
+          echo "${{ secrets.APPLICATION_MAIN }}" > application-test.yml
 
       # apply caching
       - name: Gradle Caching
@@ -52,4 +52,21 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew clean build -Pprofile=test
+
+      - name: Error Report
+        if : ${{ failure() }}
+        run: |
+          echo "Error Report..."
+          mkdir error-report
+          REPORT_DIRS=$(find . -type d -path '*/build/reports/tests/test')
+          for dir in $REPORT_DIRS; do
+            module_path=$(echo $dir | awk -F'/build/' '{print $1}' | cut -c 3-)
+            cp -r $dir error-report/$module_path/$(basename $(dirname $dir))
+          done
+      - name: Upload Report to Artifact
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: error-report
+          path: error-report
 

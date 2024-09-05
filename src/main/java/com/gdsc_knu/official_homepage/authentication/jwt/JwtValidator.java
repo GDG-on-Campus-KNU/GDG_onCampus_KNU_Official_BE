@@ -28,7 +28,7 @@ public class JwtValidator {
     // 토큰의 형식을 검사하는 private 메서드입니다.
     private String checkToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
-            throw new CustomException(ErrorCode.JWT_INVALID);
+            throw new CustomException(ErrorCode.JWT_NOT_FOUND);
         }
         // Bearer 제거
         return token.substring(7);
@@ -47,7 +47,7 @@ public class JwtValidator {
         JwtClaims jwtClaims = objectMapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
         RedisToken redisToken = redisRepository.findById(jwtClaims.getEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.JWT_INVALID));
+                .orElseThrow(() -> new CustomException(ErrorCode.RT_NOT_FOUND));
         if (!redisToken.getRefreshToken().equals(checkedToken)) {
             redisRepository.delete(redisToken);
             throw new CustomException(ErrorCode.JWT_INCORRECT);

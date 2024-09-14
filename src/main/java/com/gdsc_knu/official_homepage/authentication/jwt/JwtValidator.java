@@ -41,14 +41,15 @@ public class JwtValidator {
 
     // 리프레쉬 토큰을 검사하는 메서드입니다.
     public JwtClaims checkRefreshToken(String token) {
-        String checkedToken = checkToken(token);
-        Claims claims = extractClaims(checkedToken);
+        String refreshToken = checkToken(token);
+        Claims claims = extractClaims(refreshToken);
 
         JwtClaims jwtClaims = objectMapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
+        String email = jwtClaims.getEmail();
 
-        RedisToken redisToken = redisRepository.findById(jwtClaims.getEmail())
+        RedisToken redisToken = redisRepository.findById(refreshToken)
                 .orElseThrow(() -> new CustomException(ErrorCode.RT_NOT_FOUND));
-        if (!redisToken.getRefreshToken().equals(checkedToken)) {
+        if (!redisToken.getEmail().equals(email)) {
             redisRepository.delete(redisToken);
             throw new CustomException(ErrorCode.JWT_INCORRECT);
         }

@@ -7,15 +7,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@RedisHash(value = "refreshToken", timeToLive = 60 * 60 * 24 * 7)
+@RedisHash(value = "refreshToken")
 public class RedisToken {
-    @Id
     private String email;
+    @Id
     private String refreshToken;
-
+    @TimeToLive
+    private long ttl;
 }

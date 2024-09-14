@@ -75,6 +75,7 @@ public class JwtProvider {
         RedisToken redisToken = RedisToken.builder()
                 .email(email)
                 .refreshToken(refreshToken)
+                .ttl(jwtRefreshExpiration)
                 .build();
         redisRepository.save(redisToken);
     }

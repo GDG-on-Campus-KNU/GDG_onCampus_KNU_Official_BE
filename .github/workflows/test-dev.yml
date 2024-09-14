@@ -16,8 +16,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
-    permissions:
-      contents: read
+    permissions: write-all
 
     # set up java
     steps:
@@ -52,4 +51,17 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew clean build -Pprofile=test
+
+      - name: Publish Test Result
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: '**/build/test-results/test/TEST-*.xml'
+
+      - name: Check Error Point
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+          token: ${{ github.token }}
 

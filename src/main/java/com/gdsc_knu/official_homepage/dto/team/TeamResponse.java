@@ -20,7 +20,9 @@ public class TeamResponse {
             return MemberInfo.builder()
                     .id(member.getId())
                     .name(member.getName())
-                    .track(member.getTrack().name())
+                    .track(member.getTrack() != null
+                            ? member.getTrack().name()
+                            : "undefined")
                     .build();
         }
     }

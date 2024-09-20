@@ -7,9 +7,7 @@ import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;

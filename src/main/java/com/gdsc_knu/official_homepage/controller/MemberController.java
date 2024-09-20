@@ -44,9 +44,4 @@ public class MemberController {
         memberInfoService.updateMemberInfo(jwtMemberDetail.getId(), request);
     }
 
-    @GetMapping("/teams")
-    @Operation(summary="사용자가 속한 팀 정보 조회 API")
-    public ResponseEntity<List<TeamInfoResponse>> getMemberTeamInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
-        return ResponseEntity.ok().body(memberInfoService.getMemberTeamInfo(jwtMemberDetail.getId()));
-    }
 }

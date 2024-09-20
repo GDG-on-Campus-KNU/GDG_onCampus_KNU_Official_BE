@@ -15,8 +15,8 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String teamName;
-    private String teamPageUrl;
 
     @OneToMany(mappedBy = "team")
     @Builder.Default

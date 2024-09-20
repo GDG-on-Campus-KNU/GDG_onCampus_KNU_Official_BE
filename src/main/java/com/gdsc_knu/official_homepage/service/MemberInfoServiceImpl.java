@@ -67,4 +67,13 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                        request.getStudentNumber(),
                        request.getPhoneNumber());
     }
+
+    @Override
+    public List<TeamInfoResponse> getMemberTeamInfo(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))
+                .getMemberTeams().stream()
+                .map(memberTeam -> new TeamInfoResponse(memberTeam.getTeam()))
+                .collect(Collectors.toList());
+    }
 }

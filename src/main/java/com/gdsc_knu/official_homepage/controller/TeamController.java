@@ -2,7 +2,9 @@ package com.gdsc_knu.official_homepage.controller;
 
 import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
+import com.gdsc_knu.official_homepage.service.MemberInfoService;
 import com.gdsc_knu.official_homepage.service.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,10 +16,11 @@ import java.util.List;
 
 @Tag(name = "Team", description = "팀 관련 API")
 @RestController
-@RequestMapping("api/team")
+@RequestMapping("/api/team")
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamService teamService;
+    private final MemberInfoService memberInfoService;
 
     @GetMapping("/{teamId}/member")
     @Operation(summary = "팀원 정보 조회 API",
@@ -26,10 +29,18 @@ public class TeamController {
         return ResponseEntity.ok().body(teamService.getTeamMember(teamId));
     }
 
+
     @GetMapping("/member")
     @Operation(summary = "Default 팀원 정보 조회 API",
             description = "가장 최근(=현재 활동 중인) 팀의 팀원 목록을 반환합니다, 소속된 팀이 없는 경우 404코드와 메세지를 보냅니다")
     public ResponseEntity<List<TeamResponse.MemberInfo>> getRecentTeamMembers(@TokenMember JwtMemberDetail jwtMemberDetail){
         return ResponseEntity.ok().body(teamService.getRecentTeamMember(jwtMemberDetail.getId()));
+
+    @GetMapping()
+    @Operation(summary="현재 로그인한 사용자가 속한 팀 정보 조회 API",
+            description = "현재 로그인한 사용자가 속한 팀 정보(팀 ID, 팀 이름) 리스트를 반환합니다.")
+    public ResponseEntity<List<TeamInfoResponse>> getMemberTeamInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
+        return ResponseEntity.ok().body(memberInfoService.getMemberTeamInfo(jwtMemberDetail.getId()));
+
     }
 }

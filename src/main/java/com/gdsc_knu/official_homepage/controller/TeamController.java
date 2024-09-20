@@ -33,8 +33,9 @@ public class TeamController {
     @GetMapping("/member")
     @Operation(summary = "Default 팀원 정보 조회 API",
             description = "가장 최근(=현재 활동 중인) 팀의 팀원 목록을 반환합니다, 소속된 팀이 없는 경우 404코드와 메세지를 보냅니다")
-    public ResponseEntity<List<TeamResponse.MemberInfo>> getRecentTeamMembers(@TokenMember JwtMemberDetail jwtMemberDetail){
+    public ResponseEntity<List<TeamResponse.MemberInfo>> getRecentTeamMembers(@TokenMember JwtMemberDetail jwtMemberDetail) {
         return ResponseEntity.ok().body(teamService.getRecentTeamMember(jwtMemberDetail.getId()));
+    }
 
     @GetMapping()
     @Operation(summary="현재 로그인한 사용자가 속한 팀 정보 조회 API",

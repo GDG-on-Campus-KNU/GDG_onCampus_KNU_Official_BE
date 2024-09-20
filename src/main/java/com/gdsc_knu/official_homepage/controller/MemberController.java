@@ -4,6 +4,7 @@ import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
 import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
+import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.service.MemberInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Member", description = "사용자 정보 관련 API")
 @RestController
@@ -39,5 +42,11 @@ public class MemberController {
     public void updateMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
                                  @ModelAttribute MemberRequest.Update request){
         memberInfoService.updateMemberInfo(jwtMemberDetail.getId(), request);
+    }
+
+    @GetMapping("/teams")
+    @Operation(summary="사용자가 속한 팀 정보 조회 API")
+    public ResponseEntity<List<TeamInfoResponse>> getMemberTeamInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
+        return ResponseEntity.ok().body(memberInfoService.getMemberTeamInfo(jwtMemberDetail.getId()));
     }
 }

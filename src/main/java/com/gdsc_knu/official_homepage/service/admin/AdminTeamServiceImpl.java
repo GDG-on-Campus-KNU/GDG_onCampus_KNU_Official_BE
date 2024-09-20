@@ -5,6 +5,7 @@ import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
@@ -46,7 +47,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
     }
 
     /**
-     * 새로운 부모 팀을 생성함. 직렬을 지정 하면 해당 직렬의 회원만 해당 팀에 소속
+     * 새로운 부모 팀을 생성함. 직렬을 지정 하면 해당 직렬의 회원(MEMBER,CORE)만 해당 팀에 소속
      * @param createRequest 새로운 부모 팀 생성 요청 (팀 이름, 트랙)
      * @return Long 새로 생성된 팀의 id
      */
@@ -64,6 +65,8 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         List<Member> members = (track != null)
                 ? memberRepository.findAllByTrack(track)
                 : memberRepository.findAll();
+        members.removeIf(member -> member.getRole().equals(Role.ROLE_GUEST) || member.getRole().equals(Role.ROLE_TEMP));
+
         List<MemberTeam> memberTeams = members.stream()
                 .map(member -> MemberTeam.builder()
                         .member(member)

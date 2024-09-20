@@ -28,6 +28,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         List<TeamInfoResponse> teamInfos = member.getMemberTeams().stream()
+                .filter(memberTeam -> memberTeam.getTeam().getParent() != null)
                 .map(memberTeam -> new TeamInfoResponse(memberTeam.getTeam()))
                 .collect(Collectors.toList());
 

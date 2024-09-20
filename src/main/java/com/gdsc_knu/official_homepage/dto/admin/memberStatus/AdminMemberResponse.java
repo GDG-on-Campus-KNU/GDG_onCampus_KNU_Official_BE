@@ -38,10 +38,7 @@ public class AdminMemberResponse {
                 .phoneNumber(member.getPhoneNumber())
                 .teams(member.getMemberTeams().stream()
                         .map(MemberTeam::getTeam)
-                        .map(team -> TeamInfoResponse.builder()
-                                .teamName(team.getTeamName())
-                                .teamPageUrl(team.getTeamPageUrl())
-                                .build())
+                        .map(TeamInfoResponse::new)
                         .toList())
                 .role(member.getRole())
                 .build();

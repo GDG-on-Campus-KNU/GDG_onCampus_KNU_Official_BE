@@ -25,4 +25,13 @@ public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
             "JOIN FETCH mt.member " +
             "WHERE mt.team.id = :teamId")
     List<MemberTeam> findMembersByTeamId(@Param("teamId") Long teamId);
+
+
+    @Query("SELECT mt " +
+            "FROM MemberTeam mt " +
+            "JOIN FETCH mt.team " +
+            "WHERE mt.member.id = :memberId " +
+            "ORDER BY mt.team.id DESC ")
+    List<MemberTeam> findByMemberOrderByTeamId(@Param("memberId") Long memberId);
+
 }

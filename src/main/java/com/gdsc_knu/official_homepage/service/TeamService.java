@@ -30,4 +30,19 @@ public class TeamService {
                 .map(memberTeam -> TeamResponse.MemberInfo.from(memberTeam.getMember()))
                 .toList();
     }
+
+    public List<TeamResponse.MemberInfo> getRecentTeamMember(Long memberId) {
+        List<MemberTeam> memberTeams = memberTeamRepository.findByMemberOrderByTeamId(memberId);
+
+        Team team = memberTeams.stream()
+                .map(MemberTeam::getTeam)
+                .filter(candidateTeam -> candidateTeam.getParent() != null)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("배정된 팀이 없는 사용자입니다."));
+
+        List<MemberTeam> members = memberTeamRepository.findMembersByTeamId(team.getId());
+        return members.stream()
+                .map(member -> TeamResponse.MemberInfo.from(member.getMember()))
+                .toList();
+    }
 }

@@ -18,7 +18,6 @@ public class AdminTeamResponse {
     public static class Team {
         private Long id;
         private String teamName;
-        private String teamPageUrl;
         @Builder.Default
         private List<TeamInfoResponse> subTeams = new ArrayList<>();
     }

@@ -40,7 +40,6 @@ public class AdminMemberResponse {
                         .map(MemberTeam::getTeam)
                         .map(team -> TeamInfoResponse.builder()
                                 .teamName(team.getTeamName())
-                                .teamPageUrl(team.getTeamPageUrl())
                                 .build())
                         .toList())
                 .role(member.getRole())

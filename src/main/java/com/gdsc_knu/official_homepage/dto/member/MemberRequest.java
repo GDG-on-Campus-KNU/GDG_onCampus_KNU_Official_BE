@@ -30,28 +30,4 @@ public class MemberRequest {
         private String phoneNumber;
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Update {
-        @NotBlank(message = "이름을 입력해주세요.")
-        private String name;
-
-        private MultipartFile profileUrl;
-
-        @NotNull(message = "나이를 입력해주세요.")
-        private int age;
-
-        @NotBlank(message = "전공을 입력해주세요.")
-        private String major;
-
-        @NotBlank(message = "학번을 입력해주세요.")
-        private String studentNumber;
-
-        private String phoneNumber;
-
-        private String introduction;
-    }
-
 }

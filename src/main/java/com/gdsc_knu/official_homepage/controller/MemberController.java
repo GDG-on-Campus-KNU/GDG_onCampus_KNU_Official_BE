@@ -33,11 +33,4 @@ public class MemberController {
         return ResponseEntity.ok().body(memberInfoService.getMemberInfo(jwtMemberDetail.getId()));
     }
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary="사용자 정보 수정 API")
-    public void updateMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail,
-                                 @ModelAttribute MemberRequest.Update request){
-        memberInfoService.updateMemberInfo(jwtMemberDetail.getId(), request);
-    }
 }

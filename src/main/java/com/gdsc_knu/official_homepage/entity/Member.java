@@ -36,11 +36,8 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(length = 2048)
-    private String profileUrl;
-
     @Column(length = 500)
-    private String introduction;
+    private String profileUrl;
 
     @Enumerated(EnumType.STRING)
     private Track track;
@@ -51,19 +48,8 @@ public class Member extends BaseTimeEntity{
         this.role = role;
     }
 
-
     public void updateTrack(Track track) {
         this.track = track;
-    }
-
-    public void update(String name, String profileUrl, int age, String major, String studentNumber, String phoneNumber, String introduction){
-        this.name = name;
-        this.profileUrl = profileUrl;
-        this.age = age;
-        this.major = major;
-        this.studentNumber = studentNumber;
-        this.phoneNumber = phoneNumber;
-        this.introduction = introduction;
     }
   
     public void addInfo(String name, int age, String major, String studentNumber, String phoneNumber) {

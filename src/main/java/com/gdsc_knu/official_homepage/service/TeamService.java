@@ -9,6 +9,7 @@ import com.gdsc_knu.official_homepage.repository.MemberTeamRepository;
 import com.gdsc_knu.official_homepage.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,6 +20,7 @@ public class TeamService {
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRepository teamRepository;
 
+    @Transactional(readOnly = true)
     public List<TeamResponse.MemberInfo> getTeamMember(Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 팀입니다."));

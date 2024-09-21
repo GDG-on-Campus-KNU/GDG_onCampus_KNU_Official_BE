@@ -26,6 +26,8 @@ public class TeamController {
     @Operation(summary = "팀원 정보 조회 API",
             description = "해당 팀의 팀원목록(유저 ID, 이름, 직렬)을 반환합니다. (미배치된 팀은 조회되지 않습니다.)")
     public ResponseEntity<List<TeamResponse.MemberInfo>> getTeamMembers(@PathVariable("teamId") Long teamId) {
+        if (teamId.equals(0L))
+            return null;
         return ResponseEntity.ok().body(teamService.getTeamMember(teamId));
     }
 

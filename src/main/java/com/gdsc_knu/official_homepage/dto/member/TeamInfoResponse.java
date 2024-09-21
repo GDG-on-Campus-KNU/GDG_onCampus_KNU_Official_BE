@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 public class TeamInfoResponse {
     private Long id;
     private String teamName;
-    private String teamPageUrl;
 
     public TeamInfoResponse(Team team) {
         this.id = team.getId();
         this.teamName = team.getTeamName();
-        this.teamPageUrl = team.getTeamPageUrl();
     }
 }

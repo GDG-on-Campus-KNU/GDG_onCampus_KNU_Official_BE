@@ -54,7 +54,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))
                 .getTeams().stream()
                 .sorted(Comparator.comparing(Team::getId).reversed())
-                .map(TeamInfoResponse::new)
+                .map(TeamInfoResponse::from)
                 .toList();
     }
 }

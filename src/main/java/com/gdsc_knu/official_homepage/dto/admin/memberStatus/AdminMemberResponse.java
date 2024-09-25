@@ -34,7 +34,7 @@ public class AdminMemberResponse {
                 .email(member.getEmail())
                 .phoneNumber(member.getPhoneNumber())
                 .teams(member.getTeams().stream()
-                        .map(TeamInfoResponse::new)
+                        .map(TeamInfoResponse::from)
                         .toList())
                 .role(member.getRole())
                 .build();

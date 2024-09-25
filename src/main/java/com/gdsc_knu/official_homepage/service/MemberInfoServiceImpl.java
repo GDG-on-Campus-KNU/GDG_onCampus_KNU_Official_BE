@@ -8,9 +8,7 @@ import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,8 +18,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberInfoServiceImpl implements MemberInfoService {
     private final MemberRepository memberRepository;
-    private final S3Service s3Service;
-    private final PlatformTransactionManager transactionManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -35,27 +31,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .collect(Collectors.toList());
 
         return new MemberResponse(member,teamInfos);
-    }
-
-    @Override
-    public void updateMemberInfo(Long id , MemberRequest.Update request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
-
-        String imageUrl = request.getProfileUrl() != null
-                ? s3Service.upload(request.getProfileUrl(), member.getEmail().split("@")[0])
-                : member.getProfileUrl();
-
-        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.executeWithoutResult(status ->
-            member.update(request.getName(),
-                          imageUrl,
-                          request.getAge(),
-                          request.getMajor(),
-                          request.getStudentNumber(),
-                          request.getPhoneNumber(),
-                          request.getIntroduction())
-        );
     }
 
     @Transactional

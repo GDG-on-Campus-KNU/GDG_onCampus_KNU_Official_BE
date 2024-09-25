@@ -16,7 +16,6 @@ public class MemberResponse {
     private String major;
     private String studentNumber;
     private String email;
-    private String introduction;
     private Role role;
     private List<TeamInfoResponse> teamInfos;
     public MemberResponse(Member member, List<TeamInfoResponse> teamInfos){
@@ -26,7 +25,6 @@ public class MemberResponse {
         this.major = member.getMajor();
         this.studentNumber = member.getStudentNumber();
         this.email = member.getEmail();
-        this.introduction = member.getIntroduction();
         this.role = member.getRole();
         this.teamInfos = teamInfos;
     }

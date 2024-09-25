@@ -19,6 +19,7 @@ public class Member extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private int age;
@@ -27,7 +28,7 @@ public class Member extends BaseTimeEntity{
 
     private String major;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(unique = true)
@@ -36,34 +37,22 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(length = 2048)
+    @Column(length = 500)
     private String profileUrl;
 
-    @Column(length = 500)
-    private String introduction;
-
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Track track;
 
     @OneToMany(mappedBy = "member")
     private final List<MemberTeam> memberTeams = new ArrayList<>();
+
     public void updateRole(Role role) {
         this.role = role;
     }
 
-
     public void updateTrack(Track track) {
         this.track = track;
-    }
-
-    public void update(String name, String profileUrl, int age, String major, String studentNumber, String phoneNumber, String introduction){
-        this.name = name;
-        this.profileUrl = profileUrl;
-        this.age = age;
-        this.major = major;
-        this.studentNumber = studentNumber;
-        this.phoneNumber = phoneNumber;
-        this.introduction = introduction;
     }
   
     public void addInfo(String name, int age, String major, String studentNumber, String phoneNumber) {

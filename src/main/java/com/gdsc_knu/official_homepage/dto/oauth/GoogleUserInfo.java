@@ -2,6 +2,7 @@ package com.gdsc_knu.official_homepage.dto.oauth;
 
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
+import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class GoogleUserInfo {
                 .profileUrl(picture)
                 .name(name)
                 .role(Role.ROLE_TEMP)
+                .track(Track.UNDEFINED)
                 .build();
     }
 }

@@ -63,4 +63,11 @@ public class Member extends BaseTimeEntity{
         this.phoneNumber = phoneNumber;
         this.role = Role.ROLE_GUEST;
     }
+
+    public List<Team> getTeams() {
+        return this.memberTeams.stream()
+                .map(MemberTeam::getTeam)
+                .filter(team -> team.getParent()!=null)
+                .toList();
+    }
 }

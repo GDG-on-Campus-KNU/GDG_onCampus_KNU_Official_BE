@@ -4,12 +4,15 @@ import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
 import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
+import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.service.MemberInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Member", description = "사용자 정보 관련 API")
 @RestController

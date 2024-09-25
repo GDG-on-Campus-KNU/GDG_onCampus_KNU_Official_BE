@@ -38,7 +38,6 @@ public class AdminTeamServiceImpl implements AdminTeamService {
                 .map(team -> AdminTeamResponse.Team.builder()
                         .id(team.getId())
                         .teamName(team.getTeamName())
-                        .teamPageUrl(team.getTeamPageUrl())
                         .subTeams(team.getSubTeams().stream()
                                 .map(TeamInfoResponse::new)
                                 .toList())
@@ -59,7 +58,6 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
         Team newTeam = teamRepository.save(Team.builder()
                 .teamName(teamName)
-                .teamPageUrl(createTeamPageUrl(teamName))
                 .build());
 
         List<Member> members = (track != null)
@@ -91,8 +89,6 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
         Team newSubTeam = teamRepository.save(Team.builder()
                 .teamName(parentTeam.getTeamName() + " " + (parentTeam.getSubTeams().size() + 1) + "팀")
-                .teamPageUrl(createTeamPageUrl(
-                        parentTeam.getTeamName() + "-" + (parentTeam.getSubTeams().size() + 1 ) + "팀"))
                 .build());
         parentTeam.addSubTeam(newSubTeam);
 
@@ -185,15 +181,5 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         }
         subTeams.remove(subTeams.size() - 1);
         teamRepository.deleteById(deleteSubTeamId);
-    }
-
-    /**
-     * 팀 이름을 기반으로 팀 페이지 url 생성(현재는 임시 url)
-     * @param teamName 팀 이름
-     * @return String 팀 페이지 url
-     */
-    // 임시 url 생성
-    private String createTeamPageUrl(String teamName) {
-        return "www.gdsc-knu.com/" + teamName;
     }
 }

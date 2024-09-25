@@ -2,7 +2,7 @@ package com.gdsc_knu.official_homepage.service;
 
 import com.gdsc_knu.official_homepage.dto.member.*;
 import com.gdsc_knu.official_homepage.entity.Member;
-import com.gdsc_knu.official_homepage.entity.MemberTeam;
+import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +24,11 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        List<TeamInfoResponse> teamInfos = member.getMemberTeams().stream()
-                .filter(memberTeam -> memberTeam.getTeam().getParent() != null)
-                .map(memberTeam -> new TeamInfoResponse(memberTeam.getTeam()))
-                .collect(Collectors.toList());
+        List<TeamInfoResponse> teams = member.getTeams().stream()
+                .map(TeamInfoResponse::from)
+                .toList();
 
-        return new MemberResponse(member,teamInfos);
+        return new MemberResponse(member,teams);
     }
 
     @Transactional
@@ -54,10 +52,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     public List<TeamInfoResponse> getMemberTeamInfo(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))
-                .getMemberTeams().stream()
-                .filter(memberTeam -> memberTeam.getTeam().getParent() != null)
-                .sorted(Comparator.comparing(MemberTeam::getId).reversed())
-                .map(memberTeam -> new TeamInfoResponse(memberTeam.getTeam()))
-                .collect(Collectors.toList());
+                .getTeams().stream()
+                .sorted(Comparator.comparing(Team::getId).reversed())
+                .map(TeamInfoResponse::from)
+                .toList();
     }
 }

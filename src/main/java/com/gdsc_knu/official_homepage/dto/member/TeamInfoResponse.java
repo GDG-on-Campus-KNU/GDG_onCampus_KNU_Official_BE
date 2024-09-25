@@ -18,4 +18,11 @@ public class TeamInfoResponse {
         this.id = team.getId();
         this.teamName = team.getTeamName();
     }
+
+    public static TeamInfoResponse from(Team team) {
+        return TeamInfoResponse.builder()
+                .id(team.getId())
+                .teamName(team.getTeamName())
+                .build();
+    }
 }

@@ -3,6 +3,8 @@ package com.gdsc_knu.official_homepage.service;
 import com.gdsc_knu.official_homepage.dto.member.*;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.Team;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
+import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
@@ -56,5 +58,14 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .sorted(Comparator.comparing(Team::getId).reversed())
                 .map(TeamInfoResponse::from)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public Member getMemberAdmin(String email, Track track, Role role) {
+        Member member = memberRepository.findByEmail(email).orElseThrow();
+        member.updateRole(role);
+        member.updateTrack(track);
+        return member;
     }
 }

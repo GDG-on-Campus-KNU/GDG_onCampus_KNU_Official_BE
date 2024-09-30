@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.service;
 
-import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
+import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
@@ -19,7 +19,7 @@ public class TeamService {
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRepository teamRepository;
 
-    public List<TeamResponse.MemberInfo> getTeamMember(Long teamId) {
+    public List<MemberResponse.WithTrack> getTeamMember(Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 팀입니다."));
         if (team.getParent() == null)
@@ -27,7 +27,7 @@ public class TeamService {
 
         List<MemberTeam> memberTeams = memberTeamRepository.findMembersByTeamId(teamId);
         return memberTeams.stream()
-                .map(memberTeam -> TeamResponse.MemberInfo.from(memberTeam.getMember()))
+                .map(memberTeam -> MemberResponse.WithTrack.from(memberTeam.getMember()))
                 .toList();
     }
 }

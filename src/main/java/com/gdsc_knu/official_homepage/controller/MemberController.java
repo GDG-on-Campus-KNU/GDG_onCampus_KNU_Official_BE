@@ -4,7 +4,6 @@ import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
 import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
-import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -32,7 +31,7 @@ public class MemberController {
 
     @GetMapping()
     @Operation(summary="사용자 정보 조회 API")
-    public ResponseEntity<MemberResponse> getMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
+    public ResponseEntity<MemberResponse.Main> getMemberInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
         return ResponseEntity.ok().body(memberInfoService.getMemberInfo(jwtMemberDetail.getId()));
     }
 

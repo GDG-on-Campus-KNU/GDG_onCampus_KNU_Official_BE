@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.*;
-import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
                         .id(team.getId())
                         .teamName(team.getTeamName())
                         .subTeams(team.getSubTeams().stream()
-                                .map(TeamInfoResponse::new)
+                                .map(TeamResponse.Main::from)
                                 .toList())
                         .build())
                 .toList();

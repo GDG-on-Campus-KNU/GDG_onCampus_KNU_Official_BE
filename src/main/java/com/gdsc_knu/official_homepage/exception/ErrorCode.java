@@ -24,7 +24,9 @@ public enum ErrorCode {
     FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
     // Application
+    APPLICATION_NOT_FOUND(404,HttpStatus.NOT_FOUND, "지원서를 찾을 수 없습니다"),
     CONFLICT(409, HttpStatus.CONFLICT, "이미 최종 제출된 지원서 입니다."),
+    INVALID_APPLICATION_STATE(400, HttpStatus.BAD_REQUEST,"지원서 상태가 유효하지 않습니다."),
 
     // Team
 

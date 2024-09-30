@@ -10,12 +10,9 @@ name: Deploy dev branch
 on:
   push:
     branches: [ "dev" ]
-
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
 
@@ -31,10 +28,7 @@ jobs:
       # set up application file
       - name: Create application.yml
         run: |
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION }}" > application.yml
-          echo "${{ secrets.APPLICATION_PROD }}" > application-prod.yml
+          echo "${{ secrets.ENV }}" >> ./env
 
       # apply caching
       - name: Gradle Caching
@@ -51,7 +45,7 @@ jobs:
       - name: Setup Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test -Pprofile=prod
+          ./gradlew clean build -x test -Pprofile=dev
 
       # login dockerhub
       - name: docker login
@@ -83,9 +77,8 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }}
+            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }} 2>/dev/null || true
-            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
             sudo docker-compose -f docker-compose.yml up -d
-            sudo docker system prune -f

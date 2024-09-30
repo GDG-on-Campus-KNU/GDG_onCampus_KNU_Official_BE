@@ -17,7 +17,7 @@ spring:
         auto: false
   mail:
     host: smtp.gmail.com
-    port: ${SMTP_PORT:default}
+    port: ${SMTP_PORT:0000}
     username: ${SMTP_USERNAME:default}
     password: ${SMTP_PASSWORD:default}
     properties:

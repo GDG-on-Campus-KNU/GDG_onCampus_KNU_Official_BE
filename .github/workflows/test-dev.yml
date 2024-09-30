@@ -10,12 +10,9 @@ name: Test dev branch
 on:
   pull_request:
     branches: [ "dev" ]
-
-
 jobs:
   test:
     runs-on: ubuntu-latest
-    
     permissions: write-all
 
     # set up java
@@ -26,14 +23,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      # set up application file
-      - name: Create application.yml
-        run: |
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION }}" > application.yml
-          echo "${{ secrets.APPLICATION_TEST }}" > application-test.yml
 
       # apply caching
       - name: Gradle Caching
@@ -50,7 +39,7 @@ jobs:
       - name: Setup Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -Pprofile=test
+          ./gradlew clean build
 
       - name: Publish Test Result
         uses: EnricoMi/publish-unit-test-result-action@v1

@@ -1,8 +1,8 @@
 oauth2: # default
   google:
-    client-id: ${GOOGLE_CLIENT_ID}
-    client-secret: ${GOOGLE_CLIENT_SECRET}
-    redirect-uri: ${GOOGLE_DEV_REDIRECT_URI}
+    client-id: ${GOOGLE_CLIENT_ID:default}
+    client-secret: ${GOOGLE_CLIENT_SECRET:default}
+    redirect-uri: ${GOOGLE_DEV_REDIRECT_URI:default}
     token-uri: https://oauth2.googleapis.com/token
     userinfo-uri: https://www.googleapis.com/oauth2/v3/userinfo
 jwt:

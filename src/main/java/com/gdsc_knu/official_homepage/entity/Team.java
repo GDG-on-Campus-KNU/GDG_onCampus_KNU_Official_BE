@@ -35,7 +35,7 @@ public class Team {
         subteam.setParent(this);
     }
 
-    public void setParent(Team parent) {
+    private void setParent(Team parent) {
         this.parent = parent;
     }
 }

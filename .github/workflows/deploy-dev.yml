@@ -25,11 +25,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # set up application file
-      - name: Create application.yml
-        run: |
-          echo "${{ secrets.ENV }}" >> ./env
-
       # apply caching
       - name: Gradle Caching
         uses: actions/cache@v3

@@ -61,7 +61,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 .map(userId -> {
                     try {
                         Member member = memberRepository.findById(userId)
-                                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
                         member.updateRole(newRole);
                         return 1L;
                     } catch (CustomException e) {
@@ -87,7 +87,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 .map(userId -> {
                     try {
                         Member member = memberRepository.findById(userId)
-                                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
                         member.updateTrack(newTrack);
                         return 1L;
                     } catch (CustomException e) {

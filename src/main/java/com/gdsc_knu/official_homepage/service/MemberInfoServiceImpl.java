@@ -24,7 +24,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     @Transactional(readOnly = true)
     public MemberResponse getMemberInfo(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         List<TeamInfoResponse> teams = member.getTeams().stream()
                 .map(TeamInfoResponse::from)
@@ -33,11 +33,11 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         return new MemberResponse(member,teams);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void addMemberInfo(Long id, MemberRequest.Append request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         member.addInfo(request.getName(),
                        request.getAge(),
                        request.getMajor(),
@@ -53,7 +53,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     @Transactional(readOnly = true)
     public List<TeamInfoResponse> getMemberTeamInfo(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
                 .getTeams().stream()
                 .sorted(Comparator.comparing(Team::getId).reversed())
                 .map(TeamInfoResponse::from)

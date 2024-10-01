@@ -5,7 +5,7 @@ import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
 import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import com.gdsc_knu.official_homepage.service.MemberInfoService;
-import com.gdsc_knu.official_homepage.service.TeamService;
+import com.gdsc_knu.official_homepage.service.team.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

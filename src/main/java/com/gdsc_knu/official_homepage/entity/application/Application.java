@@ -60,7 +60,7 @@ public class Application extends BaseTimeEntity {
     private String note;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
     public Application(Member member, ApplicationRequest applicationRequest) {

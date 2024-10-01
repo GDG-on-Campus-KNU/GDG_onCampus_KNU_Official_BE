@@ -94,7 +94,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      */
     private Member validateMember(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     /**
@@ -106,7 +106,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      */
     private Application validateApplicationAccess(String name, String studentNumber) {
         Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "회원님의 지원서가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, "회원님의 지원서가 존재하지 않습니다."));
         if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
             throw new CustomException(ErrorCode.CONFLICT);
         }

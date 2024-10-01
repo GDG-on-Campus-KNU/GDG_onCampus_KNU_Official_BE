@@ -13,17 +13,15 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ApplicationAnswer {
     @Id
-    @Column(name = "application_answer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int questionNumber;
 
-    @Column(columnDefinition = "varchar(1024)")
+    @Column(length = 1024)
     private String answer;
 
     @ManyToOne
-    @JoinColumn(name = "application_id")
     private Application application;
 
     public void updateAnswer(String answer) {

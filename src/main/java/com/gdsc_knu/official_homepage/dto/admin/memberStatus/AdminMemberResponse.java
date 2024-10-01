@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.dto.admin.memberStatus;
 
-import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -22,7 +22,7 @@ public class AdminMemberResponse {
     private String studentNumber;
     private String email;
     private String phoneNumber;
-    private List<TeamInfoResponse> teams;
+    private List<TeamResponse.Main> teams;
     private Role role;
 
     public static AdminMemberResponse from(Member member) {
@@ -34,7 +34,7 @@ public class AdminMemberResponse {
                 .email(member.getEmail())
                 .phoneNumber(member.getPhoneNumber())
                 .teams(member.getTeams().stream()
-                        .map(TeamInfoResponse::from)
+                        .map(TeamResponse.Main::from)
                         .toList())
                 .role(member.getRole())
                 .build();

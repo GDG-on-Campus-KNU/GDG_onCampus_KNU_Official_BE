@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Getter
 public class Application extends BaseTimeEntity {
     @Id
-    @Column(name = "application_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -57,11 +56,11 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    @Column(length = 2048)
     private String note;
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "application_id")
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
     public Application(Member member, ApplicationRequest applicationRequest) {

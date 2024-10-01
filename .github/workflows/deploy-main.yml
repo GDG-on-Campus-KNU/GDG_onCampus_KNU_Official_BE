@@ -10,12 +10,9 @@ name: Deploy main branch
 on:
   push:
     branches: [ "main" ]
-
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
 
@@ -27,14 +24,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      # set up application file
-      - name: Create application.yml
-        run: |
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION }}" > application.yml
-          echo "${{ secrets.APPLICATION_MAIN }}" > application-main.yml
 
       # apply caching
       - name: Gradle Caching
@@ -51,7 +40,7 @@ jobs:
       - name: Setup Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test -Pprofile=main
+          ./gradlew clean build -x test -Pprofile=prod
 
       # login dockerhub
       - name: docker login
@@ -83,9 +72,8 @@ jobs:
           key: ${{ secrets.MAIN_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }}
+            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }} 2>/dev/null || true
-            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
             sudo docker-compose -f docker-compose.yml up -d
-            sudo docker system prune -f

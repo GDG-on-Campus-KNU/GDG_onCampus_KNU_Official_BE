@@ -7,6 +7,8 @@ import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,14 +73,14 @@ public class AdminApplicationService {
     @Transactional
     public void markApplication(Long id) {
         Application application = applicationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         application.changeMark();
     }
 
 
     public void decideApplication(Long id, ApplicationStatus status) {
         Application application = applicationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         updateApplicationStatus(application, status);
         mailService.sendEach(application);
     }
@@ -92,7 +93,7 @@ public class AdminApplicationService {
             } else if (status == ApplicationStatus.REJECTED) {
                 application.reject();
             } else {
-                throw new IllegalArgumentException("제출 완료된 서류만 합격/불합격을 결정할 수 있습니다.");
+                throw new CustomException(ErrorCode.INVALID_APPLICATION_STATE);
             }
         });
     }
@@ -101,16 +102,15 @@ public class AdminApplicationService {
     @Transactional
     public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
         Application application = applicationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
-        if (!application.isOpened())
-            application.open();
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
+        application.open();
         return AdminApplicationResponse.Detail.from(application);
     }
 
     @Transactional
     public void noteApplication(Long id, String note) {
         Application application = applicationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 지원서류가 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         application.saveNote(note);
     }
 

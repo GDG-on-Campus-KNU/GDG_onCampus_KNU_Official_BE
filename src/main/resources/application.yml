@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    include:
+      - db
+      - auth
+      - doc
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY:default}
+        secret-key: ${AWS_SECRET_KEY:default}
+      region:
+        static: ${AWS_REGION:default}
+      s3:
+        bucket: ${AWS_S3_BUCKET:default}
+      stack:
+        auto: false
+  mail:
+    host: smtp.gmail.com
+    port: ${SMTP_PORT:0000}
+    username: ${SMTP_USERNAME:default}
+    password: ${SMTP_PASSWORD:default}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+logging:
+  discord:
+    webhook-url: ${DISCORD_WEBHOOK_URL:default}
+

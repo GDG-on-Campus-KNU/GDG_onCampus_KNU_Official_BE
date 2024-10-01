@@ -1,0 +1,14 @@
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    operations-sorter: alpha
+  paths-to-match: /api/**
+  use-fqn: true
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+springdoc:
+  api-docs:
+    enabled: false

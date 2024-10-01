@@ -1,6 +1,6 @@
 package com.gdsc_knu.official_homepage.dto.admin.team;
 
-import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class AdminTeamResponse {
         private Long id;
         private String teamName;
         @Builder.Default
-        private List<TeamInfoResponse> subTeams = new ArrayList<>();
+        private List<TeamResponse.Main> subTeams = new ArrayList<>();
     }
 
     @Getter

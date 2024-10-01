@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.service;
 
 import com.gdsc_knu.official_homepage.dto.member.*;
+import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
@@ -22,22 +23,17 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberResponse getMemberInfo(Long id) {
+    public MemberResponse.Main getMemberInfo(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
-
-        List<TeamInfoResponse> teams = member.getTeams().stream()
-                .map(TeamInfoResponse::from)
-                .toList();
-
-        return new MemberResponse(member,teams);
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return MemberResponse.Main.from(member);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void addMemberInfo(Long id, MemberRequest.Append request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         member.addInfo(request.getName(),
                        request.getAge(),
                        request.getMajor(),
@@ -51,12 +47,12 @@ public class MemberInfoServiceImpl implements MemberInfoService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<TeamInfoResponse> getMemberTeamInfo(Long id) {
+    public List<TeamResponse.Main> getMemberTeamInfo(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
                 .getTeams().stream()
                 .sorted(Comparator.comparing(Team::getId).reversed())
-                .map(TeamInfoResponse::from)
+                .map(TeamResponse.Main::from)
                 .toList();
     }
 

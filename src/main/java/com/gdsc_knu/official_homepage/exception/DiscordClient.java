@@ -22,6 +22,7 @@ public class DiscordClient {
     @Value("${logging.discord.webhook-url}")
     private String webhookUrl;
 
+    // TODO: 비동기 처리
     public void sendErrorAlert(Exception e, String message, HttpStatus status, HttpServletRequest request) {
         DiscordMessage discordMessage = createMessage(e, message, status, request);
         RestTemplate restTemplate = new RestTemplate();

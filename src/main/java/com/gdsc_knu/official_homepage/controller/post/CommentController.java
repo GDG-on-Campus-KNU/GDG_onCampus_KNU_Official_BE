@@ -50,5 +50,17 @@ public class CommentController {
     }
 
 
+    @PatchMapping("comment/{commentId}")
+    @Operation(summary = "댓글 수정 API", description = "댓글 작성자만이 본인의 댓글을 수정할 수 있다.")
+    public ResponseEntity<Void> updateComment(
+            @TokenMember JwtMemberDetail jwtMemberDetail,
+            @PathVariable(name = "commentId")Long commentId,
+            @RequestBody CommentRequest.Update request)
+    {
+        commentService.updateComment(jwtMemberDetail.getId(), commentId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 }

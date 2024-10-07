@@ -1,6 +1,9 @@
 package com.gdsc_knu.official_homepage.service.post;
 
+import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.CommentRequest;
+import com.gdsc_knu.official_homepage.dto.post.CommentResponse;
+import com.gdsc_knu.official_homepage.dto.post.AccessModel;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.post.Comment;
 import com.gdsc_knu.official_homepage.entity.post.Post;
@@ -10,6 +13,8 @@ import com.gdsc_knu.official_homepage.repository.CommentRepository;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +33,7 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Comment parent = getParentComment(request.getParentId());
-        Comment comment = Comment.create(post, request.getContent(), member, parent);
-
+        Comment comment = new Comment(post, request.getContent(), member, parent);
         commentRepository.save(comment);
     }
 
@@ -42,4 +46,26 @@ public class CommentService {
     }
 
 
+    @Transactional(readOnly = true)
+    public PagingResponse<CommentResponse> getComment(Long memberId, Long postId, PageRequest pageRequest) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        Long postAuthorId = post.getMember().getId();
+
+        Page<Comment> commentPage = commentRepository.findCommentAndReply(pageRequest, postId);
+
+        return PagingResponse.from(commentPage, comment -> {
+            Long commentAuthorId = comment.getAuthor().getId();
+            AccessModel access = validateAccess(memberId, postAuthorId, commentAuthorId);
+            return CommentResponse.from(comment, access);
+        });
+    }
+
+
+    // post 조회에서도 해당 메서드가 사용될 수 있을 것 같아 protected 로 설정
+    protected AccessModel validateAccess(Long memberId, Long postAuthorId, Long commentAuthorId) {
+        boolean canDelete = memberId.equals(postAuthorId) || memberId.equals(commentAuthorId);
+        boolean canModify = memberId.equals(commentAuthorId);
+        return AccessModel.of(canDelete, canModify);
+    }
 }

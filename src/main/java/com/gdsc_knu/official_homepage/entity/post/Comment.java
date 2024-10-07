@@ -8,9 +8,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseTimeEntity {
@@ -34,6 +36,17 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parent;
+
+    public static Comment create(Post post, String content, Member member, Comment parent) {
+        return Comment.builder()
+                .post(post)
+                .content(content)
+                .author(member)
+                .authorName(member.getName())
+                .authorProfile(member.getProfileUrl())
+                .parent(parent)
+                .build();
+    }
 
 
 }

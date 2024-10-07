@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 @AllArgsConstructor
-public class PermissionModel {
+public class AccessModel {
     @JsonProperty(value = "canDelete")
     private boolean delete;
     private boolean modify;
@@ -19,8 +19,8 @@ public class PermissionModel {
         return modify;
     }
 
-    public static PermissionModel of(boolean canDelete, boolean canModify) {
-        return PermissionModel.builder()
+    public static AccessModel of(boolean canDelete, boolean canModify) {
+        return AccessModel.builder()
                 .delete(canDelete)
                 .modify(canModify)
                 .build();

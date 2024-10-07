@@ -32,7 +32,7 @@ public class CommentResponse {
     private boolean canDelete;
     private boolean canModify;
 
-    public static CommentResponse from(Comment comment, PermissionModel permission){
+    public static CommentResponse from(Comment comment, AccessModel access){
         return CommentResponse.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
@@ -40,8 +40,8 @@ public class CommentResponse {
                 .name(comment.getAuthorName())
                 .profileUrl(comment.getAuthorProfile())
                 .isChild(comment.getParent() != null)
-                .canDelete(permission.canDelete())
-                .canModify(permission.canModify())
+                .canDelete(access.canDelete())
+                .canModify(access.canModify())
                 .build();
     }
 

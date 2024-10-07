@@ -41,7 +41,7 @@ public class Comment extends BaseTimeEntity {
     private Comment parent;
 
     @Builder.Default
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> replies = new ArrayList<>();
 
     public Comment(Post post, String content, Member author, Comment parent) {

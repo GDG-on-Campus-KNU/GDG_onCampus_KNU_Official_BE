@@ -71,14 +71,22 @@ public class CommentService {
 
     @Transactional
     public void updateComment(Long memberId, Long commentId, CommentRequest.Update request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if (!member.equals(comment.getAuthor())) {
-            throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
+        if (!comment.getAuthor().getId().equals(memberId)) {
+            throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
         }
         comment.update(request.getContent());
+    }
+
+    @Transactional
+    public void deleteComment(Long memberId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!comment.getAuthor().getId().equals(memberId)) {
+            throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
+        }
+        commentRepository.delete(comment);
     }
 }

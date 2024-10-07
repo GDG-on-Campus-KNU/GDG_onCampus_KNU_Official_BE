@@ -61,11 +61,24 @@ public class CommentService {
         });
     }
 
-
     // post 조회에서도 해당 메서드가 사용될 수 있을 것 같아 protected 로 설정
     protected AccessModel validateAccess(Long memberId, Long postAuthorId, Long commentAuthorId) {
         boolean canDelete = memberId.equals(postAuthorId) || memberId.equals(commentAuthorId);
         boolean canModify = memberId.equals(commentAuthorId);
         return AccessModel.of(canDelete, canModify);
+    }
+
+
+    @Transactional
+    public void updateComment(Long memberId, Long commentId, CommentRequest.Update request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!member.equals(comment.getAuthor())) {
+            throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+        comment.update(request.getContent());
     }
 }

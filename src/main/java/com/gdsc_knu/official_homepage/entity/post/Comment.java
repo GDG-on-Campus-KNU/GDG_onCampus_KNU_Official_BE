@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -37,15 +40,19 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parent;
 
-    public static Comment create(Post post, String content, Member member, Comment parent) {
-        return Comment.builder()
-                .post(post)
-                .content(content)
-                .author(member)
-                .authorName(member.getName())
-                .authorProfile(member.getProfileUrl())
-                .parent(parent)
-                .build();
+    @Builder.Default
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Comment> replies = new ArrayList<>();
+
+    public Comment(Post post, String content, Member author, Comment parent) {
+        this.post = post;
+        this.content = content;
+        this.author = author;
+        this.authorName = author.getName();
+        this.authorProfile = author.getProfileUrl();
+        this.parent = parent != null
+                ? parent
+                : this;
     }
 
 

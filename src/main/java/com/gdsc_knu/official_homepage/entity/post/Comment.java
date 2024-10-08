@@ -44,15 +44,16 @@ public class Comment extends BaseTimeEntity {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> replies = new ArrayList<>();
 
-    public Comment(Post post, String content, Member author, Comment parent) {
-        this.post = post;
-        this.content = content;
-        this.author = author;
-        this.authorName = author.getName();
-        this.authorProfile = author.getProfileUrl();
-        this.parent = parent != null
-                ? parent
-                : this;
+    public static Comment from(String content, Member author, Post post, Comment parent) {
+        Comment comment = Comment.builder()
+                .post(post)
+                .content(content)
+                .author(author)
+                .authorName(author.getName())
+                .authorProfile(author.getProfileUrl())
+                .build();
+        comment.parent = (parent == null) ? comment : parent;
+        return comment;
     }
 
     public void update(String content) {

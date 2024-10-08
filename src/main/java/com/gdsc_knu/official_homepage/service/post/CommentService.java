@@ -33,7 +33,7 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Comment parent = getParentComment(request.getGroupId());
-        Comment comment = new Comment(post, request.getContent(), member, parent);
+        Comment comment = Comment.from(request.getContent(), member, post, parent);
         commentRepository.save(comment);
     }
 

@@ -27,8 +27,7 @@ public class CommentResponse {
     private String name;
     private String profileUrl;
 
-    @JsonProperty(value = "isChild")
-    private boolean isChild;
+    private Boolean isChild;
     private boolean canDelete;
     private boolean canModify;
 
@@ -39,7 +38,7 @@ public class CommentResponse {
                 .createAt(comment.getCreateAt())
                 .name(comment.getAuthorName())
                 .profileUrl(comment.getAuthorProfile())
-                .isChild(comment.getParent() != null)
+                .isChild(comment.isChild())
                 .canDelete(access.canDelete())
                 .canModify(access.canModify())
                 .build();

@@ -133,6 +133,13 @@ class CommentServiceTest {
                 .id(postId)
                 .content("댓글")
                 .author(author)
+                .parent(fakeParentComment())
+                .build();
+    }
+
+    public Comment fakeParentComment() {
+        return Comment.builder()
+                .id(1L)
                 .build();
     }
 

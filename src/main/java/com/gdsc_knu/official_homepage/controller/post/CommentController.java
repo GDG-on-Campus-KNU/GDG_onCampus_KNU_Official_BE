@@ -62,7 +62,7 @@ public class CommentController {
     }
 
 
-    @PatchMapping("comment/{commentId}")
+    @DeleteMapping("comment/{commentId}")
     @Operation(summary = "댓글 삭제 API",
             description = "게시글 작성자, 댓글 작성자만이 댓글을 삭제할 수 있다. \n\n 부모 댓글 삭제 시 자식 댓글 모두 삭제된다.")
     public ResponseEntity<Void> deleteComment(

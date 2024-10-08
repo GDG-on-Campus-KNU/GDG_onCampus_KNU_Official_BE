@@ -13,7 +13,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+      checks: write
+    
 
     # set up java
     steps:

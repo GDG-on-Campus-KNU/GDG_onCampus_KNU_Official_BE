@@ -32,7 +32,7 @@ public class CommentService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Comment parent = getParentComment(request.getParentId());
+        Comment parent = getParentComment(request.getGroupId());
         Comment comment = new Comment(post, request.getContent(), member, parent);
         commentRepository.save(comment);
     }
@@ -60,13 +60,13 @@ public class CommentService {
         int size = pageRequest.getPageSize();
         return PagingResponse.withoutCountFrom(commentPage, size, comment -> {
             Long commentAuthorId = comment.getAuthor().getId();
-            AccessModel access = validateAccess(memberId, postAuthorId, commentAuthorId);
+            AccessModel access = getAccess(memberId, postAuthorId, commentAuthorId);
             return CommentResponse.from(comment, access);
         });
     }
 
     // post 조회에서도 해당 메서드가 사용될 수 있을 것 같아 protected 로 설정
-    protected AccessModel validateAccess(Long memberId, Long postAuthorId, Long commentAuthorId) {
+    protected AccessModel getAccess(Long memberId, Long postAuthorId, Long commentAuthorId) {
         boolean canDelete = memberId.equals(postAuthorId) || memberId.equals(commentAuthorId);
         boolean canModify = memberId.equals(commentAuthorId);
         return AccessModel.of(canDelete, canModify);

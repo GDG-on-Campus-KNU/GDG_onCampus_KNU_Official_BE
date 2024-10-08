@@ -10,7 +10,7 @@ public class CommentRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Create {
-        private Long parentId;
+        private Long groupId;
 
         @NotBlank(message = "내용을 입력해주세요")
         private String content;

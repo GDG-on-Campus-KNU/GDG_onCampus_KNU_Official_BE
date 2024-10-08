@@ -59,5 +59,10 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
     }
 
+    public boolean isChild(){
+        // 프로퍼티 접근
+        return !this.parent.getId().equals(this.id);
+    }
+
 
 }

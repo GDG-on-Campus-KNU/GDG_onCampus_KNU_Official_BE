@@ -39,6 +39,7 @@ public enum ErrorCode {
     // Comment
     COMMENT_NOT_FOUND(404, HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
     COMMENT_FORBIDDEN(403, HttpStatus.FORBIDDEN, "댓글을 수정할 수 있는 권한이 없습니다."),
+    INVALID_COMMENT(400, HttpStatus.BAD_REQUEST, "상위 댓글에만 답글을 남길 수 있습니다."),
 
     // Server error
     FAILED_UPLOAD(500, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),

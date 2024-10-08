@@ -39,8 +39,11 @@ public class CommentService {
 
     private Comment getParentComment(Long parentId) {
         if (parentId != null && parentId != 0) {
-            return commentRepository.findById(parentId)
+            Comment parent = commentRepository.findById(parentId)
                     .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+            if (parent.isChild())
+                throw new CustomException(ErrorCode.INVALID_COMMENT);
+            return parent;
         }
         return null;
     }
@@ -54,7 +57,8 @@ public class CommentService {
 
         Page<Comment> commentPage = commentRepository.findCommentAndReply(pageRequest, postId);
 
-        return PagingResponse.from(commentPage, comment -> {
+        int size = pageRequest.getPageSize();
+        return PagingResponse.withoutCountFrom(commentPage, size, comment -> {
             Long commentAuthorId = comment.getAuthor().getId();
             AccessModel access = validateAccess(memberId, postAuthorId, commentAuthorId);
             return CommentResponse.from(comment, access);

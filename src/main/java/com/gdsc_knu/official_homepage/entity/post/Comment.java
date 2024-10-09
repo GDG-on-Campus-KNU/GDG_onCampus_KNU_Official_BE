@@ -8,9 +8,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseTimeEntity {
@@ -34,6 +39,31 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parent;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> replies = new ArrayList<>();
+
+    public static Comment from(String content, Member author, Post post, Comment parent) {
+        Comment comment = Comment.builder()
+                .post(post)
+                .content(content)
+                .author(author)
+                .authorName(author.getName())
+                .authorProfile(author.getProfileUrl())
+                .build();
+        comment.parent = (parent == null) ? comment : parent;
+        return comment;
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
+
+    public boolean isChild(){
+        // 프로퍼티 접근
+        return !this.parent.getId().equals(this.id);
+    }
 
 
 }

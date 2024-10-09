@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,9 +15,11 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class PagingResponse<T> {
     private final List<T> data;
-    private final int page;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final Integer page;
     private final boolean hasNext;
-    private final int totalPage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final Integer totalPage;
 
 
 
@@ -26,6 +29,15 @@ public class PagingResponse<T> {
                 .page(data.getNumber())
                 .hasNext(data.hasNext())
                 .totalPage(data.getTotalPages())
+                .build();
+    }
+
+    public static <U,T> PagingResponse<T> withoutCountFrom(Page<U> data, int size, Function<U,T> converter) {
+        boolean hasNext = data.getNumberOfElements() >= size;
+
+        return PagingResponse.<T>builder()
+                .data(data.getContent().stream().map(converter).toList())
+                .hasNext(hasNext)
                 .build();
     }
 }

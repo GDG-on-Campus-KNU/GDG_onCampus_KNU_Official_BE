@@ -34,8 +34,10 @@ public class Post {
 
     private String thumbnailUrl;
 
+    @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
     private PostStatus status;
 
     private int likeCount;

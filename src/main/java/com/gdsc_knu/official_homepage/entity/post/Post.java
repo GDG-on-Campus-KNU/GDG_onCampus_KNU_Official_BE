@@ -26,6 +26,8 @@ public class Post {
 
     private String title;
 
+    private String subTitle;
+
     @Column(length = 65535)
     private String content;
 

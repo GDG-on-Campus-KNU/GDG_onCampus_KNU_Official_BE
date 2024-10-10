@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @PatchMapping("/{postId}")
-    @Operation(summary = "게시글 수정 API", description = "게시글을 수정한다. 작성자 혹은 관리자(Core)만 수정 가능하다.")
+    @Operation(summary = "게시글 수정 API", description = "게시글을 수정한다. 작성자만 수정 가능하다.")
     public ResponseEntity<Void> updatePost(@TokenMember JwtMemberDetail jwtMemberDetail,
                                            @PathVariable("postId") Long postId,
                                            @RequestBody PostRequest.Update postRequestDto) {

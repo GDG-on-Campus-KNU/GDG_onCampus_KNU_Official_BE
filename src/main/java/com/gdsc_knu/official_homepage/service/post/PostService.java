@@ -11,6 +11,8 @@ public interface PostService {
 
     PostResponse.Main getPost(Long postId);
 
+    List<PostResponse.Temp> getTemporalPostList(Long memberId);
+
     List<PostResponse.Main> getPostList(Category category);
 
     void updatePost(Long memberId, Long postId, PostRequest.Update postRequest);

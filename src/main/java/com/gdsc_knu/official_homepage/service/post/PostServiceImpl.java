@@ -59,6 +59,15 @@ public class PostServiceImpl implements PostService {
         return PostResponse.Main.from(post);
     }
 
+    @Override
+    public List<PostResponse.Temp> getTemporalPostList(Long memberId) {
+        List<Post> postList = postRepository.findAllByMemberId(memberId);
+        return postList.stream()
+                .filter(post -> !post.isSaved())
+                .map(PostResponse.Temp::from)
+                .toList();
+    }
+
     /**
      * 카테고리별 게시글 목록 조회, 저장(SAVED)된 게시글만 조회 가능
      * @param category 카테고리, null이면 전체 조회

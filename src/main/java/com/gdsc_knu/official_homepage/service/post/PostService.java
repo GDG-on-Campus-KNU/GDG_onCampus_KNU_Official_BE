@@ -9,9 +9,9 @@ import java.util.List;
 public interface PostService {
     void createPost(Long memberId, PostRequest.Create postRequestDto);
 
-    PostResponse getPost(Long postId);
+    PostResponse.Main getPost(Long postId);
 
-    List<PostResponse> getPostList(Category category);
+    List<PostResponse.Main> getPostList(Category category);
 
     void updatePost(Long memberId, Long postId, PostRequest.Update postRequestDto);
 

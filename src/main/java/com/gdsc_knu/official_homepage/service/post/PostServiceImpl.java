@@ -22,12 +22,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getPost(Long postId) {
+    public PostResponse.Main getPost(Long postId) {
         return null;
     }
 
     @Override
-    public List<PostResponse> getPostList(Category category) {
+    public List<PostResponse.Main> getPostList(Category category) {
         return null;
     }
 

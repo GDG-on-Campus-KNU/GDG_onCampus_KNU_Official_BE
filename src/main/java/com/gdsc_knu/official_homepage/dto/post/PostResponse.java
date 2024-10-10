@@ -41,7 +41,6 @@ public class PostResponse {
         private int commentCount;
 
         public static Main from(Post post) {
-            int length = Math.min(post.getContent().length(), 20);
             return Main.builder()
                     .id(post.getId())
                     .title(post.getTitle())

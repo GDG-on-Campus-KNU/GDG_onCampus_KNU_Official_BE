@@ -22,15 +22,15 @@ public class PostController {
     private final PostService postService;
     @GetMapping()
     @Operation(summary = "게시글 목록 조회 API", description = "게시글 목록을 조회한다. 카테고리별로 조회할 수 있다. 없으면 전체 조회를 한다.")
-    public ResponseEntity<List<PostResponse>> getPostList(@RequestParam(required = false) Category category) {
-        List<PostResponse> postList = postService.getPostList(category);
+    public ResponseEntity<List<PostResponse.Main>> getPostList(@RequestParam(required = false) Category category) {
+        List<PostResponse.Main> postList = postService.getPostList(category);
         return ResponseEntity.ok().body(postList);
     }
 
     @GetMapping("/{postId}")
     @Operation(summary = "게시글 조회 API", description = "게시글 id로 게시글을 단건 조회한다.")
-    public ResponseEntity<PostResponse> getPost(@PathVariable("postId") Long postId) {
-        PostResponse post = postService.getPost(postId);
+    public ResponseEntity<PostResponse.Main> getPost(@PathVariable("postId") Long postId) {
+        PostResponse.Main post = postService.getPost(postId);
         return ResponseEntity.ok().build();
     }
 

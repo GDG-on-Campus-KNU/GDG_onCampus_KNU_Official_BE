@@ -10,6 +10,7 @@ import com.gdsc_knu.official_homepage.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,11 +43,19 @@ public class PostController {
         return ResponseEntity.ok().body(postList);
     }
 
+    @GetMapping("/temporal/{postId}")
+    @Operation(summary = "임시 저장 게시글 목록 조회 API", description = "임시 저장 게시글 목록을 조회한다. 본인의 임시 저장 게시글만 조회할 수 있다.")
+    public ResponseEntity<List<PostResponse.Temp>> getTemporalPost(@PathVariable("postId") Long postId,
+                                                                   @TokenMember JwtMemberDetail jwtMemberDetail) {
+        List<PostResponse.Temp> postList = postService.getTemporalPostList(jwtMemberDetail.getId());
+        return ResponseEntity.ok().body(postList);
+    }
+
     @GetMapping("/{postId}")
     @Operation(summary = "게시글 조회 API", description = "게시글 id로 게시글을 단건 조회한다.")
-    public ResponseEntity<PostResponse.Main> getPost(@PathVariable("postId") Long postId) {
-        PostResponse.Main post = postService.getPost(postId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PostResponse.Detail> getPost(@PathVariable("postId") Long postId) {
+        PostResponse.Detail post = postService.getPost(postId);
+        return ResponseEntity.ok().body(post);
     }
 
     @PostMapping
@@ -54,7 +63,7 @@ public class PostController {
     public ResponseEntity<Void> createPost(@TokenMember JwtMemberDetail jwtMemberDetail,
                                            @RequestBody PostRequest.Create postRequestDto) {
         postService.createPost(jwtMemberDetail.getId(), postRequestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/{postId}")

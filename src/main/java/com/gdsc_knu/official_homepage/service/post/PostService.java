@@ -9,11 +9,11 @@ import java.util.List;
 public interface PostService {
     void createPost(Long memberId, PostRequest.Create postRequest);
 
-    PostResponse.Main getPost(Long postId);
-
-    List<PostResponse.Temp> getTemporalPostList(Long memberId);
+    PostResponse.Detail getPost(Long postId);
 
     List<PostResponse.Main> getPostList(Category category);
+
+    List<PostResponse.Temp> getTemporalPostList(Long memberId);
 
     void updatePost(Long memberId, Long postId, PostRequest.Update postRequest);
 

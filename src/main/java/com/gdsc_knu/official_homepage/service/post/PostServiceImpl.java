@@ -45,27 +45,18 @@ public class PostServiceImpl implements PostService {
     /**
      * 게시글 조회, 저장(SAVED)된 게시글만 조회 가능
      * @param postId 게시글 id
-     * @return PostResponse.Main
+     * @return PostResponse.Detail
      * @throws CustomException ErrorCode.POST_NOT_FOUND
      */
     @Override
     @Transactional(readOnly = true)
-    public PostResponse.Main getPost(Long postId) {
+    public PostResponse.Detail getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (!post.isSaved()) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
-        return PostResponse.Main.from(post);
-    }
-
-    @Override
-    public List<PostResponse.Temp> getTemporalPostList(Long memberId) {
-        List<Post> postList = postRepository.findAllByMemberId(memberId);
-        return postList.stream()
-                .filter(post -> !post.isSaved())
-                .map(PostResponse.Temp::from)
-                .toList();
+        return PostResponse.Detail.from(post);
     }
 
     /**
@@ -86,6 +77,16 @@ public class PostServiceImpl implements PostService {
         return postList.stream()
                 .filter(Post::isSaved)
                 .map(PostResponse.Main::from)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostResponse.Temp> getTemporalPostList(Long memberId) {
+        List<Post> postList = postRepository.findAllByMemberId(memberId);
+        return postList.stream()
+                .filter(post -> !post.isSaved())
+                .map(PostResponse.Temp::from)
                 .toList();
     }
 

@@ -50,6 +50,43 @@ public class PostResponse {
     @Getter
     @Builder
     @AllArgsConstructor
+    public static class Detail implements Serializable {
+        private Long id;
+        private String title;
+        private String subTitle;
+        private String thumbnailUrl;
+        private String category;
+        private String content;
+        private String authorName;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        private LocalDateTime createAt;
+        private int likeCount;
+        private int commentCount;
+        private int sharedCount;
+
+        public static Detail from(Post post) {
+            return Detail.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .subTitle(post.getSubTitle())
+                    .thumbnailUrl(post.getThumbnailUrl())
+                    .category(post.getCategory().name())
+                    .content(post.getContent())
+                    .authorName(post.getMember().getName())
+                    .createAt(post.getPublishedAt())
+                    .likeCount(post.getLikeCount())
+                    .commentCount(post.getCommentList().size())
+                    .sharedCount(post.getSharedCount())
+                    .build();
+
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
     public static class Temp implements Serializable {
         private Long id;
         private String title;

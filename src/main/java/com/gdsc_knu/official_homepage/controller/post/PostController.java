@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.controller.post;
 
+
 import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
@@ -14,7 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Post", description = "게시글 관련 API")
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@Tag(name = "Post", description = "테크블로그 게시글 관련 API")
 @RestController
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
@@ -57,5 +65,14 @@ public class PostController {
                                            @PathVariable("postId") Long postId) {
         postService.deletePost(jwtMemberDetail.getId(), postId);
         return ResponseEntity.ok().build();
+    }
+  
+    @GetMapping("trending")
+    @Operation(summary = "카테고리별 인기글 5개 조회", description = "category가 null이면 전제를 조회한다.")
+    public ResponseEntity<List<PostResponse.Main>> getTrendingPosts(
+            @RequestParam(value = "category", required = false) Category category,
+            @RequestParam(value = "size", defaultValue = "5") int size)
+    {
+        return ResponseEntity.ok().body(postService.getTrendingPosts(category, size));
     }
 }

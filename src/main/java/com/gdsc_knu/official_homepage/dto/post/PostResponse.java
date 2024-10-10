@@ -30,7 +30,7 @@ public class PostResponse {
     public static class Main implements Serializable {
         private Long id;
         private String title;
-        private String summary;
+        private String subTitle;
         private String thumbnailUrl;
         private String category;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -45,7 +45,7 @@ public class PostResponse {
             return Main.builder()
                     .id(post.getId())
                     .title(post.getTitle())
-                    .summary(post.getContent().substring(0,length))
+                    .subTitle(post.getSubTitle())
                     .thumbnailUrl(post.getThumbnailUrl())
                     .category(post.getCategory().name())
                     .createAt(post.getPublishedAt())

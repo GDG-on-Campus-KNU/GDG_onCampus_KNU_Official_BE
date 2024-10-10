@@ -69,4 +69,8 @@ public class Post {
         this.publishedAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
     }
+
+    public boolean isSaved() {
+        return this.status.equals(PostStatus.SAVED);
+    }
 }

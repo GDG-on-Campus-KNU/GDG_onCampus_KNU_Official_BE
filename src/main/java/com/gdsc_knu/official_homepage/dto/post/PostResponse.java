@@ -46,4 +46,27 @@ public class PostResponse {
 
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class Temp implements Serializable {
+        private Long id;
+        private String title;
+        private String summary;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        private LocalDateTime createAt;
+
+        public static Temp from(Post post) {
+            int length = Math.min(post.getContent().length(), 20);
+            return Temp.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .summary(post.getContent().substring(0, length))
+                    .createAt(post.getPublishedAt())
+                    .build();
+        }
+    }
 }

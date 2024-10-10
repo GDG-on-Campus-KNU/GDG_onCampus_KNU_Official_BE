@@ -22,6 +22,12 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 게시글 작성, 회원만 작성 가능
+     * @param memberId 회원 id
+     * @param postRequest 게시글 작성 요청
+     * @throws CustomException ErrorCode.USER_NOT_FOUND
+     */
     @Override
     @Transactional
     public void createPost(Long memberId, PostRequest.Create postRequest) {
@@ -31,6 +37,12 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
+    /**
+     * 게시글 조회, 저장(SAVED)된 게시글만 조회 가능
+     * @param postId 게시글 id
+     * @return PostResponse.Main
+     * @throws CustomException ErrorCode.POST_NOT_FOUND
+     */
     @Override
     @Transactional(readOnly = true)
     public PostResponse.Main getPost(Long postId) {
@@ -42,6 +54,11 @@ public class PostServiceImpl implements PostService {
         return PostResponse.Main.from(post);
     }
 
+    /**
+     * 카테고리별 게시글 목록 조회, 저장(SAVED)된 게시글만 조회 가능
+     * @param category 카테고리, null이면 전체 조회
+     * @return List<PostResponse.Main>
+     */
     @Override
     @Transactional(readOnly = true)
     public List<PostResponse.Main> getPostList(Category category) {
@@ -58,6 +75,13 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
+    /**
+     * 게시글 수정, 작성자만 수정 가능
+     * @param memberId 회원 id
+     * @param postId 게시글 id
+     * @param postRequest 게시글 수정 요청 DTO
+     * @throws CustomException ErrorCode.POST_NOT_FOUND, ErrorCode.POST_FORBIDDEN
+     */
     @Override
     @Transactional
     public void updatePost(Long memberId, Long postId, PostRequest.Update postRequest) {
@@ -69,6 +93,12 @@ public class PostServiceImpl implements PostService {
         post.update(postRequest);
     }
 
+    /**
+     * 게시글 삭제, 작성자 혹은 관리자(Core)만 삭제 가능
+     * @param memberId 회원 id
+     * @param postId 게시글 id
+     * @throws CustomException ErrorCode.POST_NOT_FOUND, ErrorCode.USER_NOT_FOUND, ErrorCode.POST_FORBIDDEN
+     */
     @Override
     @Transactional
     public void deletePost(Long memberId, Long postId) {

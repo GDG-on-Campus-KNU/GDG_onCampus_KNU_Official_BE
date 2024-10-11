@@ -90,6 +90,18 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
+    @Override
+    public PostResponse.Modify getModifyPost(Long memberId, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new CustomException(ErrorCode.POST_FORBIDDEN);
+        }
+        PostResponse.Modify modifyPost = PostResponse.Modify.from(post);
+
+        return modifyPost;
+    }
+
     /**
      * 게시글 수정, 작성자만 수정 가능
      * @param memberId 회원 id

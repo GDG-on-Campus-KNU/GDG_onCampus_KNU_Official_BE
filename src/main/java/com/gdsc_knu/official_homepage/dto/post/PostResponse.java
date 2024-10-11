@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.gdsc_knu.official_homepage.entity.post.Post;
+import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
+import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -103,6 +105,29 @@ public class PostResponse {
                     .title(post.getTitle())
                     .summary(post.getContent().substring(0, length))
                     .createAt(post.getPublishedAt())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class Modify implements Serializable {
+        private String title;
+        private String subTitle;
+        private String content;
+        private String thumbnailUrl;
+        private Category category;
+        private PostStatus status;
+
+        public static Modify from(Post post) {
+            return Modify.builder()
+                    .title(post.getTitle())
+                    .subTitle(post.getSubTitle())
+                    .content(post.getContent())
+                    .thumbnailUrl(post.getThumbnailUrl())
+                    .category(post.getCategory())
+                    .status(post.getStatus())
                     .build();
         }
     }

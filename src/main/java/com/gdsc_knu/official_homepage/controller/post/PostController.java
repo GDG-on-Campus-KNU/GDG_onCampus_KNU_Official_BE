@@ -43,14 +43,6 @@ public class PostController {
         return ResponseEntity.ok().body(postList);
     }
 
-    @GetMapping("/temporal/{postId}")
-    @Operation(summary = "임시 저장 게시글 목록 조회 API", description = "임시 저장 게시글 목록을 조회한다. 본인의 임시 저장 게시글만 조회할 수 있다.")
-    public ResponseEntity<List<PostResponse.Temp>> getTemporalPost(@PathVariable("postId") Long postId,
-                                                                   @TokenMember JwtMemberDetail jwtMemberDetail) {
-        List<PostResponse.Temp> postList = postService.getTemporalPostList(jwtMemberDetail.getId());
-        return ResponseEntity.ok().body(postList);
-    }
-
     @GetMapping("/{postId}")
     @Operation(summary = "게시글 조회 API", description = "게시글 id로 게시글을 단건 조회한다.")
     public ResponseEntity<PostResponse.Detail> getPost(@PathVariable("postId") Long postId) {
@@ -58,6 +50,13 @@ public class PostController {
         return ResponseEntity.ok().body(post);
     }
 
+    @GetMapping("/{postId}/modify")
+    @Operation(summary = "게시글 수정용 정보 조회 API", description = "게시글 수정을 위해 필요한 정보를 조회한다. 작성자만 조회 가능하다.")
+    public ResponseEntity<PostResponse.Modify> getTemporalPost(@PathVariable("postId") Long postId,
+                                                               @TokenMember JwtMemberDetail jwtMemberDetail) {
+        PostResponse.Modify modifyPost = postService.getModifyPost(jwtMemberDetail.getId(), postId);
+        return ResponseEntity.ok().body(modifyPost);
+    }
     @PostMapping
     @Operation(summary = "게시글 작성 API", description = "게시글을 작성한다. 회원만 작성 가능하다.")
     public ResponseEntity<Void> createPost(@TokenMember JwtMemberDetail jwtMemberDetail,

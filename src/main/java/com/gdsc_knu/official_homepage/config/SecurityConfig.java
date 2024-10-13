@@ -31,7 +31,8 @@ public class SecurityConfig {
 
     private static final String[] WHITE_LIST = {
             "/api/post/{postId:\\d+}/comment/**",
-            "/api/post/trending"
+            "/api/post/trending",
+            "/api/post/**"
     };
     private static final String[] MEMBER_AUTHENTICATION_LIST = {
 

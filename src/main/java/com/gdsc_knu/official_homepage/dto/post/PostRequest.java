@@ -16,7 +16,6 @@ public class PostRequest {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Builder
     public static class Create {
         private String title;
         private String subTitle;
@@ -44,7 +43,6 @@ public class PostRequest {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Builder
     public static class Update {
         private String title;
         private String subTitle;

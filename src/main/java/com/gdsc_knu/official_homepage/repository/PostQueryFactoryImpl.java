@@ -7,6 +7,9 @@ import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,12 +30,13 @@ public class PostQueryFactoryImpl implements PostQueryFactory{
     }
 
     @Override
-    public List<Post> findAllByCategory(Category category) {
-        return jpaQueryFactory
+    public Page<Post> findAllByCategory(Pageable pageable, Category category) {
+        List<Post> postList = jpaQueryFactory
                 .selectFrom(QPost.post)
                 .where(QPost.post.status.eq(PostStatus.SAVED)
                         .and(eqCategory(category)))
                 .fetch();
+        return new PageImpl<>(postList, pageable, postList.size());
     }
 
     private BooleanExpression eqCategory(Category category) {

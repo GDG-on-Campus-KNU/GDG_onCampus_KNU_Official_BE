@@ -3,6 +3,7 @@ package com.gdsc_knu.official_homepage.controller.post;
 
 import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
+import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
@@ -17,13 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
 @Tag(name = "Post", description = "테크블로그 게시글 관련 API")
 @RestController
 @RequestMapping("/api/post")
@@ -32,8 +26,10 @@ public class PostController {
     private final PostService postService;
     @GetMapping()
     @Operation(summary = "게시글 목록 조회 API", description = "게시글 목록을 조회한다. 카테고리별로 조회할 수 있다. 없으면 전체 조회를 한다.")
-    public ResponseEntity<List<PostResponse.Main>> getPostList(@RequestParam(required = false) Category category) {
-        List<PostResponse.Main> postList = postService.getPostList(category);
+    public ResponseEntity<PagingResponse<PostResponse.Main>> getPostList(@RequestParam(required = false) Category category,
+                                                                         @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                         @RequestParam(value = "size", defaultValue = "20") int size) {
+        PagingResponse<PostResponse.Main> postList = postService.getPostList(category, page, size);
         return ResponseEntity.ok().body(postList);
     }
 

@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.service.post;
 
+import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.AccessModel;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,11 +72,9 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse.Main> getPostList(Category category) {
-        List<Post> postList = postRepository.findAllByCategory(category);
-        return postList.stream()
-                .map(PostResponse.Main::from)
-                .toList();
+    public PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size) {
+        Page<Post> postPage = postRepository.findAllByCategory(PageRequest.of(page, size), category);
+        return PagingResponse.from(postPage, PostResponse.Main::from);
     }
 
     @Override

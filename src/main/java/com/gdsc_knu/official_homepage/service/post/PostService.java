@@ -1,8 +1,8 @@
 package com.gdsc_knu.official_homepage.service.post;
 
-import com.gdsc_knu.official_homepage.dto.post.PostResponse;
+import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
-import com.gdsc_knu.official_homepage.entity.post.Post;
+import com.gdsc_knu.official_homepage.dto.post.PostResponse;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface PostService {
 
     PostResponse.Detail getPost(Long memberId, Long postId);
 
-    List<PostResponse.Main> getPostList(Category category);
+    PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size);
 
     List<PostResponse.Temp> getTemporalPostList(Long memberId);
 

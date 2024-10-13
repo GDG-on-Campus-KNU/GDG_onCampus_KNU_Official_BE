@@ -7,6 +7,7 @@ import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.post.Post;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
+import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
@@ -85,9 +86,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<PostResponse.Temp> getTemporalPostList(Long memberId) {
-        List<Post> postList = postRepository.findAllByMemberId(memberId);
+        PostStatus status = PostStatus.TEMPORAL;
+        List<Post> postList = postRepository.findAllByMemberIdAndStatus(memberId, status);
         return postList.stream()
-                .filter(post -> !post.isSaved())
                 .map(PostResponse.Temp::from)
                 .toList();
     }

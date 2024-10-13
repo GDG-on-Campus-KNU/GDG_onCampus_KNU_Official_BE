@@ -34,10 +34,12 @@ public class PostResponse {
         private int sharedCount;
 
         public static Main from(Post post) {
+            String subTitle = post.getSubTitle() == null ?
+                    post.getContent().substring(0, Math.min(post.getContent().length(), 20)) : post.getSubTitle();
             return Main.builder()
                     .id(post.getId())
                     .title(post.getTitle())
-                    .subTitle(post.getSubTitle())
+                    .subTitle(subTitle)
                     .thumbnailUrl(post.getThumbnailUrl())
                     .category(post.getCategory().name())
                     .createAt(post.getPublishedAt())
@@ -71,10 +73,12 @@ public class PostResponse {
         private boolean canModify;
 
         public static Detail from(Post post, AccessModel access) {
+            String subTitle = post.getSubTitle() == null ?
+                    post.getContent().substring(0, Math.min(post.getContent().length(), 20)) : post.getSubTitle();
             return Detail.builder()
                     .id(post.getId())
                     .title(post.getTitle())
-                    .subTitle(post.getSubTitle())
+                    .subTitle(subTitle)
                     .thumbnailUrl(post.getThumbnailUrl())
                     .category(post.getCategory().name())
                     .content(post.getContent())

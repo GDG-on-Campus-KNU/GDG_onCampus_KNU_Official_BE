@@ -52,7 +52,7 @@ public class PostResponse {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class Detail implements Serializable {
+    public static class Detail {
         private Long id;
         private String title;
         private String subTitle;
@@ -93,7 +93,7 @@ public class PostResponse {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class Temp implements Serializable {
+    public static class Temp {
         private Long id;
         private String title;
         private String summary;
@@ -116,7 +116,7 @@ public class PostResponse {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class Modify implements Serializable {
+    public static class Modify {
         private String title;
         private String subTitle;
         private String content;

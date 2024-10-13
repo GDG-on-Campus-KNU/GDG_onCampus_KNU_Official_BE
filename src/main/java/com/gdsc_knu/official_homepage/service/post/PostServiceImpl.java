@@ -70,15 +70,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<PostResponse.Main> getPostList(Category category) {
-        List<Post> postList;
-        if (category != null) {
-            postList = postRepository.findAllByCategory(category);
-        }
-        else {
-            postList = postRepository.findAll();
-        }
+        List<Post> postList = postRepository.findAllByCategory(category);
         return postList.stream()
-                .filter(Post::isSaved)
                 .map(PostResponse.Main::from)
                 .toList();
     }

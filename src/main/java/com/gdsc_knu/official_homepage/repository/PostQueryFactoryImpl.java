@@ -26,6 +26,15 @@ public class PostQueryFactoryImpl implements PostQueryFactory{
                 .fetch();
     }
 
+    @Override
+    public List<Post> findAllByCategory(Category category) {
+        return jpaQueryFactory
+                .selectFrom(QPost.post)
+                .where(QPost.post.status.eq(PostStatus.SAVED)
+                        .and(eqCategory(category)))
+                .fetch();
+    }
+
     private BooleanExpression eqCategory(Category category) {
         return category == null ? null : QPost.post.category.eq(category);
     }

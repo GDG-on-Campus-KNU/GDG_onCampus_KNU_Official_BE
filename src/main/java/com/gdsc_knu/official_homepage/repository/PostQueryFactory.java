@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PostQueryFactory {
     List<Post> findTop5ByCategory(Category category, int size);
+
+    List<Post> findAllByCategory(Category category);
 }

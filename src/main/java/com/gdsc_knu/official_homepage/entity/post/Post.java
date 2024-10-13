@@ -60,18 +60,6 @@ public class Post {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public Post(PostRequest.Create postRequest, Member member) {
-        this.title = postRequest.getTitle();
-        this.subTitle = postRequest.getSubTitle();
-        this.content = postRequest.getContent();
-        this.member = member;
-        this.thumbnailUrl = postRequest.getThumbnailUrl();
-        this.category = postRequest.getCategory();
-        this.status = postRequest.getStatus();
-        this.publishedAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-    }
-
     public boolean isSaved() {
         return this.status.equals(PostStatus.SAVED);
     }

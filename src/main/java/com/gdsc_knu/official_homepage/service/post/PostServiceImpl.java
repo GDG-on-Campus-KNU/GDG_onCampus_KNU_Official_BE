@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
     public void createPost(Long memberId, PostRequest.Create postRequest) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Post post = new Post(postRequest, member);
+        Post post = PostRequest.Create.toEntity(postRequest, member);
         postRepository.save(post);
     }
 

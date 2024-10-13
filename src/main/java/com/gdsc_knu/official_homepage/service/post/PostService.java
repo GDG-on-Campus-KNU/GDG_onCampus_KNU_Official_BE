@@ -10,7 +10,7 @@ import java.util.List;
 public interface PostService {
     void createPost(Long memberId, PostRequest.Create postRequest);
 
-    PostResponse.Detail getPost(Long postId);
+    PostResponse.Detail getPost(Long memberId, Long postId);
 
     List<PostResponse.Main> getPostList(Category category);
 

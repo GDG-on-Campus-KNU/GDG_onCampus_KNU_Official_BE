@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.service.post;
 
+import com.gdsc_knu.official_homepage.dto.post.AccessModel;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -50,13 +51,14 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional(readOnly = true)
-    public PostResponse.Detail getPost(Long postId) {
+    public PostResponse.Detail getPost(Long memberId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (!post.isSaved()) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
-        return PostResponse.Detail.from(post);
+        AccessModel access = getPostAccess(memberId, post.getMember().getId());
+        return PostResponse.Detail.from(post, access);
     }
 
     /**
@@ -156,5 +158,13 @@ public class PostServiceImpl implements PostService {
     @CacheEvict(value = "trending-post", allEntries = true, beforeInvocation = true)
     public void clearTrendingPosts() {
         log.info("trending post 초기화");
+    }
+
+    private AccessModel getPostAccess(Long memberId, Long postAuthorId) {
+        boolean canModify = memberId.equals(postAuthorId);
+        boolean canDelete = memberId.equals(postAuthorId) || memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
+                .getRole().equals(Role.ROLE_CORE);
+        return AccessModel.of(canDelete, canModify);
     }
 }

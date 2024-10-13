@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,8 +46,15 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @Operation(summary = "게시글 조회 API", description = "게시글 id로 게시글을 단건 조회한다.")
-    public ResponseEntity<PostResponse.Detail> getPost(@PathVariable("postId") Long postId) {
-        PostResponse.Detail post = postService.getPost(postId);
+    public ResponseEntity<PostResponse.Detail> getPost(Authentication authentication,
+                                                       @PathVariable("postId") Long postId) {
+        Long memberId = 0L;
+        if (authentication != null){
+            JwtMemberDetail jwtMemberDetail = (JwtMemberDetail) authentication.getPrincipal();
+            memberId = jwtMemberDetail.getId();
+        }
+
+        PostResponse.Detail post = postService.getPost(memberId, postId);
         return ResponseEntity.ok().body(post);
     }
 

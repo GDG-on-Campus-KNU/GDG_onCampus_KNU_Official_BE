@@ -11,4 +11,6 @@ public interface PostQueryFactory {
     List<Post> findTop5ByCategory(Category category, int size);
 
     Page<Post> findAllByCategory(Pageable pageable, Category category);
+
+    Page<Post> searchByKeyword(Pageable pageable, String keyword);
 }

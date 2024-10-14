@@ -49,6 +49,30 @@ public class PostQueryFactoryImpl implements PostQueryFactory{
         return new PageImpl<>(postList, pageable, total == null ? 0 : total);
     }
 
+    @Override
+    public Page<Post> searchByKeyword(Pageable pageable, String keyword) {
+        List<Post> postList = jpaQueryFactory
+                .selectFrom(QPost.post)
+                .where(QPost.post.status.eq(PostStatus.SAVED)
+                        .and(QPost.post.title.contains(keyword)
+                                .or(QPost.post.subTitle.contains(keyword))
+                                .or(QPost.post.content.contains(keyword))))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = jpaQueryFactory
+                .select(QPost.post.count())
+                .from(QPost.post)
+                .where(QPost.post.status.eq(PostStatus.SAVED)
+                        .and(QPost.post.title.contains(keyword)
+                                .or(QPost.post.subTitle.contains(keyword))
+                                .or(QPost.post.content.contains(keyword))))
+                .fetchFirst();
+
+        return new PageImpl<>(postList, pageable, total == null ? 0 : total);
+    }
+
     private BooleanExpression eqCategory(Category category) {
         return category == null ? null : QPost.post.category.eq(category);
     }

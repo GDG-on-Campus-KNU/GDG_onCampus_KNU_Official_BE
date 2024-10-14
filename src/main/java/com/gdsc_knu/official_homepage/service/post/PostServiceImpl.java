@@ -92,6 +92,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PostResponse.Modify getModifyPost(Long memberId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -101,6 +102,13 @@ public class PostServiceImpl implements PostService {
         PostResponse.Modify modifyPost = PostResponse.Modify.from(post);
 
         return modifyPost;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size) {
+        Page<Post> postPage = postRepository.searchByKeyword(PageRequest.of(page, size), keyword);
+        return PagingResponse.from(postPage, PostResponse.Main::from);
     }
 
     /**

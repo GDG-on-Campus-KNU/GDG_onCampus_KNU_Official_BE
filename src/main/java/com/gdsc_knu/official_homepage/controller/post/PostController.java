@@ -87,6 +87,14 @@ public class PostController {
         postService.deletePost(jwtMemberDetail.getId(), postId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    @Operation(summary = "검색 API", description = "제목, 부제목, 본문 내용에 키워드 포함 여부로 게시글을 검색한다.")
+    public ResponseEntity<PagingResponse<PostResponse.Main>> searchPosts(@RequestParam(value = "keyword") String keyword,
+                                                                         @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                         @RequestParam(value = "size", defaultValue = "20") int size) {
+        return ResponseEntity.ok().body(postService.searchPostList(keyword, page, size));
+    }
   
     @GetMapping("trending")
     @Operation(summary = "카테고리별 인기글 5개 조회", description = "category가 null이면 전제를 조회한다.")

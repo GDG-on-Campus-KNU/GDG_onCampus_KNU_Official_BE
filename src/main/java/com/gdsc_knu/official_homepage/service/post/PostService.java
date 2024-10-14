@@ -21,6 +21,8 @@ public interface PostService {
     void updatePost(Long memberId, Long postId, PostRequest.Update postRequest);
 
     void deletePost(Long memberId, Long postId);
+
+    PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size);
   
     List<PostResponse.Main> getTrendingPosts(Category category, int size);
 }

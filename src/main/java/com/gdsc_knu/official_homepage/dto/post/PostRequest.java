@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -20,17 +21,17 @@ public class PostRequest {
         private String title;
         private String subTitle;
         private String content;
-        private String thumbnailUrl;
+        private MultipartFile thumbnailImage;
         private Category category;
         private PostStatus status;
 
-        public static Post toEntity(Create create, Member member){
+        public static Post toEntity(Create create, Member member, String thumbnailUrl) {
             LocalDateTime now = LocalDateTime.now();
             return Post.builder()
                     .title(create.getTitle())
                     .subTitle(create.getSubTitle())
                     .content(create.getContent())
-                    .thumbnailUrl(create.getThumbnailUrl())
+                    .thumbnailUrl(thumbnailUrl)
                     .category(create.getCategory())
                     .status(create.getStatus())
                     .member(member)

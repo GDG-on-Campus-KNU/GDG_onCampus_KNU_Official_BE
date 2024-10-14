@@ -13,6 +13,7 @@ import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.PostRepository;
+import com.gdsc_knu.official_homepage.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -31,11 +32,12 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
     /**
      * 게시글 작성, 회원만 작성 가능
      * @param memberId 회원 id
-     * @param postRequest 게시글 작성 요청
+     * @param postRequest 게시글 작성 요청 DTO
      * @throws CustomException ErrorCode.USER_NOT_FOUND
      */
     @Override
@@ -43,7 +45,9 @@ public class PostServiceImpl implements PostService {
     public void createPost(Long memberId, PostRequest.Create postRequest) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Post post = PostRequest.Create.toEntity(postRequest, member);
+        String imageUrl = postRequest.getThumbnailImage() == null
+                ? null : s3Service.upload(postRequest.getThumbnailImage(), member.getEmail().split("@")[0]);
+        Post post = PostRequest.Create.toEntity(postRequest, member, imageUrl);
         postRepository.save(post);
     }
 

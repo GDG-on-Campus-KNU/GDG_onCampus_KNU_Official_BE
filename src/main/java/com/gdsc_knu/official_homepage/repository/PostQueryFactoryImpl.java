@@ -35,8 +35,18 @@ public class PostQueryFactoryImpl implements PostQueryFactory{
                 .selectFrom(QPost.post)
                 .where(QPost.post.status.eq(PostStatus.SAVED)
                         .and(eqCategory(category)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
-        return new PageImpl<>(postList, pageable, postList.size());
+
+        Long total = jpaQueryFactory
+                .select(QPost.post.count())
+                .from(QPost.post)
+                .where(QPost.post.status.eq(PostStatus.SAVED)
+                        .and(eqCategory(category)))
+                .fetchFirst();
+
+        return new PageImpl<>(postList, pageable, total == null ? 0 : total);
     }
 
     private BooleanExpression eqCategory(Category category) {

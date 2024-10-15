@@ -78,7 +78,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size) {
         Page<Post> postPage = postRepository.findAllByCategory(PageRequest.of(page, size), category);
-        return PagingResponse.from(postPage, PostResponse.Main::from);
+        return PagingResponse.withoutCountFrom(postPage, size, PostResponse.Main::from);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size) {
         Page<Post> postPage = postRepository.searchByKeyword(PageRequest.of(page, size), keyword);
-        return PagingResponse.from(postPage, PostResponse.Main::from);
+        return PagingResponse.withoutCountFrom(postPage, size, PostResponse.Main::from);
     }
 
     /**

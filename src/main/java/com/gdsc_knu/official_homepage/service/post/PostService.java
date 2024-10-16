@@ -16,7 +16,7 @@ public interface PostService {
 
     List<PostResponse.Temp> getTemporalPostList(Long memberId);
 
-    PostResponse.Modify getModifyPost(Long memberId, Long postId);
+//    PostResponse.Modify getModifyPost(Long memberId, Long postId);
 
     void updatePost(Long memberId, Long postId, PostRequest.Update postRequest);
 

@@ -14,7 +14,7 @@ public interface PostService {
 
     PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size);
 
-    List<PostResponse.Temp> getTemporalPostList(Long memberId);
+    PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, int page, int size);
 
 //    PostResponse.Modify getModifyPost(Long memberId, Long postId);
 

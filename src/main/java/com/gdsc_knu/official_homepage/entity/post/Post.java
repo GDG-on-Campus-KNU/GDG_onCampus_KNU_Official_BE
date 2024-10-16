@@ -50,7 +50,6 @@ public class Post {
 
     public void update(PostRequest.Update postRequest) {
         this.title = postRequest.getTitle();
-        this.subTitle = postRequest.getSubTitle();
         this.content = postRequest.getContent();
         this.thumbnailUrl = postRequest.getThumbnailUrl();
         this.category = postRequest.getCategory();

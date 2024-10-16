@@ -55,7 +55,6 @@ public class PostQueryFactoryImpl implements PostQueryFactory{
                 .selectFrom(QPost.post)
                 .where(QPost.post.status.eq(PostStatus.SAVED)
                         .and(QPost.post.title.contains(keyword)
-                                .or(QPost.post.subTitle.contains(keyword))
                                 .or(QPost.post.content.contains(keyword))))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -66,7 +65,6 @@ public class PostQueryFactoryImpl implements PostQueryFactory{
                 .from(QPost.post)
                 .where(QPost.post.status.eq(PostStatus.SAVED)
                         .and(QPost.post.title.contains(keyword)
-                                .or(QPost.post.subTitle.contains(keyword))
                                 .or(QPost.post.content.contains(keyword))))
                 .fetchFirst();
 

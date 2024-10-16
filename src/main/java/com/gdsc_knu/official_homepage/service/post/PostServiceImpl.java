@@ -44,14 +44,12 @@ public class PostServiceImpl implements PostService {
      * @throws CustomException ErrorCode.USER_NOT_FOUND
      */
     @Override
+    @Transactional
     public void createPost(Long memberId, PostRequest.Create postRequest) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        String imageUrl = postRequest.getThumbnailImage() == null
-                ? null : s3Service.upload(postRequest.getThumbnailImage(), member.getEmail().split("@")[0]);
-        TransactionTemplate transaction = new TransactionTemplate(transactionManager);
-        transaction.executeWithoutResult(status ->
-                postRepository.save(PostRequest.Create.toEntity(postRequest, member, imageUrl)));
+        Post post = PostRequest.Create.toEntity(postRequest, member);
+        postRepository.save(post);
     }
 
     /**

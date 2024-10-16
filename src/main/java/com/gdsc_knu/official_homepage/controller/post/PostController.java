@@ -62,11 +62,10 @@ public class PostController {
         PostResponse.Modify modifyPost = postService.getModifyPost(jwtMemberDetail.getId(), postId);
         return ResponseEntity.ok().body(modifyPost);
     }
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping()
     @Operation(summary = "게시글 작성 API", description = "게시글을 작성한다. 회원만 작성 가능하다.")
     public ResponseEntity<Void> createPost(@TokenMember JwtMemberDetail jwtMemberDetail,
-                                           @ModelAttribute PostRequest.Create postRequestDto) {
+                                           @RequestBody PostRequest.Create postRequestDto) {
         postService.createPost(jwtMemberDetail.getId(), postRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

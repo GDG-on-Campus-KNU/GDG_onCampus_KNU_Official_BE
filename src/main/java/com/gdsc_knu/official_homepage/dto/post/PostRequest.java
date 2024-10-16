@@ -20,16 +20,16 @@ public class PostRequest {
     public static class Create {
         private String title;
         private String content;
-        private MultipartFile thumbnailImage;
+        private String thumbnailUrl;
         private Category category;
         private PostStatus status;
 
-        public static Post toEntity(Create create, Member member, String thumbnailUrl) {
+        public static Post toEntity(Create create, Member member) {
             LocalDateTime now = LocalDateTime.now();
             return Post.builder()
                     .title(create.getTitle())
                     .content(create.getContent())
-                    .thumbnailUrl(thumbnailUrl)
+                    .thumbnailUrl(create.getThumbnailUrl())
                     .category(create.getCategory())
                     .status(create.getStatus())
                     .member(member)

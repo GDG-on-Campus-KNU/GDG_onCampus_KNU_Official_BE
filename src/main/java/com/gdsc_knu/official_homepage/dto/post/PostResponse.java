@@ -22,7 +22,7 @@ public class PostResponse {
     public static class Main implements Serializable {
         private Long id;
         private String title;
-        private String subTitle;
+        private String summary;
         private String thumbnailUrl;
         private String category;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -34,12 +34,11 @@ public class PostResponse {
         private int sharedCount;
 
         public static Main from(Post post) {
-            String subTitle = post.getSubTitle() == null ?
-                    post.getContent().substring(0, Math.min(post.getContent().length(), 20)) : post.getSubTitle();
+            int length = Math.min(post.getContent().length(), 20);
             return Main.builder()
                     .id(post.getId())
                     .title(post.getTitle())
-                    .subTitle(subTitle)
+                    .summary(post.getContent().substring(0, length))
                     .thumbnailUrl(post.getThumbnailUrl())
                     .category(post.getCategory().name())
                     .createAt(post.getPublishedAt())
@@ -57,7 +56,7 @@ public class PostResponse {
     public static class Detail {
         private Long id;
         private String title;
-        private String subTitle;
+        private String summary;
         private String thumbnailUrl;
         private String category;
         private String content;
@@ -73,12 +72,11 @@ public class PostResponse {
         private boolean canModify;
 
         public static Detail from(Post post, AccessModel access) {
-            String subTitle = post.getSubTitle() == null ?
-                    post.getContent().substring(0, Math.min(post.getContent().length(), 20)) : post.getSubTitle();
+            int length = Math.min(post.getContent().length(), 20);
             return Detail.builder()
                     .id(post.getId())
                     .title(post.getTitle())
-                    .subTitle(subTitle)
+                    .summary(post.getContent().substring(0, length))
                     .thumbnailUrl(post.getThumbnailUrl())
                     .category(post.getCategory().name())
                     .content(post.getContent())
@@ -122,16 +120,17 @@ public class PostResponse {
     @AllArgsConstructor
     public static class Modify {
         private String title;
-        private String subTitle;
         private String content;
+        private String summary;
         private String thumbnailUrl;
         private Category category;
         private PostStatus status;
 
         public static Modify from(Post post) {
+            int length = Math.min(post.getContent().length(), 20);
             return Modify.builder()
                     .title(post.getTitle())
-                    .subTitle(post.getSubTitle())
+                    .summary(post.getContent().substring(0, length))
                     .content(post.getContent())
                     .thumbnailUrl(post.getThumbnailUrl())
                     .category(post.getCategory())

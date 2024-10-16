@@ -19,7 +19,6 @@ public class PostRequest {
     @NoArgsConstructor
     public static class Create {
         private String title;
-        private String subTitle;
         private String content;
         private MultipartFile thumbnailImage;
         private Category category;
@@ -29,7 +28,6 @@ public class PostRequest {
             LocalDateTime now = LocalDateTime.now();
             return Post.builder()
                     .title(create.getTitle())
-                    .subTitle(create.getSubTitle())
                     .content(create.getContent())
                     .thumbnailUrl(thumbnailUrl)
                     .category(create.getCategory())
@@ -46,7 +44,6 @@ public class PostRequest {
     @NoArgsConstructor
     public static class Update {
         private String title;
-        private String subTitle;
         private String content;
         private String thumbnailUrl;
         private Category category;

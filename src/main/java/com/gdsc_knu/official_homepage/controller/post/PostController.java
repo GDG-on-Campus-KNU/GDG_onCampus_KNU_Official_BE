@@ -7,6 +7,7 @@ import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
+import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 import com.gdsc_knu.official_homepage.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,19 +28,20 @@ public class PostController {
     private final PostService postService;
     @GetMapping()
     @Operation(summary = "게시글 목록 조회 API", description = "게시글 목록을 조회한다. 카테고리별로 조회할 수 있다. 없으면 전체 조회를 한다.")
-    public ResponseEntity<PagingResponse<PostResponse.Main>> getPostList(@RequestParam(required = false) Category category,
+    public ResponseEntity<PagingResponse<PostResponse.Main>> getPostList(@RequestParam(value = "category", required = false) Category category,
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "size", defaultValue = "20") int size) {
         PagingResponse<PostResponse.Main> postList = postService.getPostList(category, page, size);
         return ResponseEntity.ok().body(postList);
     }
 
-    @GetMapping("/temporal")
-    @Operation(summary = "임시 저장 게시글 목록 조회 API", description = "임시 저장 게시글 목록을 조회한다. 본인의 임시 저장 게시글만 조회할 수 있다.")
+    @GetMapping("/mypost")
+    @Operation(summary = "본인 게시글 목록 조회 API", description = "본인의 게시글 목록을 조회한다. 조회할 게시글 상태가 필요하다.")
     public ResponseEntity<PagingResponse<PostResponse.Temp>> getTemporalPostList(@TokenMember JwtMemberDetail jwtMemberDetail,
+                                                                       @RequestParam(value = "status") PostStatus status,
                                                                        @RequestParam(value = "page", defaultValue = "0") int page,
                                                                        @RequestParam(value = "size", defaultValue = "20") int size) {
-        PagingResponse<PostResponse.Temp> postList = postService.getTemporalPostList(jwtMemberDetail.getId(), page, size);
+        PagingResponse<PostResponse.Temp> postList = postService.getTemporalPostList(jwtMemberDetail.getId(), status, page, size);
         return ResponseEntity.ok().body(postList);
     }
 

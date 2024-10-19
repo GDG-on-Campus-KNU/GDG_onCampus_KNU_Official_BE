@@ -84,8 +84,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, int page, int size) {
-        PostStatus status = PostStatus.TEMPORAL;
+    public PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, PostStatus status, int page, int size) {
         Page<Post> postList = postRepository.findAllByMemberIdAndStatus(memberId, status, PageRequest.of(page, size));
         return PagingResponse.withoutCountFrom(postList, size, PostResponse.Temp::from);
     }

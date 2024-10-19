@@ -4,6 +4,7 @@ import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
+import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PostService {
 
     PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size);
 
-    PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, int page, int size);
+    PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, PostStatus status, int page, int size);
 
 //    PostResponse.Modify getModifyPost(Long memberId, Long postId);
 

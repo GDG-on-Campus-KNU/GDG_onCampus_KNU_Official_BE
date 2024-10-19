@@ -37,4 +37,5 @@ out/
 .vscode/
 
 src/main/resources/static/index.html
+src/main/resources/images/**
 .env

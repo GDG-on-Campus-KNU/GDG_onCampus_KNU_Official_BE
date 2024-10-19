@@ -16,6 +16,9 @@ spring: #default, test configuration (H2)
     redis:
       host: 127.0.0.1
       port: 6379
+local:
+  storage:
+    path: ${LOCAL_FILE_STORAGE:ubuntu/home/images}
 ---
 spring: # mysql 공통
   config:

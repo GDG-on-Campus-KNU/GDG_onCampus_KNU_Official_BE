@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.service;
+package com.gdsc_knu.official_homepage.service.fileupload;
 
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -9,9 +9,7 @@ import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +19,9 @@ import java.util.UUID;
 
 @Slf4j
 @Component
+@Profile({"prod","dev"})
 @RequiredArgsConstructor
-public class S3Service {
+public class S3Uploader implements FileUploader {
     private final AmazonS3 amazonS3;
 
     @Value("${spring.cloud.aws.s3.bucket}")
@@ -32,14 +31,13 @@ public class S3Service {
     private String activeProfile;
 
 
-    @Retryable(
-            maxAttempts = 2,
-            backoff = @Backoff(delay = 1000),
-            recover = "recover"
-    )
-    public String upload(MultipartFile file, String username) {
+    @Override
+    public String upload(MultipartFile file, String directory) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
         // 원본의 확장자만 추출하여 고유한 파일 이름 설정
-        String filename = getFilePath(file.getOriginalFilename(), username);
+        String filename = getFilePath(file.getOriginalFilename(), directory);
 
         // 파일의 InputStream을 가져와 업로드
         try (InputStream inputStream = file.getInputStream()) {
@@ -59,18 +57,12 @@ public class S3Service {
     }
 
 
-    private String getFilePath(String filename, String username) {
+    private String getFilePath(String filename, String directory) {
         String extension = filename != null
                 ? filename.substring(filename.lastIndexOf("."))
                 : "";
-        String uniqueFilename = username + "-" + UUID.randomUUID();
-        String path = activeProfile + "/";
+        String uniqueFilename = UUID.randomUUID().toString();
+        String path = activeProfile + "/" + directory + "/";
         return path + uniqueFilename + extension;
-    }
-
-
-    @Recover
-    private String recover(Exception e, MultipartFile file){
-        throw new CustomException(ErrorCode.FAILED_UPLOAD);
     }
 }

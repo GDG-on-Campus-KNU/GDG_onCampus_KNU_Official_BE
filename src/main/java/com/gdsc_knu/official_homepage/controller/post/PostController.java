@@ -1,6 +1,5 @@
 package com.gdsc_knu.official_homepage.controller.post;
 
-
 import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
@@ -8,9 +7,14 @@ import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
+import com.gdsc_knu.official_homepage.dto.fileupload.FileUploadRequest;
+import com.gdsc_knu.official_homepage.dto.fileupload.FileUploadResponse;
+import com.gdsc_knu.official_homepage.service.fileupload.FileUploader;
+
 import com.gdsc_knu.official_homepage.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final FileUploader fileUploader;
+
     @GetMapping()
     @Operation(summary = "게시글 목록 조회 API", description = "게시글 목록을 조회한다. 카테고리별로 조회할 수 있다. 없으면 전체 조회를 한다.")
     public ResponseEntity<PagingResponse<PostResponse.Main>> getPostList(@RequestParam(value = "category", required = false) Category category,
@@ -92,7 +98,7 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "검색 API", description = "제목, 부제목, 본문 내용에 키워드 포함 여부로 게시글을 검색한다.")
+    @Operation(summary = "게시글 검색 API", description = "제목, 부제목, 본문 내용에 키워드 포함 여부로 게시글을 검색한다.")
     public ResponseEntity<PagingResponse<PostResponse.Main>> searchPosts(@RequestParam(value = "keyword") String keyword,
                                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                                          @RequestParam(value = "size", defaultValue = "20") int size) {
@@ -106,5 +112,14 @@ public class PostController {
             @RequestParam(value = "size", defaultValue = "5") int size)
     {
         return ResponseEntity.ok().body(postService.getTrendingPosts(category, size));
+    }
+
+    @PostMapping(value = "image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "이미지 업로드")
+    public ResponseEntity<FileUploadResponse> uploadImage(@Valid @ModelAttribute FileUploadRequest.Create request) {
+        String url = fileUploader.upload(request.getImage(), "post");
+        return ResponseEntity.ok().body(FileUploadResponse.of(url));
     }
 }

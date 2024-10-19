@@ -1,6 +1,5 @@
 package com.gdsc_knu.official_homepage.dto.fileupload;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

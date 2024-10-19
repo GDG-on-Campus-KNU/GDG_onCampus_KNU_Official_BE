@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Slf4j
 @Component
-@Profile("local")
-public class LocalUploader implements FileUploader{
+@Profile({"!dev && !prod"})
+public class LocalUploader implements FileUploader {
     @Value("${local.storage.path}")
     private String uploadPath;
     @Override

@@ -38,6 +38,9 @@ spring:
   sql:
     init:
       mode: never
+local:
+  storage:
+    path: ${LOCAL_FILE_STORAGE:ubuntu/home/images}
 ---
 spring:
   config:

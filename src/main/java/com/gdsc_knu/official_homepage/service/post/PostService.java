@@ -1,40 +1,29 @@
 package com.gdsc_knu.official_homepage.service.post;
 
+import com.gdsc_knu.official_homepage.dto.PagingResponse;
+import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.dto.post.PostResponse;
-import com.gdsc_knu.official_homepage.entity.post.Post;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
-import com.gdsc_knu.official_homepage.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 
 import java.util.List;
 
+public interface PostService {
+    void createPost(Long memberId, PostRequest.Create postRequest);
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class PostService {
-    private final PostRepository postRepository;
+    PostResponse.Detail getPost(Long memberId, Long postId);
 
-    @Transactional(readOnly = true)
-    @Cacheable(value = "trending-post", key = "'Is '+#category", unless="#result.size()<5")
-    public List<PostResponse.Main> getTrendingPosts(Category category, int size) {
-        List<Post> posts = postRepository.findTop5ByCategory(category, size);
-        return posts.stream().map(PostResponse.Main::from).toList();
-    }
+    PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size);
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void invokeClearPost() {
-        clearTrendingPosts();
-    }
+    PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, PostStatus status, int page, int size);
 
-    @CacheEvict(value = "trending-post", allEntries = true, beforeInvocation = true)
-    public void clearTrendingPosts() {
-        log.info("trending post 초기화");
-    }
+//    PostResponse.Modify getModifyPost(Long memberId, Long postId);
+
+    void updatePost(Long memberId, Long postId, PostRequest.Update postRequest);
+
+    void deletePost(Long memberId, Long postId);
+
+    PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size);
+  
+    List<PostResponse.Main> getTrendingPosts(Category category, int size);
 }

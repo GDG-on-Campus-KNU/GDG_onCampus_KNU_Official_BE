@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.entity.post;
 
+import com.gdsc_knu.official_homepage.dto.post.PostRequest;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
@@ -47,4 +48,16 @@ public class Post {
     private LocalDateTime publishedAt;
     private LocalDateTime modifiedAt;
 
+    public void update(PostRequest.Update postRequest) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
+        this.thumbnailUrl = postRequest.getThumbnailUrl();
+        this.category = postRequest.getCategory();
+        this.status = postRequest.getStatus();
+        this.modifiedAt = LocalDateTime.now();
+    }
+
+    public boolean isSaved() {
+        return this.status.equals(PostStatus.SAVED);
+    }
 }

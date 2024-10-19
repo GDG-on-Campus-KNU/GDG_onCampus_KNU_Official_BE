@@ -35,6 +35,7 @@ public enum ErrorCode {
 
     // Post
     POST_NOT_FOUND(404, HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."),
+    POST_FORBIDDEN(403, HttpStatus.FORBIDDEN, "게시글을 수정할 수 있는 권한이 없습니다."),
 
     // Comment
     COMMENT_NOT_FOUND(404, HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),

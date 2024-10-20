@@ -118,7 +118,7 @@ public class Application extends BaseTimeEntity {
     }
 
     public void updateStatus(ApplicationStatus status) {
-        if (this.applicationStatus == ApplicationStatus.SAVED){
+        if (this.applicationStatus != ApplicationStatus.TEMPORAL){
             this.applicationStatus = status;
         }
     }

@@ -75,7 +75,7 @@ public class MailService {
             mailSender.send(message);
         } catch (MessagingException | MailException e) {
             redisRepository.addData(REDIS_KEY, email);
-            throw new CustomException(ErrorCode.FAILED_SEND_MAIL, email + "의 메일 전송에 실패하였습니다: " + e.getMessage());
+            throw new CustomException(ErrorCode.FAILED_SEND_MAIL);
         }
     }
 

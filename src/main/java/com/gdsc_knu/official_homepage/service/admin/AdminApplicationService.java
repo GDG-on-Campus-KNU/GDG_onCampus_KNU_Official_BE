@@ -52,7 +52,7 @@ public class AdminApplicationService {
     }
 
     private void addDefaultTrack(Map<String, Integer> trackCountMap){
-        Arrays.stream(Track.values())
+        Arrays.stream(Track.getValidTrack())
                 .forEach(track -> trackCountMap.putIfAbsent(track.name(), 0));
     }
 

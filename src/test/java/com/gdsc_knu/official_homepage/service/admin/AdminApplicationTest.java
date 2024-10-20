@@ -80,6 +80,7 @@ public class AdminApplicationTest {
         assertThat(statistic.get("AI")).isEqualTo(2);
         assertThat(statistic.get("DESIGNER")).isEqualTo(0);
         assertThat(statistic.get("TOTAL")).isEqualTo(6);
+        assertThat(statistic.size()).isEqualTo(6);
     }
 
 

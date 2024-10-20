@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.repository;
+package com.gdsc_knu.official_homepage.repository.post;
 
 import com.gdsc_knu.official_homepage.OfficialHomepageApplication;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;
@@ -6,6 +6,7 @@ import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.entity.post.Comment;
 import com.gdsc_knu.official_homepage.entity.post.Post;
+import com.gdsc_knu.official_homepage.repository.CommentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

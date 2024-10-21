@@ -15,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,9 @@ import java.util.stream.Collectors;
 public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
-    private final PlatformTransactionManager transactionManager;
+    private final TransactionTemplate transactionTemplate;
+
+
 
     @Transactional(readOnly = true)
     public AdminApplicationResponse.Statistics getStatistic() {
@@ -50,7 +52,7 @@ public class AdminApplicationService {
     }
 
     private void addDefaultTrack(Map<String, Integer> trackCountMap){
-        Arrays.stream(Track.values())
+        Arrays.stream(Track.getValidTrack())
                 .forEach(track -> trackCountMap.putIfAbsent(track.name(), 0));
     }
 
@@ -78,24 +80,17 @@ public class AdminApplicationService {
     }
 
 
-    public void decideApplication(Long id, ApplicationStatus status) {
+    /**
+     * 메일 전송에 실패해도 status 롤백하지 않는다.
+     * 관리자 기능이므로 비동기로 처리하지 않고, 실행결과를 알려준다.
+     */
+    public void decideApplication(Long id, ApplicationStatus applicationStatus) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
-        updateApplicationStatus(application, status);
+        transactionTemplate.executeWithoutResult(
+                status -> application.updateStatus(applicationStatus)
+        );
         mailService.sendEach(application);
-    }
-
-    private void updateApplicationStatus(Application application, ApplicationStatus status) {
-        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.executeWithoutResult(transactionStatus -> {
-            if (status == ApplicationStatus.APPROVED) {
-                application.approve();
-            } else if (status == ApplicationStatus.REJECTED) {
-                application.reject();
-            } else {
-                throw new CustomException(ErrorCode.INVALID_APPLICATION_STATE);
-            }
-        });
     }
 
 

@@ -117,12 +117,10 @@ public class Application extends BaseTimeEntity {
         this.isMarked = !this.isMarked;
     }
 
-    public void approve() {
-        this.applicationStatus = ApplicationStatus.APPROVED;
-    }
-
-    public void reject() {
-        this.applicationStatus = ApplicationStatus.REJECTED;
+    public void updateStatus(ApplicationStatus status) {
+        if (this.applicationStatus != ApplicationStatus.TEMPORAL){
+            this.applicationStatus = status;
+        }
     }
 
     public void saveNote(String note) {

@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -36,15 +37,15 @@ class CommentServiceTest {
 
     private final Long memberId = 1L;
     private final Long postId = 1L;
-    private final Long postAuthorId = 2L;
-    private final Long commentAuthorId = 3L;
+    private final Optional<Member> author = createAuthor(memberId);
+    private final Optional<Post> post = createPost(memberId);
 
     @Test
     @DisplayName("댓글이 정상적으로 저장된다")
     void saveComment() {
         // given
-        when(postRepository.findById(postId)).thenReturn(createPost());
-        when(memberRepository.findById(memberId)).thenReturn(createAuthor(memberId));
+        when(postRepository.findById(postId)).thenReturn(post);
+        when(memberRepository.findById(memberId)).thenReturn(author);
         // when
         commentService.createComment(memberId, postId, new CommentRequest.Create(null, "댓글 내용"));
         // then
@@ -55,35 +56,31 @@ class CommentServiceTest {
     @DisplayName("존재하지 않는 댓글에 답글을 남기면 오류를 발생시킨다.")
     void saveCommentInvalidParent() {
         // given
-        when(postRepository.findById(postId)).thenReturn(createPost());
+        when(postRepository.findById(postId)).thenReturn(createPost(memberId));
         when(memberRepository.findById(memberId)).thenReturn(createAuthor(memberId));
-        // when
-        Long fakeParentId = 1L;
-        Exception exception = assertThrows(CustomException.class, () ->
-            commentService.createComment(memberId, postId, new CommentRequest.Create(fakeParentId, "댓글 내용"))
-        );
-        //then
-        assertEquals(ErrorCode.COMMENT_NOT_FOUND.getMessage(), exception.getMessage());
+        Long notExistCommentId = 1L;
+        CommentRequest.Create request = new CommentRequest.Create(notExistCommentId, "댓글 내용");
+
+        // when && then
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() ->
+                        commentService.createComment(memberId, postId, request)
+                ).withMessage(ErrorCode.COMMENT_NOT_FOUND.getMessage());
     }
 
-    //TODO: 통합테스트
-    @Test
-    @DisplayName("댓글의 순서가 올바르게 조회된다")
-    void getComment() {
-
-    }
 
     @Test
     @DisplayName("댓글 작성자는 본인이 작성한 댓글을 수정, 삭제할 수 있다.")
     void getCommentByCommentAuthor() {
-        // given
-        long commentAuthorId = memberId;
-        when(postRepository.findById(postId)).thenReturn(createPostWithAuthor(postAuthorId));
-        Comment comment = createComment(commentAuthorId);
+        // given (댓글을 본인이 작성했으나, 게시글은 본인이 작성한게 아닌 경우)
+        long postAuthorId = 2L;
+        when(postRepository.findById(postId)).thenReturn(createPost(postAuthorId));
+        Comment comment = createComment(memberId);
         when(commentRepository.findCommentAndReply(PageRequest.of(0,5), postId))
                 .thenReturn(new PageImpl<>(Collections.singletonList(comment)));
         // when
-        PagingResponse<CommentResponse> response = commentService.getComment(memberId, postId, PageRequest.of(0,5));
+        PageRequest page = PageRequest.of(0,5);
+        PagingResponse<CommentResponse> response = commentService.getComment(memberId, postId, page);
 
         // then
         assertTrue(response.getData().get(0).isCanModify());
@@ -93,14 +90,15 @@ class CommentServiceTest {
     @Test
     @DisplayName("게시글 작성자는 해당 게시글의 댓글을 삭제할 수 있고, 수정할 수 없다.")
     void getCommentByPostAuthor() {
-        //given
-        long postAuthorId = memberId;
-        when(postRepository.findById(postId)).thenReturn(createPostWithAuthor(postAuthorId));
+        //given (본인의 게시글에 다른 사람의 댓글이 존재하는 경우)
+        long commentAuthorId = 3L;
+        when(postRepository.findById(postId)).thenReturn(createPost(memberId));
         Comment comment = createComment(commentAuthorId);
         when(commentRepository.findCommentAndReply(PageRequest.of(0,5), postId))
                 .thenReturn(new PageImpl<>(Collections.singletonList(comment)));
         // when
-        PagingResponse<CommentResponse> response = commentService.getComment(memberId, postId, PageRequest.of(0,5));
+        PageRequest page = PageRequest.of(0,5);
+        PagingResponse<CommentResponse> response = commentService.getComment(memberId, postId, page);
 
         // then
         assertFalse(response.getData().get(0).isCanModify());
@@ -113,37 +111,27 @@ class CommentServiceTest {
 
 
 
-    public Optional<Post> createPost() {
+    private Optional<Post> createPost(long authorId) {
         return Optional.ofNullable(Post.builder()
                 .id(postId)
+                .member(createAuthor(authorId).get())
                 .build());
     }
 
-    public Optional<Post> createPostWithAuthor(long authorId) {
-        Member member = createAuthor(authorId).get();
-        return Optional.ofNullable(Post.builder()
-                .id(postId)
-                .member(member)
-                .build());
-    }
-
-    public Comment createComment(long authorId) {
+    private Comment createComment(long authorId) {
         Member author = createAuthor(authorId).get();
+        Comment parent = Comment.builder()
+                .id(1L)
+                .build();
         return Comment.builder()
                 .id(postId)
                 .content("댓글")
                 .author(author)
-                .parent(fakeParentComment())
+                .parent(parent)
                 .build();
     }
 
-    public Comment fakeParentComment() {
-        return Comment.builder()
-                .id(1L)
-                .build();
-    }
-
-    public Optional<Member> createAuthor(long id) {
+    private Optional<Member> createAuthor(long id) {
         return Optional.ofNullable(Member.builder()
                 .id(id)
                 .email("email@email.com")

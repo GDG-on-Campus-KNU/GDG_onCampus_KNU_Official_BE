@@ -97,9 +97,9 @@ public class AdminApplicationTest {
 
     private Application createApplicationByTrack(int id, Track track, ApplicationStatus status) {
         return Application.builder()
-                .email("test"+id+"@email.com")
-                .studentNumber("202400"+id)
-                .phoneNumber("010-0000-"+id)
+                .email(String.format("test%s@email.com", id))
+                .studentNumber(String.valueOf(id))
+                .phoneNumber(String.format("010-0000-%s", id))
                 .applicationStatus(status)
                 .track(track)
                 .build();

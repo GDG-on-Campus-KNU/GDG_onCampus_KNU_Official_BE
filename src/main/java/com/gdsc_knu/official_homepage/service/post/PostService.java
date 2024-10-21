@@ -26,4 +26,8 @@ public interface PostService {
     PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size);
   
     List<PostResponse.Main> getTrendingPosts(Category category, int size);
+
+    void likePost(Long memberId, Long postId);
+
+    void unlikePost(Long memberId, Long postId);
 }

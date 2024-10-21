@@ -43,7 +43,7 @@ public class PostResponse {
                     .category(post.getCategory().name())
                     .createAt(post.getPublishedAt())
                     .likeCount(post.getLikeCount())
-                    .commentCount(post.getCommentList().size())
+                    .commentCount(post.getCommentCount())
                     .sharedCount(post.getSharedCount())
                     .build();
 
@@ -83,7 +83,7 @@ public class PostResponse {
                     .authorName(post.getMember().getName())
                     .createAt(post.getPublishedAt())
                     .likeCount(post.getLikeCount())
-                    .commentCount(post.getCommentList().size())
+                    .commentCount(post.getCommentCount())
                     .sharedCount(post.getSharedCount())
                     .canDelete(access.canDelete())
                     .canModify(access.canModify())

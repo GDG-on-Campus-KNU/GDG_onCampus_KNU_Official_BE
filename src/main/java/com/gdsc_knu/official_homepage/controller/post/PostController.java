@@ -104,7 +104,23 @@ public class PostController {
                                                                          @RequestParam(value = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok().body(postService.searchPostList(keyword, page, size));
     }
-  
+
+    @PostMapping("/{postId}/like")
+    @Operation(summary = "게시글 좋아요 API", description = "게시글에 좋아요를 누른다. 이미 좋아요를 누른 게시글이면 예외가 발생한다.")
+    public ResponseEntity<Void> likePost(@TokenMember JwtMemberDetail jwtMemberDetail,
+                                         @PathVariable("postId") Long postId) {
+        postService.likePost(jwtMemberDetail.getId(), postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{postId}/like")
+    @Operation(summary = "게시글 좋아요 취소 API", description = "게시글에 좋아요를 취소한다. 좋아요를 누르지 않은 게시글이면 예외가 발생한다.")
+    public ResponseEntity<Void> unlikePost(@TokenMember JwtMemberDetail jwtMemberDetail,
+                                           @PathVariable("postId") Long postId) {
+        postService.unlikePost(jwtMemberDetail.getId(), postId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("trending")
     @Operation(summary = "카테고리별 인기글 5개 조회", description = "category가 null이면 전제를 조회한다.")
     public ResponseEntity<List<PostResponse.Main>> getTrendingPosts(

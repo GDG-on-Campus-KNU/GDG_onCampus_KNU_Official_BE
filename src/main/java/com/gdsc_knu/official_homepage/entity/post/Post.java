@@ -68,4 +68,12 @@ public class Post {
     public void subtractCommentCount(int deleteCount) {
         this.commentCount =- deleteCount;
     }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    public void subtractLikeCount() {
+        this.likeCount--;
+    }
 }

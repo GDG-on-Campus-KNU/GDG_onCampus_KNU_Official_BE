@@ -65,7 +65,8 @@ public class PostServiceImpl implements PostService {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
         AccessModel access = getPostAccess(memberId, post.getMember().getId());
-        return PostResponse.Detail.from(post, access);
+        boolean isLiked = memberId != 0L && postLikeRepository.findByMemberIdAndPostId(memberId, postId).isPresent();
+        return PostResponse.Detail.from(post, access, isLiked);
     }
 
     /**

@@ -70,8 +70,9 @@ public class PostResponse {
         private int sharedCount;
         private boolean canDelete;
         private boolean canModify;
+        private boolean isLiked;
 
-        public static Detail from(Post post, AccessModel access) {
+        public static Detail from(Post post, AccessModel access, boolean isLiked) {
             int length = Math.min(post.getContent().length(), 20);
             return Detail.builder()
                     .id(post.getId())
@@ -87,6 +88,7 @@ public class PostResponse {
                     .sharedCount(post.getSharedCount())
                     .canDelete(access.canDelete())
                     .canModify(access.canModify())
+                    .isLiked(isLiked)
                     .build();
 
         }

@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.service.post;
+package com.gdsc_knu.official_homepage.post.comment;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.post.CommentRequest;
@@ -11,6 +11,7 @@ import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.CommentRepository;
 import com.gdsc_knu.official_homepage.repository.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.PostRepository;
+import com.gdsc_knu.official_homepage.service.post.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

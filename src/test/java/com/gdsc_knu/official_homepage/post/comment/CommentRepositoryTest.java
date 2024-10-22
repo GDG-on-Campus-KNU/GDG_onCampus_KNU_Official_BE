@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.repository.post;
+package com.gdsc_knu.official_homepage.post.comment;
 
 import com.gdsc_knu.official_homepage.OfficialHomepageApplication;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;

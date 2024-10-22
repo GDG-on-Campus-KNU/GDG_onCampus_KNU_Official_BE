@@ -18,10 +18,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberInfoServiceImpl implements MemberInfoService {
+public class MemberService {
     private final MemberRepository memberRepository;
 
-    @Override
     @Transactional(readOnly = true)
     public MemberResponse.Main getMemberInfo(Long id) {
         Member member = memberRepository.findById(id)
@@ -29,7 +28,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         return MemberResponse.Main.from(member);
     }
 
-    @Override
     @Transactional
     public void addMemberInfo(Long id, MemberRequest.Append request) {
         Member member = memberRepository.findById(id)
@@ -45,7 +43,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
      * 중간테이블이라 인덱스도 다 있고
      * join하는 데이터가 많지 않아서 SQL쿼리로 한번에 가져오는 것도 좋을 것 같아요
      */
-    @Override
     @Transactional(readOnly = true)
     public List<TeamResponse.Main> getMemberTeamInfo(Long id) {
         return memberRepository.findById(id)
@@ -56,7 +53,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 .toList();
     }
 
-    @Override
     @Transactional
     public Member getMemberAdmin(String email, Track track, Role role) {
         Member member = memberRepository.findByEmail(email).orElseThrow();

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 
 
 @SpringBootTest
+@Transactional
 public class AdminApplicationTest {
     @Autowired private AdminApplicationService applicationService;
     @Autowired private ApplicationRepository applicationRepository;
@@ -35,9 +38,18 @@ public class AdminApplicationTest {
     }
 
     @Test
-    @DisplayName("메일 전송에 실패하더라도 status 변경은 저장한다.")
+    @DisplayName("메일 전송에 실패하더라도 status 변경은 저장한다.(SAVED -> APPROVED")
     void updateStatus() {
-
+        // given
+        Application application = createApplication(ApplicationStatus.SAVED);
+        applicationRepository.save(application);
+        doThrow(CustomException.class).when(mailService).sendEach(application);
+        // when
+        // then
+        assertThrows(CustomException.class, () ->
+                applicationService.decideApplication(application.getId(), ApplicationStatus.APPROVED)
+        );
+        assertThat(application.getApplicationStatus()).isEqualTo(ApplicationStatus.APPROVED);
     }
 
     @Test
@@ -46,7 +58,6 @@ public class AdminApplicationTest {
         // given
         Application application = createApplication(ApplicationStatus.TEMPORAL);
         applicationRepository.save(application);
-        doThrow(CustomException.class).when(mailService).sendEach(application);
         // when
         applicationService.decideApplication(application.getId(), ApplicationStatus.APPROVED);
         // then

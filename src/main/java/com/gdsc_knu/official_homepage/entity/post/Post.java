@@ -60,4 +60,20 @@ public class Post {
     public boolean isSaved() {
         return this.status.equals(PostStatus.SAVED);
     }
+
+    public void addCommentCount() {
+        this.commentCount++;
+    }
+
+    public void subtractCommentCount(int deleteCount) {
+        this.commentCount =- deleteCount;
+    }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    public void subtractLikeCount() {
+        this.likeCount--;
+    }
 }

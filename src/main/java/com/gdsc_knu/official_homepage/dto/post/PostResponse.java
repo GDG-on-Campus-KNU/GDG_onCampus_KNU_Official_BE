@@ -43,7 +43,7 @@ public class PostResponse {
                     .category(post.getCategory().name())
                     .createAt(post.getPublishedAt())
                     .likeCount(post.getLikeCount())
-                    .commentCount(post.getCommentList().size())
+                    .commentCount(post.getCommentCount())
                     .sharedCount(post.getSharedCount())
                     .build();
 
@@ -70,8 +70,9 @@ public class PostResponse {
         private int sharedCount;
         private boolean canDelete;
         private boolean canModify;
+        private boolean isLiked;
 
-        public static Detail from(Post post, AccessModel access) {
+        public static Detail from(Post post, AccessModel access, boolean isLiked) {
             int length = Math.min(post.getContent().length(), 20);
             return Detail.builder()
                     .id(post.getId())
@@ -83,10 +84,11 @@ public class PostResponse {
                     .authorName(post.getMember().getName())
                     .createAt(post.getPublishedAt())
                     .likeCount(post.getLikeCount())
-                    .commentCount(post.getCommentList().size())
+                    .commentCount(post.getCommentCount())
                     .sharedCount(post.getSharedCount())
                     .canDelete(access.canDelete())
                     .canModify(access.canModify())
+                    .isLiked(isLiked)
                     .build();
 
         }

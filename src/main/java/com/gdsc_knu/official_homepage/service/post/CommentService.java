@@ -35,6 +35,7 @@ public class CommentService {
         Comment parent = getParentComment(request.getGroupId());
         Comment comment = Comment.from(request.getContent(), member, post, parent);
         commentRepository.save(comment);
+        post.addCommentCount();
     }
 
     private Comment getParentComment(Long parentId) {
@@ -91,6 +92,8 @@ public class CommentService {
         if (!comment.getAuthor().getId().equals(memberId)) {
             throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
         }
+        int deleteCount = 1 + comment.getReplies().size();
         commentRepository.delete(comment);
+        comment.getPost().subtractCommentCount(deleteCount);
     }
 }

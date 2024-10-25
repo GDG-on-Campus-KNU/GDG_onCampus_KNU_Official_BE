@@ -4,7 +4,7 @@ import com.gdsc_knu.official_homepage.annotation.TokenMember;
 import com.gdsc_knu.official_homepage.authentication.jwt.JwtMemberDetail;
 import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
 import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
-import com.gdsc_knu.official_homepage.service.MemberInfoService;
+import com.gdsc_knu.official_homepage.service.MemberService;
 import com.gdsc_knu.official_homepage.service.team.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamService teamService;
-    private final MemberInfoService memberInfoService;
+    private final MemberService memberService;
 
     @GetMapping("/{teamId}/member")
     @Operation(summary = "팀원 정보 조회 API",
@@ -33,6 +33,6 @@ public class TeamController {
     @Operation(summary="현재 로그인한 사용자가 속한 팀 정보 조회 API",
             description = "현재 로그인한 사용자가 속한 팀 정보(팀 ID, 팀 이름) 리스트를 반환합니다.")
     public ResponseEntity<List<TeamResponse.Main>> getMemberTeamInfo(@TokenMember JwtMemberDetail jwtMemberDetail){
-        return ResponseEntity.ok().body(memberInfoService.getMemberTeamInfo(jwtMemberDetail.getId()));
+        return ResponseEntity.ok().body(memberService.getMemberTeamInfo(jwtMemberDetail.getId()));
     }
 }

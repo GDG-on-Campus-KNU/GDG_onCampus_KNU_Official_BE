@@ -58,20 +58,16 @@ public class CommentService {
         Long postAuthorId = post.getMember().getId();
 
         Page<Comment> commentPage = commentRepository.findCommentAndReply(pageRequest, postId);
-
-        int size = pageRequest.getPageSize();
-        return PagingResponse.withoutCountFrom(commentPage, size, comment -> {
-            Long commentAuthorId = comment.getAuthor().getId();
-            AccessModel access = getAccess(memberId, postAuthorId, commentAuthorId);
-            return CommentResponse.from(comment, access);
-        });
+        return createPagingResponse(commentPage, memberId, postAuthorId);
     }
 
-    // post 조회에서도 해당 메서드가 사용될 수 있을 것 같아 protected 로 설정
-    protected AccessModel getAccess(Long memberId, Long postAuthorId, Long commentAuthorId) {
-        boolean canDelete = memberId.equals(postAuthorId) || memberId.equals(commentAuthorId);
-        boolean canModify = memberId.equals(commentAuthorId);
-        return AccessModel.of(canDelete, canModify);
+    private PagingResponse<CommentResponse> createPagingResponse(Page<Comment> commentPage, Long memberId, Long postAuthorId) {
+        int size = commentPage.getSize();
+        return PagingResponse.withoutCountFrom(commentPage, size, comment -> {
+            Long commentAuthorId = comment.getAuthor().getId();
+            AccessModel access = AccessModel.calcCommentAccess(memberId, postAuthorId, commentAuthorId);
+            return CommentResponse.from(comment, access);
+        });
     }
 
 

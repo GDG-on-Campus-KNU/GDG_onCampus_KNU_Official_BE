@@ -64,7 +64,8 @@ public class PostServiceImpl implements PostService {
         if (!post.isSaved()) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
-        AccessModel access = getPostAccess(memberId, post.getMember().getId());
+
+        AccessModel access = AccessModel.calcPostAccess(memberId, post.getMember());
         boolean isLiked = memberId != 0L && postLikeRepository.findByMemberIdAndPostId(memberId, postId).isPresent();
         return PostResponse.Detail.from(post, access, isLiked);
     }
@@ -188,11 +189,4 @@ public class PostServiceImpl implements PostService {
         log.info("trending post 초기화");
     }
 
-    private AccessModel getPostAccess(Long memberId, Long postAuthorId) {
-        boolean canModify = memberId.equals(postAuthorId);
-        boolean canDelete = memberId.equals(postAuthorId) || memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
-                .getRole().equals(Role.ROLE_CORE);
-        return AccessModel.of(canDelete, canModify);
-    }
 }

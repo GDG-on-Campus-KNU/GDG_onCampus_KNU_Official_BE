@@ -80,7 +80,6 @@ public class MemberServiceTest {
     private Team assignedTeam(Team parent) {
         Team team = Team.builder()
                 .build();
-        parent.addSubTeam(team);
         return team;
     }
 

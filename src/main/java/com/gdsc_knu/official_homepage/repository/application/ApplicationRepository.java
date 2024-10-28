@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.repository;
+package com.gdsc_knu.official_homepage.repository.application;
 
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;

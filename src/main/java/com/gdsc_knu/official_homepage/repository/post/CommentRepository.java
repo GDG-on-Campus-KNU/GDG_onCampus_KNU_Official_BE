@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.repository;
+package com.gdsc_knu.official_homepage.repository.post;
 
 import com.gdsc_knu.official_homepage.entity.post.Comment;
 import org.springframework.data.domain.Page;

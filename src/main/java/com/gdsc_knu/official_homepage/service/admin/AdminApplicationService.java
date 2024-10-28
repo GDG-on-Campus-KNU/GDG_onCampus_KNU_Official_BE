@@ -9,7 +9,7 @@ import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

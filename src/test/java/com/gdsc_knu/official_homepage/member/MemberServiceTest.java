@@ -6,7 +6,7 @@ import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
-import com.gdsc_knu.official_homepage.repository.MemberRepository;
+import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import com.gdsc_knu.official_homepage.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

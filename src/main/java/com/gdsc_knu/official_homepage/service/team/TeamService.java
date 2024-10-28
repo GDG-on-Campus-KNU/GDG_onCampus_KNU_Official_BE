@@ -5,8 +5,8 @@ import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.repository.MemberTeamRepository;
-import com.gdsc_knu.official_homepage.repository.TeamRepository;
+import com.gdsc_knu.official_homepage.repository.team.MemberTeamRepository;
+import com.gdsc_knu.official_homepage.repository.team.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

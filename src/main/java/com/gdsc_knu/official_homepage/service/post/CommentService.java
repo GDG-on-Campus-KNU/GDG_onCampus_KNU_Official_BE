@@ -35,19 +35,20 @@ public class CommentService {
         Comment parent = getParentComment(request.getGroupId());
         Comment comment = Comment.from(request.getContent(), member, post, parent);
         commentRepository.save(comment);
-        post.addCommentCount();
     }
 
     private Comment getParentComment(Long parentId) {
-        if (parentId != null && parentId != 0) {
-            Comment parent = commentRepository.findById(parentId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-            if (parent.isChild())
-                throw new CustomException(ErrorCode.INVALID_COMMENT);
-            return parent;
+        if (parentId == null || parentId.equals(0L)) {
+            return null;
         }
-        return null;
+        Comment parent = commentRepository.findById(parentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (parent.isChild()) {
+            throw new CustomException(ErrorCode.INVALID_COMMENT);
+        }
+        return parent;
     }
+
 
 
     @Transactional(readOnly = true)
@@ -78,8 +79,7 @@ public class CommentService {
     public void updateComment(Long memberId, Long commentId, CommentRequest.Update request) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-
-        if (!comment.getAuthor().getId().equals(memberId)) {
+        if (!comment.isCommentAuthor(memberId)) {
             throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
         }
         comment.update(request.getContent());
@@ -89,11 +89,10 @@ public class CommentService {
     public void deleteComment(Long memberId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-        if (!comment.getAuthor().getId().equals(memberId)) {
+        if (!comment.isCommentAuthor(memberId)) {
             throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
         }
-        int deleteCount = 1 + comment.getReplies().size();
+        comment.delete();
         commentRepository.delete(comment);
-        comment.getPost().subtractCommentCount(deleteCount);
     }
 }

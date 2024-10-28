@@ -61,12 +61,12 @@ public class Post {
         return this.status.equals(PostStatus.SAVED);
     }
 
-    public void addCommentCount() {
+    protected void addCommentCount() {
         this.commentCount++;
     }
 
-    public void subtractCommentCount(int deleteCount) {
-        this.commentCount =- deleteCount;
+    protected void subtractCommentCount(int deleteCount) {
+        this.commentCount -= deleteCount;
     }
 
     public void addLikeCount() {

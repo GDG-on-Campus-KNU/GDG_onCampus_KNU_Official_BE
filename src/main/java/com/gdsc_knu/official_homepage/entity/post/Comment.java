@@ -53,6 +53,8 @@ public class Comment extends BaseTimeEntity {
                 .authorProfile(author.getProfileUrl())
                 .build();
         comment.parent = (parent == null) ? comment : parent;
+        post.commentList.add(comment);
+        post.addCommentCount();
         return comment;
     }
 
@@ -63,6 +65,17 @@ public class Comment extends BaseTimeEntity {
     public boolean isChild(){
         // 프로퍼티 접근
         return !this.parent.getId().equals(this.id);
+    }
+
+    public boolean isCommentAuthor(Long memberId) {
+        return this.getAuthor().getId().equals(memberId);
+    }
+
+
+    public void delete() {
+        this.post.commentList.remove(this);
+        int deleteCount = 1 + this.getReplies().size();
+        this.post.subtractCommentCount(deleteCount);
     }
 
 

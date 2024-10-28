@@ -60,10 +60,7 @@ public class Team {
     }
 
     public void addMember(Member member) {
-        MemberTeam memberTeam = MemberTeam.builder()
-                .team(this)
-                .member(member)
-                .build();
+        MemberTeam memberTeam = MemberTeam.from(member, this);
         memberTeams.add(memberTeam);
         member.getMemberTeams().add(memberTeam);
     }

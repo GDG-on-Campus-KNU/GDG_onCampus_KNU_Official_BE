@@ -24,21 +24,23 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Post post;
 
-    @Column(length = 4000)
+    @Column(length = 4000, nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Member author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Comment parent;
 
     // 작성자 비정규화
     private String authorName;
     @Column(length = 500)
     private String authorProfile;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Comment parent;
 
     @Builder.Default
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)

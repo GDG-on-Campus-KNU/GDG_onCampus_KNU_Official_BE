@@ -8,23 +8,24 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String teamName;
-
-    @OneToMany(mappedBy = "team")
-    @Builder.Default
-    private List<MemberTeam> memberTeams = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Team parent;
+
+    @OneToMany(mappedBy = "team")
+    @Builder.Default
+    private List<MemberTeam> memberTeams = new ArrayList<>();
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @Builder.Default

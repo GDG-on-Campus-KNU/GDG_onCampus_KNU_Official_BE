@@ -65,4 +65,8 @@ public class Team {
         member.getMemberTeams().add(memberTeam);
     }
 
+    public boolean isAssignedTeam() {
+        return this.parent != null;
+    }
+
 }

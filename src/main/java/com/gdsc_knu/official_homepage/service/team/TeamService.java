@@ -22,7 +22,7 @@ public class TeamService {
     public List<MemberResponse.WithTrack> getTeamMember(Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 팀입니다."));
-        if (team.getParent() == null)
+        if (!team.isAssignedTeam())
             throw new CustomException(ErrorCode.INVALID_INPUT, "정상 배정된 팀이 아닙니다.");
 
         List<MemberTeam> memberTeams = memberTeamRepository.findMembersByTeamId(teamId);

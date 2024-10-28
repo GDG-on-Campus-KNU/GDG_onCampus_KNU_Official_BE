@@ -44,6 +44,7 @@ public class CommentRepositoryTest {
         entityManager.persistAndFlush(author);
 
         post = Post.builder()
+                .title("제목")
                 .member(author)
                 .build();
         entityManager.persistAndFlush(post);

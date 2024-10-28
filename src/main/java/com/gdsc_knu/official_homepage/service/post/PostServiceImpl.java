@@ -147,6 +147,9 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
+    /**
+     * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
+     */
     @Override
     public void likePost(Long memberId, Long postId) {
         postLikeRepository.findByMemberIdAndPostId(memberId, postId)
@@ -158,9 +161,11 @@ public class PostServiceImpl implements PostService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         postLikeRepository.save(PostLike.from(post, member));
-        post.addLikeCount();
     }
 
+    /**
+     * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
+     */
     @Override
     public void unlikePost(Long memberId, Long postId) {
         PostLike postLike = postLikeRepository.findByMemberIdAndPostId(memberId, postId)

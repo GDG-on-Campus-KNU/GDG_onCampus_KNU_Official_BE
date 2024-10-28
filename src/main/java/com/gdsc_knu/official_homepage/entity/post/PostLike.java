@@ -21,6 +21,7 @@ public class PostLike {
     private Member member;
 
     public static PostLike from(Post post, Member member) {
+        post.addLikeCount();
         return PostLike.builder()
                 .post(post)
                 .member(member)

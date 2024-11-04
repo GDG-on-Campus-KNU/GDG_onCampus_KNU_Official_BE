@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.repository;
+package com.gdsc_knu.official_homepage.repository.team;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;

@@ -1,13 +1,13 @@
 package com.gdsc_knu.official_homepage.dto.post;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gdsc_knu.official_homepage.entity.Member;
+import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Builder
 @AllArgsConstructor
 public class AccessModel {
-    @JsonProperty(value = "canDelete")
     private boolean delete;
     private boolean modify;
 
@@ -19,10 +19,24 @@ public class AccessModel {
         return modify;
     }
 
-    public static AccessModel of(boolean canDelete, boolean canModify) {
+    private static AccessModel of(boolean canDelete, boolean canModify) {
         return AccessModel.builder()
                 .delete(canDelete)
                 .modify(canModify)
                 .build();
+    }
+
+
+    public static AccessModel calcCommentAccess(Long memberId, Long postAuthorId, Long commentAuthorId) {
+        boolean canDelete = memberId.equals(postAuthorId) || memberId.equals(commentAuthorId);
+        boolean canModify = memberId.equals(commentAuthorId);
+        return AccessModel.of(canDelete, canModify);
+    }
+
+    public static AccessModel calcPostAccess(Long memberId, Member postAuthor) {
+        boolean canModify = memberId.equals(postAuthor.getId());
+        boolean canDelete = memberId.equals(postAuthor.getId())
+                || postAuthor.getRole().equals(Role.ROLE_CORE);
+        return AccessModel.of(canDelete, canModify);
     }
 }

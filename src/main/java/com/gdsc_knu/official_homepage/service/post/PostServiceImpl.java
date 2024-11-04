@@ -12,9 +12,9 @@ import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.repository.MemberRepository;
-import com.gdsc_knu.official_homepage.repository.PostLikeRepository;
-import com.gdsc_knu.official_homepage.repository.PostRepository;
+import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
+import com.gdsc_knu.official_homepage.repository.post.PostLikeRepository;
+import com.gdsc_knu.official_homepage.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -64,7 +64,8 @@ public class PostServiceImpl implements PostService {
         if (!post.isSaved()) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
-        AccessModel access = getPostAccess(memberId, post.getMember().getId());
+
+        AccessModel access = AccessModel.calcPostAccess(memberId, post.getMember());
         boolean isLiked = memberId != 0L && postLikeRepository.findByMemberIdAndPostId(memberId, postId).isPresent();
         return PostResponse.Detail.from(post, access, isLiked);
     }
@@ -146,6 +147,9 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
+    /**
+     * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
+     */
     @Override
     public void likePost(Long memberId, Long postId) {
         postLikeRepository.findByMemberIdAndPostId(memberId, postId)
@@ -157,9 +161,11 @@ public class PostServiceImpl implements PostService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         postLikeRepository.save(PostLike.from(post, member));
-        post.addLikeCount();
     }
 
+    /**
+     * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
+     */
     @Override
     public void unlikePost(Long memberId, Long postId) {
         PostLike postLike = postLikeRepository.findByMemberIdAndPostId(memberId, postId)
@@ -188,11 +194,4 @@ public class PostServiceImpl implements PostService {
         log.info("trending post 초기화");
     }
 
-    private AccessModel getPostAccess(Long memberId, Long postAuthorId) {
-        boolean canModify = memberId.equals(postAuthorId);
-        boolean canDelete = memberId.equals(postAuthorId) || memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
-                .getRole().equals(Role.ROLE_CORE);
-        return AccessModel.of(canDelete, canModify);
-    }
 }

@@ -21,16 +21,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Comment> commentList = new ArrayList<>();
-
+    @Column(nullable = false)
     private String title;
 
     @Column(length = 65535)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Member member;
 
     private String thumbnailUrl;
@@ -48,6 +46,11 @@ public class Post {
     private LocalDateTime publishedAt;
     private LocalDateTime modifiedAt;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Comment> commentList = new ArrayList<>();
+
+
     public void update(PostRequest.Update postRequest) {
         this.title = postRequest.getTitle();
         this.content = postRequest.getContent();
@@ -61,12 +64,12 @@ public class Post {
         return this.status.equals(PostStatus.SAVED);
     }
 
-    public void addCommentCount() {
+    protected void addCommentCount() {
         this.commentCount++;
     }
 
-    public void subtractCommentCount(int deleteCount) {
-        this.commentCount =- deleteCount;
+    protected void subtractCommentCount(int deleteCount) {
+        this.commentCount -= deleteCount;
     }
 
     public void addLikeCount() {

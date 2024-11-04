@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.repository;
+package com.gdsc_knu.official_homepage.repository.application;
 
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;

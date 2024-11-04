@@ -24,21 +24,23 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Post post;
 
-    @Column(length = 4000)
+    @Column(length = 4000, nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Member author;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Comment parent;
 
     // 작성자 비정규화
     private String authorName;
     @Column(length = 500)
     private String authorProfile;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Comment parent;
 
     @Builder.Default
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -53,6 +55,8 @@ public class Comment extends BaseTimeEntity {
                 .authorProfile(author.getProfileUrl())
                 .build();
         comment.parent = (parent == null) ? comment : parent;
+        post.commentList.add(comment);
+        post.addCommentCount();
         return comment;
     }
 
@@ -63,6 +67,17 @@ public class Comment extends BaseTimeEntity {
     public boolean isChild(){
         // 프로퍼티 접근
         return !this.parent.getId().equals(this.id);
+    }
+
+    public boolean isCommentAuthor(Long memberId) {
+        return this.getAuthor().getId().equals(memberId);
+    }
+
+
+    public void delete() {
+        this.post.commentList.remove(this);
+        int deleteCount = 1 + this.getReplies().size();
+        this.post.subtractCommentCount(deleteCount);
     }
 
 

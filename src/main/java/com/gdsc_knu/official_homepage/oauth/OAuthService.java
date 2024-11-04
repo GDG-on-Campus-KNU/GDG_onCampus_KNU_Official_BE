@@ -7,7 +7,7 @@ import com.gdsc_knu.official_homepage.dto.oauth.GoogleUserInfo;
 import com.gdsc_knu.official_homepage.dto.oauth.LoginResponseDto;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
-import com.gdsc_knu.official_homepage.repository.MemberRepository;
+import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

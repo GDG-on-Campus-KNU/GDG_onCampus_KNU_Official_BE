@@ -15,12 +15,15 @@ public class PostLike {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Member member;
 
     public static PostLike from(Post post, Member member) {
+        post.addLikeCount();
         return PostLike.builder()
                 .post(post)
                 .member(member)

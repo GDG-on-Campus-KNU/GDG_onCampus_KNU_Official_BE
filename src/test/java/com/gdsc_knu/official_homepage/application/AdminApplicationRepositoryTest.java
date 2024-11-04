@@ -5,7 +5,7 @@ import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
-import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

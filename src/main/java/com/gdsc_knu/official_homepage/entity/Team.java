@@ -23,7 +23,7 @@ public class Team {
     @JoinColumn(name = "parent_id")
     private Team parent;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @Builder.Default
     private List<MemberTeam> memberTeams = new ArrayList<>();
 

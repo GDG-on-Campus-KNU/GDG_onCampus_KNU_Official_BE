@@ -54,7 +54,13 @@ public class Comment extends BaseTimeEntity {
                 .authorName(author.getName())
                 .authorProfile(author.getProfileUrl())
                 .build();
-        comment.parent = (parent == null) ? comment : parent;
+        if (parent == null) {
+            comment.parent = comment;
+        }
+        else {
+            comment.parent = parent;
+            parent.replies.add(comment);
+        }
         post.commentList.add(comment);
         post.addCommentCount();
         return comment;

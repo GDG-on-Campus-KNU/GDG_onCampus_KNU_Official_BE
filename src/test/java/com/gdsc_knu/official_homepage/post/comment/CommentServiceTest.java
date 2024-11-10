@@ -53,6 +53,17 @@ class CommentServiceTest {
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
+
+    @Test
+    @DisplayName("댓글이 저장될때 게시글의 댓글 개수 필드가 정상적으로 업데이트되고, 게시글 댓글 컬렉션에 포함된다.")
+    void saveCommentCount() {
+        // given
+        Comment comment1 = Comment.from("댓글 내용", author.orElseThrow(), post.orElseThrow(), null);
+        // when && then
+        assertThat(post.get().getCommentCount()).isEqualTo(1);
+        assertThat(post.get().getCommentList()).containsExactly(comment1);
+    }
+
     @Test
     @DisplayName("존재하지 않는 댓글에 답글을 남기면 오류를 발생시킨다.")
     void saveCommentInvalidParent() {
@@ -104,6 +115,21 @@ class CommentServiceTest {
         // then
         assertFalse(response.getData().get(0).isCanModify());
         assertTrue(response.getData().get(0).isCanDelete());
+    }
+
+
+    @Test
+    @DisplayName("상위 댓글 삭제 시 연관된 하위 댓글 삭제까지의 댓글개수가 정상적으로 업데이트된다.")
+    void deleteParentComment() {
+        // given
+        Comment parent = Comment.from("댓글 내용", author.orElseThrow(), post.orElseThrow(), null);
+        Comment child1 = Comment.from("댓글 내용", author.orElseThrow(), post.orElseThrow(), parent);
+        Comment child2 = Comment.from("댓글 내용", author.orElseThrow(), post.orElseThrow(), parent);
+        // when
+        parent.delete();
+
+        //then
+        assertThat(post.get().getCommentCount()).isEqualTo(0);
     }
 
 

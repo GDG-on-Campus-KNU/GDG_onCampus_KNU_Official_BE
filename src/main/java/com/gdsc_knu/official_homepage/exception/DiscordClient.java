@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 
@@ -27,6 +27,32 @@ public class DiscordClient {
         DiscordMessage discordMessage = createMessage(e, message, status, request);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(webhookUrl, discordMessage, String.class);
+    }
+
+    public void sendAttendance(List<String> names, String track) {
+        DiscordMessage discordMessage = createAttendanceMessage(names, track);
+        RestTemplate restTemplate = new RestTemplate();
+        System.out.print(discordMessage.toString());
+        restTemplate.postForObject(webhookUrl, discordMessage, String.class);
+    }
+
+    private DiscordMessage createAttendanceMessage(List<String> names, String track) {
+        String nameList = "";
+        for (String name : names) {
+            nameList += name+" ";
+        }
+        LocalDate date = LocalDate.now();
+        DiscordMessage.Embed embed = DiscordMessage.Embed.builder()
+                .description(
+                        date +"\n"+
+                        track +"\n"+
+                        nameList
+                )
+                .build();
+        return DiscordMessage.builder()
+                .content("## 세미나 불참자")
+                .embeds(List.of(embed))
+                .build();
     }
 
     private DiscordMessage createMessage(Exception e, String message, HttpStatus status, HttpServletRequest request) {

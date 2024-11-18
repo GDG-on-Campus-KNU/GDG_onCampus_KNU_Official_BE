@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public class ExceptionDto {
-    private int code;
-    private String message;
-    private HttpStatus data;
+    private final int code;
+    private final String message;
+    private final HttpStatus data;
 
     public ExceptionDto(ErrorCode error) {
         this.code = error.getStatus();
-        this.message = error.getMessage();
+        this.message = error.getCode();
         this.data = error.getError();
     }
 

@@ -2,7 +2,7 @@ package com.gdsc_knu.official_homepage.controller.admin;
 
 import com.gdsc_knu.official_homepage.dto.member.MemberResponse;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
-import com.gdsc_knu.official_homepage.exception.DiscordClient;
+import com.gdsc_knu.official_homepage.service.discord.DiscordClient;
 import com.gdsc_knu.official_homepage.service.admin.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

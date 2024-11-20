@@ -22,6 +22,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 
     List<Member> findAllByTrack(Track track);
+
+    @Query("SELECT m FROM " +
+            "Member m " +
+            "WHERE m.track =:track " +
+            "AND m.role = 'ROLE_MEMBER' " +
+            "ORDER BY m.name")
+    List<Member> findAllByTrackOrderByName(Track track);
   
     @Modifying
     @Query("delete from Member m where m.id in :ids")

@@ -26,7 +26,11 @@ spring:
           auth: true
           starttls:
             enable: true
+  thymeleaf:
+    cache: true
+    prefix: classpath:/static/
 logging:
   discord:
     webhook-url: ${DISCORD_WEBHOOK_URL:default}
+    attendance-webhook-url: ${DISCORD_ATTENDANCE_WEBHOOK_URL:default}
 

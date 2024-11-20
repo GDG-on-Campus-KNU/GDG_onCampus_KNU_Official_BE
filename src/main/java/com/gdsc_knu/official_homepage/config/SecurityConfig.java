@@ -8,6 +8,7 @@ import com.gdsc_knu.official_homepage.authentication.jwt.JwtValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,7 +30,9 @@ public class SecurityConfig {
 
 
     private static final String[] WHITE_LIST = {
-            "/**",
+            "/api/post/{postId:\\d+}/comment/**",
+            "/api/post/trending",
+            "/api/post/**"
     };
     private static final String[] MEMBER_AUTHENTICATION_LIST = {
 
@@ -53,6 +56,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers(CORE_AUTHENTICATION_LIST).hasRole("CORE")
+                        .requestMatchers(HttpMethod.GET, WHITE_LIST).permitAll()
                         .anyRequest().permitAll()
                 );
 

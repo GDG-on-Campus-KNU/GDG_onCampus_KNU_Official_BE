@@ -36,6 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-/src/main/resources/**/*.yml
 src/main/resources/static/index.html
+src/main/resources/images/**
 .env

@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.admin.team.*;
-import com.gdsc_knu.official_homepage.dto.member.TeamInfoResponse;
+import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.MemberTeam;
 import com.gdsc_knu.official_homepage.entity.Team;
@@ -9,15 +9,14 @@ import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.repository.MemberRepository;
-import com.gdsc_knu.official_homepage.repository.MemberTeamRepository;
-import com.gdsc_knu.official_homepage.repository.TeamRepository;
+import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
+import com.gdsc_knu.official_homepage.repository.team.MemberTeamRepository;
+import com.gdsc_knu.official_homepage.repository.team.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
                         .id(team.getId())
                         .teamName(team.getTeamName())
                         .subTeams(team.getSubTeams().stream()
-                                .map(TeamInfoResponse::new)
+                                .map(TeamResponse.Main::from)
                                 .toList())
                         .build())
                 .toList();
@@ -56,22 +55,16 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         String teamName = createRequest.getTeamName();
         Track track = createRequest.getTrack();
 
-        Team newTeam = teamRepository.save(Team.builder()
-                .teamName(teamName)
-                .build());
+        Team newTeam = Team.ofName(teamName);
 
+        // TODO: 쿼리에 직접 필터링 조건 추가
         List<Member> members = (track != null)
                 ? memberRepository.findAllByTrack(track)
                 : memberRepository.findAll();
         members.removeIf(member -> member.getRole().equals(Role.ROLE_GUEST) || member.getRole().equals(Role.ROLE_TEMP));
 
-        List<MemberTeam> memberTeams = members.stream()
-                .map(member -> MemberTeam.builder()
-                        .member(member)
-                        .team(newTeam)
-                        .build())
-                .toList();
-        memberTeamRepository.saveAll(memberTeams);
+        members.forEach(newTeam::addMember);
+        teamRepository.save(newTeam);
 
         return newTeam.getId();
     }
@@ -87,11 +80,8 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         Team parentTeam = teamRepository.findById(parentTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "요청한 부모 팀이 존재하지 않습니다."));
 
-        Team newSubTeam = teamRepository.save(Team.builder()
-                .teamName(parentTeam.getTeamName() + " " + (parentTeam.getSubTeams().size() + 1) + "팀")
-                .build());
-        parentTeam.addSubTeam(newSubTeam);
-
+        Team newSubTeam = Team.fromParent(parentTeam);
+        teamRepository.save(newSubTeam);
         return newSubTeam.getId();
     }
 
@@ -170,10 +160,11 @@ public class AdminTeamServiceImpl implements AdminTeamService {
         Team parentTeam = teamRepository.findById(parentTeamId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "요청한 부모 팀이 존재하지 않습니다."));
         List<Team> subTeams = parentTeam.getSubTeams();
+        // 이 부분이 예외로 처리할 부분이 맞는지 의문이 드네용
         if (subTeams.isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_INPUT, "삭제할 서브 팀이 존재하지 않습니다.");
         }
-        long deleteSubTeamId = subTeams.get(parentTeam.getSubTeams().size() - 1).getId();
+        Long deleteSubTeamId = parentTeam.getLastSubTeam().getId();
         // 삭제 될 서브 팀에 속한 멤버들을 부모 팀으로 이동
         List<MemberTeam> memberTeams = memberTeamRepository.findAllMemberTeamByTeamId(deleteSubTeamId);
         for (MemberTeam memberTeam : memberTeams) {

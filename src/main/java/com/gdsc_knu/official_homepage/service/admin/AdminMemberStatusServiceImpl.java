@@ -7,7 +7,7 @@ import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.repository.MemberRepository;
+import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -61,7 +61,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 .map(userId -> {
                     try {
                         Member member = memberRepository.findById(userId)
-                                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
                         member.updateRole(newRole);
                         return 1L;
                     } catch (CustomException e) {
@@ -87,7 +87,7 @@ public class AdminMemberStatusServiceImpl implements AdminMemberStatusService {
                 .map(userId -> {
                     try {
                         Member member = memberRepository.findById(userId)
-                                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+                                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
                         member.updateTrack(newTrack);
                         return 1L;
                     } catch (CustomException e) {

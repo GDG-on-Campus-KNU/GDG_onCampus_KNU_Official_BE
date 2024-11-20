@@ -7,10 +7,7 @@ import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +15,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Application extends BaseTimeEntity {
     @Id
-    @Column(name = "application_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -57,11 +53,11 @@ public class Application extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Track track;
 
+    @Column(length = 2048)
     private String note;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "application_id")
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
     public Application(Member member, ApplicationRequest applicationRequest) {
@@ -118,12 +114,10 @@ public class Application extends BaseTimeEntity {
         this.isMarked = !this.isMarked;
     }
 
-    public void approve() {
-        this.applicationStatus = ApplicationStatus.APPROVED;
-    }
-
-    public void reject() {
-        this.applicationStatus = ApplicationStatus.REJECTED;
+    public void updateStatus(ApplicationStatus status) {
+        if (this.applicationStatus != ApplicationStatus.TEMPORAL){
+            this.applicationStatus = status;
+        }
     }
 
     public void saveNote(String note) {

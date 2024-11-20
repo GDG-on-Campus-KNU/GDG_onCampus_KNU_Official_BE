@@ -4,7 +4,7 @@ import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
-import com.gdsc_knu.official_homepage.repository.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
 import com.gdsc_knu.official_homepage.repository.RedisCustomRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -75,7 +75,7 @@ public class MailService {
             mailSender.send(message);
         } catch (MessagingException | MailException e) {
             redisRepository.addData(REDIS_KEY, email);
-            throw new CustomException(ErrorCode.FAILED_SEND_MAIL, email + "의 메일 전송에 실패하였습니다: " + e.getMessage());
+            throw new CustomException(ErrorCode.FAILED_SEND_MAIL);
         }
     }
 

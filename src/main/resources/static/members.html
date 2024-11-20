@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>출석 체크</title>
+</head>
+<body style="margin-left: 20">
+<h1>출석 체크</h1>
+
+<div>
+    <form th:action="@{/api/member/check}" method="get">
+        <label for="track">트랙:</label>
+        <select name="track" id="track">
+            <option th:each="track : ${tracks}"
+                    th:value="${track}" th:text="${track}"
+                    th:selected="${track == defaultTrack}">
+            </option>
+        </select>
+        <button type="submit">선택</button>
+    </form>
+    <p>참석하지 않은 사람 체크</p>
+    <form th:action="@{/api/member/check/attendance}" method="post">
+        <input type="hidden" name="track" th:value="${defaultTrack}" />
+        <ul style="padding-left: 0; margin-left: 0;">
+            <li style="list-style-type: none; padding: 0; margin: 0;" th:each="member : ${members}">
+                <label>
+                    <input type="checkbox" th:value="${member.name}" name="memberNames" />
+                    <span th:text="${member.name}"></span>
+                </label>
+            </li>
+        </ul>
+        <button type="submit">체크</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+spring: #default, test configuration (H2)
+  datasource:
+    url: jdbc:h2:mem:gdsc
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+local:
+  storage:
+    path: ${LOCAL_FILE_STORAGE:ubuntu/home/images}
+---
+spring: # mysql 공통
+  config:
+    activate:
+      on-profile: local, dev, prod
+  datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa.database-platform: org.hibernate.dialect.MySQL8Dialect
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/gdsc
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: never
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${DEV_DB_PATH}
+    username: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: never
+  data:
+    redis:
+      host: ${REDIS_HOST}
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${PROD_DB_PATH}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: never
+  data:
+    redis:
+      host: ${REDIS_HOST}

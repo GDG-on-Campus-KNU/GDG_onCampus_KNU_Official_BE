@@ -1,0 +1,19 @@
+oauth2: # default
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:default}
+    client-secret: ${GOOGLE_CLIENT_SECRET:default}
+    redirect-uri: ${GOOGLE_DEV_REDIRECT_URI:default}
+    token-uri: https://oauth2.googleapis.com/token
+    userinfo-uri: https://www.googleapis.com/oauth2/v3/userinfo
+jwt:
+  secret: ${JWT_SECRET:aelakjfliwuebnkjshlkjaejdkjsjylakejhfksjdaelakjfliwuebnkjshlkjaejdkjsjylakejhfksjd}
+  access-token-expiration: 3600000
+  refresh-token-expiration: 604800000
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+oauth2:
+  google:
+    redirect-uri: ${GOOGLE_PROD_REDIRECT_URI}

@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationTestEntityFactory {
-    protected static Application createApplication(int id, Track track, ApplicationStatus status) {
+    public static Application createApplication(int id, Track track, ApplicationStatus status) {
         return Application.builder()
+                .id((long) id)
                 .email(String.format("test%s@email.com", id))
                 .studentNumber(String.valueOf(id))
                 .phoneNumber(String.format("010-0000-%s", id))

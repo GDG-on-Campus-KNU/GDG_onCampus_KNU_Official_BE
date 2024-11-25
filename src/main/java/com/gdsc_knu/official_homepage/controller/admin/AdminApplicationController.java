@@ -47,7 +47,7 @@ public class AdminApplicationController {
             isMarked를 비워두거나 false로 설정하면 전체가 조회됩니다.(track도 마찬가지로 비워두면 전체)""")
     public ResponseEntity<PagingResponse<AdminApplicationResponse.Overview>> getApplicationListByOption(
             @RequestParam(value = "track", required = false) Track track,
-            @RequestParam(value = "isMarked", required = false, defaultValue = "false") boolean isMarked,
+            @RequestParam(value = "isMarked", required = false, defaultValue = "false") Boolean isMarked,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size)
 

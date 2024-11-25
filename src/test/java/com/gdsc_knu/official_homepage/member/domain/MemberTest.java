@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.member;
+package com.gdsc_knu.official_homepage.member.domain;
 
 import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
 import com.gdsc_knu.official_homepage.dto.oauth.GoogleUserInfo;

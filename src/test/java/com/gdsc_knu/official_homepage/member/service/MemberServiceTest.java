@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.member;
+package com.gdsc_knu.official_homepage.member.service;
 
 import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
 import com.gdsc_knu.official_homepage.dto.team.TeamResponse;

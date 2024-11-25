@@ -1,9 +1,7 @@
-package com.gdsc_knu.official_homepage.post.comment;
+package com.gdsc_knu.official_homepage.post.service;
 
 import com.gdsc_knu.official_homepage.entity.Member;
-import com.gdsc_knu.official_homepage.entity.post.Comment;
 import com.gdsc_knu.official_homepage.entity.post.Post;
-import com.gdsc_knu.official_homepage.entity.post.PostLike;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.post.PostLikeRepository;
 import com.gdsc_knu.official_homepage.repository.post.PostRepository;

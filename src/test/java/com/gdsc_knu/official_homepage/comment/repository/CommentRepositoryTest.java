@@ -1,5 +1,6 @@
 package com.gdsc_knu.official_homepage.comment.repository;
 
+import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -22,10 +23,11 @@ import java.util.List;
 
 
 @DataJpaTest
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, ClearDatabase.class})
 public class CommentRepositoryTest {
     @Autowired private CommentRepository commentRepository;
     @Autowired private TestEntityManager entityManager;
+    @Autowired private ClearDatabase clearDatabase;
 
     private Member author;
     private Post post;
@@ -43,6 +45,13 @@ public class CommentRepositoryTest {
                 .member(author)
                 .build();
         entityManager.persist(post);
+    }
+
+    @AfterEach
+    void tearDown() {
+        clearDatabase.each("comment");
+        clearDatabase.each("post");
+        clearDatabase.each("member");
     }
 
     @Test

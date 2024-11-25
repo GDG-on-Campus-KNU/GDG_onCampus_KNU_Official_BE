@@ -5,13 +5,10 @@ import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.createApplication;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
 public class ApplicationTest {
     @Test
     @DisplayName("지원서를 열람한 경우 열람상태가 변경된다.")

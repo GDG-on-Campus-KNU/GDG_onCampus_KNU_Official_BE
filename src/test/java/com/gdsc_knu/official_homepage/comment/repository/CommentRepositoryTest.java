@@ -6,9 +6,7 @@ import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.entity.post.Comment;
 import com.gdsc_knu.official_homepage.entity.post.Post;
 import com.gdsc_knu.official_homepage.repository.post.CommentRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -24,7 +22,7 @@ import java.util.List;
 
 
 @DataJpaTest
-@Import(QueryDslConfig.class)
+@Import({QueryDslConfig.class})
 public class CommentRepositoryTest {
     @Autowired private CommentRepository commentRepository;
     @Autowired private TestEntityManager entityManager;
@@ -38,13 +36,13 @@ public class CommentRepositoryTest {
                 .name("테스트 유저")
                 .track(Track.BACK_END)
                 .build();
-        entityManager.persistAndFlush(author);
+        entityManager.persist(author);
 
         post = Post.builder()
                 .title("제목")
                 .member(author)
                 .build();
-        entityManager.persistAndFlush(post);
+        entityManager.persist(post);
     }
 
     @Test

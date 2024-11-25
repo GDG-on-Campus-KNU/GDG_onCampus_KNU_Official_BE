@@ -32,7 +32,7 @@ public class MemberRepositoryTest {
         Member member4 = createMember(4L, "다철수",Track.AI);
         Member member5 = createMember(5L, "라철수",Track.AI);
         ReflectionTestUtils.setField(member5, "role", Role.ROLE_CORE);
-        memberRepository.saveAll(List.of(member1, member2, member3, member4));
+        memberRepository.saveAll(List.of(member1, member2, member3, member4, member5));
 
         // when
         List<Member> memberList = memberRepository.findAllByTrackOrderByName(Track.AI);
@@ -51,6 +51,7 @@ public class MemberRepositoryTest {
 
     private Member createMember(Long id, String name, Track track) {
         return Member.builder()
+                .id(id)
                 .name(name)
                 .email(String.format("test%s@email.com", id))
                 .track(track)

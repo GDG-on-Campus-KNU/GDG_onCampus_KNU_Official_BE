@@ -11,8 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberTest {
@@ -21,11 +19,10 @@ public class MemberTest {
     @DisplayName("최초로 가입한 유저는 Temp 권한을 가지고, 트랙은 UNDEFINED 가 된다.")
     void createFirstMember() {
         // given
-        GoogleUserInfo userInfo = mock(GoogleUserInfo.class);
-        when(userInfo.getName()).thenReturn("테스트 유저");
-        when(userInfo.getEmail()).thenReturn("test.user@email.com");
-        when(userInfo.getPicture()).thenReturn("http://test.png");
-
+        GoogleUserInfo userInfo = new GoogleUserInfo("",
+                "test.user@email.com", false,
+                "테스트 유저", "","",
+                "http://test.png","","");
         // when
         Member member = userInfo.toMember();
 

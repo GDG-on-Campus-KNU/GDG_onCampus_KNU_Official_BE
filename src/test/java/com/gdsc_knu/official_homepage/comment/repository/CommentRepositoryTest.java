@@ -1,6 +1,5 @@
-package com.gdsc_knu.official_homepage.post.comment;
+package com.gdsc_knu.official_homepage.comment.repository;
 
-import com.gdsc_knu.official_homepage.OfficialHomepageApplication;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +25,6 @@ import java.util.List;
 
 @DataJpaTest
 @Import(QueryDslConfig.class)
-@ContextConfiguration(classes = OfficialHomepageApplication.class)
 public class CommentRepositoryTest {
     @Autowired private CommentRepository commentRepository;
     @Autowired private TestEntityManager entityManager;

@@ -1,4 +1,4 @@
-package com.gdsc_knu.official_homepage.application;
+package com.gdsc_knu.official_homepage.application.service;
 
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -15,11 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.createApplicationList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
@@ -119,26 +119,6 @@ public class AdminApplicationServiceTest {
     }
 
 
-
-
-
-    private List<Application> createApplicationList(int startNum, int count, Track track, ApplicationStatus status){
-        List<Application> applicationList = new ArrayList<>();
-        for (int i=startNum; i<count; i++) {
-            applicationList.add(createApplicationByTrack(i, track, status));
-        }
-        return applicationList;
-    }
-
-    private Application createApplicationByTrack(int id, Track track, ApplicationStatus status) {
-        return Application.builder()
-                .email(String.format("test%s@email.com", id))
-                .studentNumber(String.valueOf(id))
-                .phoneNumber(String.format("010-0000-%s", id))
-                .applicationStatus(status)
-                .track(track)
-                .build();
-    }
 
     private Application createApplication(ApplicationStatus status) {
         return Application.builder()

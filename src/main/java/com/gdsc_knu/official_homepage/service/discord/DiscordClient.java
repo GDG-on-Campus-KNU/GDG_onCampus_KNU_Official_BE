@@ -25,13 +25,13 @@ public class DiscordClient {
     public void sendErrorAlert(Exception e, HttpStatus status, HttpServletRequest request) {
         DiscordMessage discordMessage = createMessage(e, status, request);
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject(webhookUrl, discordMessage, String.class);
+        //restTemplate.postForObject(webhookUrl, discordMessage, String.class);
     }
 
     public void sendAttendance(List<String> names, String track) {
         DiscordMessage discordMessage = createAttendanceMessage(names, track);
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject(attendanceWebhookUrl, discordMessage, String.class);
+        //restTemplate.postForObject(attendanceWebhookUrl, discordMessage, String.class);
     }
 
 }

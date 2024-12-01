@@ -32,11 +32,11 @@ public class PagingResponse<T> {
                 .build();
     }
 
-    public static <U,T> PagingResponse<T> withoutCountFrom(Page<U> data, int size, Function<U,T> converter) {
-        boolean hasNext = data.getNumberOfElements() >= size;
+    public static <U,T> PagingResponse<T> withoutCountFrom(List<U> data, int size, Function<U,T> converter) {
+        boolean hasNext = data.size() == size;
 
         return PagingResponse.<T>builder()
-                .data(data.getContent().stream().map(converter).toList())
+                .data(data.stream().map(converter).toList())
                 .hasNext(hasNext)
                 .build();
     }

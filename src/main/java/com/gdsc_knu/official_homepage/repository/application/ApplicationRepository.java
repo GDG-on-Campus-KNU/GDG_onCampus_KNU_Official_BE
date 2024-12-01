@@ -36,7 +36,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
 
     Page<Application> findByNameContaining(Pageable pageable, String name);
 
-    List<Application> findByApplicationStatusIn(List<ApplicationStatus> applicationStatus);
-
     List<Application> findByEmailIn(Set<Object> email);
 }

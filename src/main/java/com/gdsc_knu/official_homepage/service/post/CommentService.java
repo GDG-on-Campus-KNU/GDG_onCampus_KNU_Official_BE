@@ -13,10 +13,11 @@ import com.gdsc_knu.official_homepage.repository.post.CommentRepository;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,16 +56,15 @@ public class CommentService {
     public PagingResponse<CommentResponse> getComment(Long memberId, Long postId, PageRequest pageRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        Long postAuthorId = post.getMember().getId();
+        List<Comment> commentList = commentRepository.findCommentAndReply(pageRequest, postId);
 
-        Page<Comment> commentPage = commentRepository.findCommentAndReply(pageRequest, postId);
-        return createPagingResponse(commentPage, memberId, postAuthorId);
+        Long postAuthorId = post.getMember().getId();
+        return createPagingResponse(commentList, memberId, postAuthorId, (int) pageRequest.getOffset());
     }
 
-    private PagingResponse<CommentResponse> createPagingResponse(Page<Comment> commentPage, Long memberId, Long postAuthorId) {
-        int size = commentPage.getSize();
-        return PagingResponse.withoutCountFrom(commentPage, size, comment -> {
-            Long commentAuthorId = comment.getAuthor().getId();
+    private PagingResponse<CommentResponse> createPagingResponse(List<Comment> commentList, Long memberId, Long postAuthorId, int size) {
+        return PagingResponse.withoutCountFrom(commentList, size, comment -> {
+            Long commentAuthorId = comment.getAuthorId();
             AccessModel access = AccessModel.calcCommentAccess(memberId, postAuthorId, commentAuthorId);
             return CommentResponse.from(comment, access);
         });
@@ -78,7 +78,7 @@ public class CommentService {
         if (!comment.isCommentAuthor(memberId)) {
             throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
         }
-        comment.update(request.getContent());
+        comment.update(request.getContent(), memberId);
     }
 
     @Transactional
@@ -88,7 +88,7 @@ public class CommentService {
         if (!comment.isCommentAuthor(memberId)) {
             throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
         }
-        comment.delete();
+        comment.delete(memberId);
         commentRepository.delete(comment);
     }
 }

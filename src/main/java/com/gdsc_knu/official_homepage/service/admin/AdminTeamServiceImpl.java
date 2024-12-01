@@ -57,11 +57,12 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
         Team newTeam = Team.ofName(teamName);
 
-        // TODO: 쿼리에 직접 필터링 조건 추가
-        List<Member> members = (track != null)
-                ? memberRepository.findAllByTrack(track)
-                : memberRepository.findAll();
-        members.removeIf(member -> member.getRole().equals(Role.ROLE_GUEST) || member.getRole().equals(Role.ROLE_TEMP));
+        // TODO(JPA): 쿼리에 직접 필터링 조건 추가
+        List<Member> members = memberRepository.findAllByTrack(track);
+//        List<Member> members = (track != null)
+//                ? memberRepository.findAllByTrack(track)
+//                : memberRepository.findAll();
+//        members.removeIf(member -> member.getRole().equals(Role.ROLE_GUEST) || member.getRole().equals(Role.ROLE_TEMP));
 
         members.forEach(newTeam::addMember);
         teamRepository.save(newTeam);

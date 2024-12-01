@@ -12,17 +12,18 @@ import java.util.Optional;
 public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
     Optional<MemberTeam> findByMemberIdAndTeamId(Long memberId, Long teamId);
 
+    //TODO: 아래 2개의 쿼리 동일 / DTO 프로젝션 여부
     @Query("SELECT new com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamResponse$TeamMember(m.id, m.name, m.studentNumber, m.profileUrl) " +
             "FROM MemberTeam mt " +
             "JOIN mt.member m " +
             "WHERE mt.team.id = :teamId")
     List<AdminTeamResponse.TeamMember> findAllByTeamId(@Param("teamId") Long teamId);
 
-    List<MemberTeam> findAllMemberTeamByTeamId(Long teamId);
-
     @Query("SELECT mt " +
             "FROM MemberTeam mt " +
             "JOIN FETCH mt.member " +
             "WHERE mt.team.id = :teamId")
     List<MemberTeam> findMembersByTeamId(@Param("teamId") Long teamId);
+
+    List<MemberTeam> findAllMemberTeamByTeamId(Long teamId);
 }

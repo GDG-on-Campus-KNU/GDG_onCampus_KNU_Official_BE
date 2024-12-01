@@ -35,7 +35,7 @@ public class CommentTest {
         Comment child1 = Comment.from("댓글 내용", author, post, parent);
         Comment child2 = Comment.from("댓글 내용", author, post, parent);
         // when
-        parent.delete();
+        parent.delete(author.getId());
 
         //then
         assertThat(post.getCommentCount()).isEqualTo(0);

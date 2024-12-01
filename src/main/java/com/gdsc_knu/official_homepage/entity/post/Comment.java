@@ -3,6 +3,8 @@ package com.gdsc_knu.official_homepage.entity.post;
 
 import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
 import com.gdsc_knu.official_homepage.entity.Member;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,7 @@ public class Comment extends BaseTimeEntity {
     private String authorName;
     @Column(length = 500)
     private String authorProfile;
+    private Long authorId;
 
     @Builder.Default
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -53,6 +56,7 @@ public class Comment extends BaseTimeEntity {
                 .author(author)
                 .authorName(author.getName())
                 .authorProfile(author.getProfileUrl())
+                .authorId(author.getId())
                 .build();
         if (parent == null) {
             comment.parent = comment;
@@ -66,7 +70,10 @@ public class Comment extends BaseTimeEntity {
         return comment;
     }
 
-    public void update(String content) {
+    public void update(String content, long memberId) {
+        if (this.authorId != memberId) {
+            throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
+        }
         this.content = content;
     }
 
@@ -76,11 +83,14 @@ public class Comment extends BaseTimeEntity {
     }
 
     public boolean isCommentAuthor(Long memberId) {
-        return this.getAuthor().getId().equals(memberId);
+        return this.authorId.equals(memberId);
     }
 
 
-    public void delete() {
+    public void delete(long memberId) {
+        if (this.authorId != memberId) {
+            throw new CustomException(ErrorCode.COMMENT_FORBIDDEN);
+        }
         this.post.commentList.remove(this);
         int deleteCount = 1 + this.getReplies().size();
         this.post.subtractCommentCount(deleteCount);

@@ -102,6 +102,7 @@ public class AdminApplicationService {
         return AdminApplicationResponse.Detail.from(application);
     }
 
+    // TODO : 동시성 제어
     @Transactional
     public void noteApplication(Long id, String note) {
         Application application = applicationRepository.findById(id)

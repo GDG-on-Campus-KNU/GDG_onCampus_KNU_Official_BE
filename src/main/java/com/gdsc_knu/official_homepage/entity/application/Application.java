@@ -74,6 +74,7 @@ public class Application extends BaseTimeEntity {
                 .map(answers -> ApplicationAnswer.builder()
                         .questionNumber(answers.getQuestionNumber())
                         .answer(answers.getAnswer())
+                        .application(this)
                         .build()).toList();
     }
 

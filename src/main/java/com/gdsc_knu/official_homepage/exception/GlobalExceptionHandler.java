@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ExceptionDto> exceptionDto(CustomException e, HttpServletRequest request) {
-        if (activeProfiles().contains("local")) {
+        if (activeProfiles().contains("prod")) {
             discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
             return ResponseEntity.status(e.getErrorCode().getError())
                     .body(new ExceptionDto(e.getErrorCode()));

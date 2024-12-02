@@ -20,7 +20,7 @@ import java.util.List;
 public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, boolean isMarked) {
+    public Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, Boolean isMarked) {
         List<Application> applications = jpaQueryFactory
                 .selectFrom(QApplication.application)
                 .where(QApplication.application.applicationStatus.ne(ApplicationStatus.TEMPORAL)
@@ -46,7 +46,7 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
         return track == null ? null : QApplication.application.track.eq(track);
     }
 
-    private BooleanExpression eqIsMarked(boolean isMarked) {
-        return !isMarked ? null : QApplication.application.isMarked.eq(true);
+    private BooleanExpression eqIsMarked(Boolean isMarked) {
+        return (isMarked == null || !isMarked) ? null : QApplication.application.isMarked.eq(true);
     }
 }

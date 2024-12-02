@@ -66,7 +66,7 @@ public class AdminApplicationService {
 
 
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, boolean isMarked){
+    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, Boolean isMarked){
         Page<Application> applicationPage
                 = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked);
         return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);

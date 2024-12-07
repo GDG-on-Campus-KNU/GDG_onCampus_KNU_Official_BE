@@ -26,6 +26,7 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
                 .where(QApplication.application.applicationStatus.ne(ApplicationStatus.TEMPORAL)
                         .and(eqTrack(track))
                         .and(eqIsMarked(isMarked)))
+                .orderBy(QApplication.application.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

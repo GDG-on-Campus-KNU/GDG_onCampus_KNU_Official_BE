@@ -1,8 +1,9 @@
-package sql;
+package sql.insert;
 
 import com.gdsc_knu.official_homepage.entity.post.enumeration.Category;
 import com.gdsc_knu.official_homepage.entity.post.enumeration.PostStatus;
 import lombok.extern.slf4j.Slf4j;
+import sql.DataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

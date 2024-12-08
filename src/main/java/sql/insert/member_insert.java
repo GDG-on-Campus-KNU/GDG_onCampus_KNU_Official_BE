@@ -1,31 +1,30 @@
-package sql;
+package sql.insert;
 
-import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import lombok.extern.slf4j.Slf4j;
+import sql.DataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Slf4j
-public class application_insert {
-    private static final int MAX = 10000;
-    private static final int HALF = MAX/2;
+public class member_insert {
+    private static final int MAX = 1000;
+
 
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSource();
         Connection conn = dataSource.open();
-        String psql = "INSERT IGNORE INTO application(id, name, student_number, email, application_status, is_opened, is_marked, track) " +
-                      "VALUES (?,?,?,?,?,?,?,?)";
+        String psql = "INSERT IGNORE INTO member(id, name, age, email, phone_number, role, track) VALUES (?,?,?,?,?,?,?)";
         PreparedStatement stmt = conn.prepareStatement(psql);
 
         try {
-            insertApplication(stmt);
+            insertMember(stmt);
             conn.setAutoCommit(false);
             stmt.executeBatch();
             conn.commit();
-            log.info("success for insert application");
+            log.info("success for insert member");
         }
         catch (SQLException e) {
             conn.rollback();
@@ -38,26 +37,24 @@ public class application_insert {
         }
     }
 
-    public static void insertApplication(PreparedStatement stmt) throws SQLException {
+
+    private static void insertMember(PreparedStatement stmt) throws SQLException {
         for (int i=1; i<=MAX; i++) {
             stmt.setLong(1, i);
             stmt.setString(2, String.format("이름%d",i));
-            stmt.setString(3, String.format("20240%d",i));
+            stmt.setInt(3,20);
             stmt.setString(4, String.format("email%d@email.com",i));
-            stmt.setString(5, getStatus(i));
-            stmt.setBoolean(6, i < HALF);
-            stmt.setBoolean(7, i < HALF);
-            stmt.setString(8, getTrack(i));
+            stmt.setString(5, String.format("010-0000-%d",i));
+            stmt.setString(6, "ROLE_MEMBER");
+            stmt.setString(7, getTrack(i));
             stmt.addBatch();
         }
     }
 
-    static int statusSize = ApplicationStatus.values().length;
+
     static int trackSize = Track.values().length;
     private static String getTrack(int i) {
         return Track.values()[i%trackSize].name();
     }
-    private static String getStatus(int i) {
-        return ApplicationStatus.values()[i%statusSize].name();
-    }
+
 }

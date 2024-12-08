@@ -60,6 +60,7 @@ public class Application extends BaseTimeEntity {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
+    // TODO : presentation 계층과 의존 제거
     public Application(Member member, ApplicationRequest applicationRequest) {
         this.name = member.getName();
         this.studentNumber = member.getStudentNumber();

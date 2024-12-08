@@ -1,5 +1,6 @@
-package com.gdsc_knu.official_homepage.member;
+package com.gdsc_knu.official_homepage.member.service;
 
+import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.dto.member.MemberRequest;
 import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 
@@ -24,14 +26,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
+@Import(ClearDatabase.class)
 public class MemberServiceTest {
     @Autowired private MemberService memberService;
     @Autowired private MemberRepository memberRepository;
     @Autowired private TeamRepository teamRepository;
+    @Autowired private ClearDatabase clearDatabase;
 
     @AfterEach
     void tearDown() {
-        memberRepository.deleteAll();
+        clearDatabase.each("member_team");
+        clearDatabase.each("team");
+        clearDatabase.each("member");
     }
 
     @Test
@@ -62,8 +68,8 @@ public class MemberServiceTest {
         Member member = createMember(1L);
         memberRepository.save(member);
         String parentName = "미배정부모팀", assignedName = "배정 1팀";
-        Team parent = parentTeam(1L, parentName);
-        Team assignedTeam = assignedTeam(2L, parent, assignedName);
+        Team parent = parentTeam(parentName);
+        Team assignedTeam = assignedTeam(parent, assignedName);
         for (Team team : List.of(parent, assignedTeam)){
             team.addMember(member);
             teamRepository.save(team);
@@ -81,22 +87,19 @@ public class MemberServiceTest {
         // given
         Member member = createMember(1L);
         memberRepository.save(member);
-
-        String teamName = "테스트";
-        Team parent1 = parentTeam(1L, teamName);
-        Team parent2 = parentTeam(2L, teamName);
-        Team child1 = assignedTeam(3L, parent1,teamName);
-        Team child2 = assignedTeam(4L, parent1,teamName);
-        Team child3 = assignedTeam(5L, parent2,teamName);
-        for (Team team : List.of(parent1, parent2, child1, child2, child3)){
+        Team parent1 = parentTeam("부모1");
+        Team parent2 = parentTeam("부모2");
+        Team child1 = Team.fromParent(parent1);
+        Team child2 = Team.fromParent(parent2);
+        for (Team team : List.of(parent1, parent2, child1, child2)){
             team.addMember(member);
             teamRepository.save(team);
         }
         // when
         List<TeamResponse.Main> response =  memberService.getMemberTeamInfo(member.getId());
         // then
-        assertThat(response.size()).isEqualTo(3);
-        assertThat(response.stream().map(TeamResponse.Main::getId)).containsExactly(5L, 4L, 3L);
+        assertThat(response.size()).isEqualTo(2);
+        assertThat(response.stream().map(TeamResponse.Main::getTeamName)).containsExactly("부모2 1팀", "부모1 1팀");
     }
 
     private Member createMember(Long id) {
@@ -108,17 +111,15 @@ public class MemberServiceTest {
                 .build();
     }
 
-    private Team parentTeam(Long id, String teamName) {
+    private Team parentTeam(String teamName) {
         return Team.builder()
-                .id(id)
                 .teamName(teamName)
                 .parent(null)
                 .build();
     }
 
-    private Team assignedTeam(Long id, Team parent, String teamName) {
+    private Team assignedTeam(Team parent, String teamName) {
         return Team.builder()
-                .id(id)
                 .parent(parent)
                 .teamName(teamName)
                 .build();

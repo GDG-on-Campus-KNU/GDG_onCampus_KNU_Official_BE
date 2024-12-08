@@ -42,6 +42,7 @@ public class MemberService {
     /**
      * 중간테이블이라 인덱스도 다 있고
      * join하는 데이터가 많지 않아서 SQL쿼리로 한번에 가져오는 것도 좋을 것 같아요
+     * TODO : Team의 책임인지 고려
      */
     @Transactional(readOnly = true)
     public List<TeamResponse.Main> getMemberTeamInfo(Long id) {
@@ -53,6 +54,9 @@ public class MemberService {
                 .toList();
     }
 
+    /**
+     * 개발자 편의 메서드 (실제 사용 X)
+     */
     @Transactional
     public Member getMemberAdmin(String email, Track track, Role role) {
         Member member = memberRepository.findByEmail(email).orElseThrow();

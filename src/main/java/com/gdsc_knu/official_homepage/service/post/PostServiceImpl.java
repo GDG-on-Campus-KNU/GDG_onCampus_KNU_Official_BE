@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -78,14 +77,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size) {
-        Page<Post> postPage = postRepository.findAllByCategory(PageRequest.of(page, size), category);
+        List<Post> postPage = postRepository.findAllByCategory(PageRequest.of(page, size), category);
         return PagingResponse.withoutCountFrom(postPage, size, PostResponse.Main::from);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, PostStatus status, int page, int size) {
-        Page<Post> postList = postRepository.findAllByMemberIdAndStatus(memberId, status, PageRequest.of(page, size));
+        List<Post> postList = postRepository.findAllByMemberIdAndStatus(memberId, status, PageRequest.of(page, size));
         return PagingResponse.withoutCountFrom(postList, size, PostResponse.Temp::from);
     }
 
@@ -105,8 +104,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size) {
-        Page<Post> postPage = postRepository.searchByKeyword(PageRequest.of(page, size), keyword);
-        return PagingResponse.withoutCountFrom(postPage, size, PostResponse.Main::from);
+        List<Post> postList = postRepository.searchByKeyword(PageRequest.of(page, size), keyword);
+        return PagingResponse.withoutCountFrom(postList, size, PostResponse.Main::from);
     }
 
     /**

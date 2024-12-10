@@ -12,16 +12,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberQueryFactory {
     Member findByEmailAndStudentNumber(String email, String studentNumber);
 
     Member getByEmail(String email);
     Optional<Member> findByEmail(String Email);
 
     Optional<Member> findByName(String name);
-
-
-    List<Member> findAllByTrack(Track track);
 
     @Query("SELECT m FROM " +
             "Member m " +

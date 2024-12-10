@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -49,6 +50,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
      * @param createRequest 새로운 부모 팀 생성 요청 (팀 이름, 트랙)
      * @return Long 새로 생성된 팀의 id
      */
+    // TODO : 반환값 필요성, 변경감지 관련, member_team bulk insert 필요성
     @Override
     @Transactional
     public Long createParentTeam(AdminTeamRequest.Create createRequest) {
@@ -57,11 +59,7 @@ public class AdminTeamServiceImpl implements AdminTeamService {
 
         Team newTeam = Team.ofName(teamName);
 
-        // TODO: 쿼리에 직접 필터링 조건 추가
-        List<Member> members = (track != null)
-                ? memberRepository.findAllByTrack(track)
-                : memberRepository.findAll();
-        members.removeIf(member -> member.getRole().equals(Role.ROLE_GUEST) || member.getRole().equals(Role.ROLE_TEMP));
+        List<Member> members = memberRepository.findAllByTrackAndRoleIn(track, List.of(Role.ROLE_CORE, Role.ROLE_MEMBER));
 
         members.forEach(newTeam::addMember);
         teamRepository.save(newTeam);

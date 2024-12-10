@@ -9,8 +9,8 @@ import java.sql.SQLException;
 
 @Slf4j
 public class team_insert {
-    private static final int MAX_PARENT = 100;
-    private static final int CHILD_PER_PARENT = 100;
+    private static final int MAX_PARENT = 100; // 팀 그룹 100
+    private static final int CHILD_PER_PARENT = 100; // 한 그룹 당 100팀
 
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSource();
@@ -37,6 +37,7 @@ public class team_insert {
     }
 
     public static void insertTeam(PreparedStatement stmt) throws SQLException {
+        // parent team
         for (int i=1; i<=MAX_PARENT; i++) {
             stmt.setLong(1, i);
             stmt.setString(2, String.format("팀이름%d",i));
@@ -44,11 +45,12 @@ public class team_insert {
             stmt.addBatch();
         }
 
+        // sub team
         for (int i=1; i<=MAX_PARENT; i++) {
             for (int j=1; j<=CHILD_PER_PARENT; j++) {
                 stmt.setLong(1, i*100+j);
                 stmt.setString(2, String.format("팀이름%d %d",i,j));
-                stmt.setInt(3,i);
+                stmt.setInt(3, i);
                 stmt.addBatch();
             }
         }

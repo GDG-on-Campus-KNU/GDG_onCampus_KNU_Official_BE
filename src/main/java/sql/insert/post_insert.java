@@ -8,9 +8,11 @@ import sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class post_insert {
+    // MAX_MEMBER 마다 MAX 개씩 post 작성 (10만)
     private static final int MAX = 1000;
     private static final int MAX_MEMBER = 100;
 
@@ -18,8 +20,8 @@ public class post_insert {
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSource();
         Connection conn = dataSource.open();
-        String psql = "INSERT IGNORE INTO post(id, title, content, member_id, category, status, like_count, comment_count, shared_count) " +
-                "VALUES (?,?,?,?,?,?,?,?,?)";
+        String psql = "INSERT INTO post(id, title, content, member_id, category, status, like_count, comment_count, shared_count, thumbnail_url, modified_at, published_at) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement stmt = conn.prepareStatement(psql);
 
         try {
@@ -42,22 +44,28 @@ public class post_insert {
 
 
     private static void insertPost(PreparedStatement stmt) throws SQLException {
-        for (int i=1; i<=MAX; i++) {
-            stmt.setLong(1, i);
-            stmt.setString(2, "제목");
-            stmt.setString(3, "본문내용");
-            stmt.setLong(4, i%MAX_MEMBER+1);
-            stmt.setString(5, getCategory(i));
-            stmt.setString(6, getStatus(i));
-            stmt.setInt(7,0);
-            stmt.setInt(8,0);
-            stmt.setInt(9,0);
-            stmt.addBatch();
+        int id = 1;
+        for (int memberId=1; memberId<=MAX_MEMBER; memberId ++) {
+            for (int postCount=1; postCount<=MAX; postCount++) {
+                stmt.setLong(1, id++);
+                stmt.setString(2, "제목");
+                stmt.setString(3, "본문내용");
+                stmt.setLong(4, memberId);
+                stmt.setString(5, getCategory(postCount));
+                stmt.setString(6, getStatus(postCount));
+                stmt.setInt(7,0);
+                stmt.setInt(8,0);
+                stmt.setInt(9,0);
+                stmt.setString(10, "https://via.placeholder.com/640x480");
+                stmt.setString(11, LocalDateTime.now().plusMinutes(postCount).toString());
+                stmt.setString(12, LocalDateTime.now().plusMinutes(postCount).toString());
+                stmt.addBatch();
+            }
         }
     }
 
     private static String getStatus(int i) {
-        return i < 100 ? PostStatus.TEMPORAL.name() : PostStatus.SAVED.name();
+        return i % 5 == 0 ? PostStatus.TEMPORAL.name() : PostStatus.SAVED.name();
     }
 
     private static final int categorySize = Category.values().length;

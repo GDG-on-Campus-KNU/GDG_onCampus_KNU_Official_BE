@@ -9,6 +9,10 @@ import java.sql.SQLException;
 
 @Slf4j
 public class member_team_insert {
+    /**
+     * assert(MAX_MEMBER >= MAX_PARENT*10)
+     * MAX_MEMBER 는 각각 MAX_PARENT + 1 만큼의 팀에 소속되고, 순차적으로 할당된다.
+     */
     private static final int MAX_MEMBER = 1000;
     private static final int MAX_PARENT = 100;
     private static final int CHILD_PER_PARENT = 100;
@@ -40,7 +44,8 @@ public class member_team_insert {
     public static void insertMemberTeam(PreparedStatement stmt) throws SQLException {
         int id = 1;
         for (int memberID = 1; memberID <= MAX_MEMBER; memberID ++) {
-            for (int teamID = memberID; teamID <= MAX_PARENT*CHILD_PER_PARENT; teamID+=CHILD_PER_PARENT) {
+            int teamStart = memberID % MAX_PARENT != 0 ? memberID % MAX_PARENT : MAX_PARENT;
+            for (int teamID = teamStart; teamID <= MAX_PARENT*CHILD_PER_PARENT+MAX_PARENT; teamID+=CHILD_PER_PARENT) {
                 stmt.setLong(1, id++);
                 stmt.setLong(2, memberID);
                 stmt.setLong(3, teamID);

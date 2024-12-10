@@ -8,6 +8,7 @@ import sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class application_insert {
@@ -17,8 +18,8 @@ public class application_insert {
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSource();
         Connection conn = dataSource.open();
-        String psql = "INSERT IGNORE INTO application(id, name, student_number, email, application_status, is_opened, is_marked, track) " +
-                      "VALUES (?,?,?,?,?,?,?,?)";
+        String psql = "INSERT IGNORE INTO application(id, name, student_number, email, application_status, is_opened, is_marked, track, phone_number, tech_stack, links, note, major, create_at, modified_at) " +
+                      "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement stmt = conn.prepareStatement(psql);
 
         try {
@@ -49,6 +50,13 @@ public class application_insert {
             stmt.setBoolean(6, i < HALF);
             stmt.setBoolean(7, i < HALF);
             stmt.setString(8, getTrack(i));
+            stmt.setString(9,String.format("010-0000-%d",i));
+            stmt.setString(10, "Java, js, SpringBoot");
+            stmt.setString(11, "https://gdsc-knu.com");
+            stmt.setString(12, "메모입니다.");
+            stmt.setString(13, "컴퓨터학부");
+            stmt.setString(14, LocalDateTime.now().plusMinutes(i).toString());
+            stmt.setString(15, LocalDateTime.now().plusMinutes(i).toString());
             stmt.addBatch();
         }
     }

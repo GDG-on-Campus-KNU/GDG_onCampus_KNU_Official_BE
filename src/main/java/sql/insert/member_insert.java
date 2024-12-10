@@ -10,13 +10,13 @@ import java.sql.SQLException;
 
 @Slf4j
 public class member_insert {
-    private static final int MAX = 1000;
-
+    private static final int MAX = 100000; // 10만
 
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSource();
         Connection conn = dataSource.open();
-        String psql = "INSERT IGNORE INTO member(id, name, age, email, phone_number, role, track) VALUES (?,?,?,?,?,?,?)";
+        String psql = "INSERT IGNORE INTO member(id, name, age, email, phone_number, role, track, student_number, major, profile_url) " +
+                      "VALUES (?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement stmt = conn.prepareStatement(psql);
 
         try {
@@ -47,6 +47,9 @@ public class member_insert {
             stmt.setString(5, String.format("010-0000-%d",i));
             stmt.setString(6, "ROLE_MEMBER");
             stmt.setString(7, getTrack(i));
+            stmt.setString(8, String.format("2024%d",i));
+            stmt.setString(9,"컴퓨터학부");
+            stmt.setString(10, "https://via.placeholder.com/640x480");
             stmt.addBatch();
         }
     }

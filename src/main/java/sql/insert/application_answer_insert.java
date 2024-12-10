@@ -10,8 +10,6 @@ import java.sql.SQLException;
 @Slf4j
 public class application_answer_insert {
     private static final int MAX = 10000;
-    private static final int HALF = MAX/2;
-
     public static void main(String[] args) throws SQLException {
         DataSource dataSource = new DataSource();
         Connection conn = dataSource.open();

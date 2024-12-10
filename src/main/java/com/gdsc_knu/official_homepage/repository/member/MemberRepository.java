@@ -13,6 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberQueryFactory {
+    @Query("SELECT m " +
+           "FROM Member m " +
+           "JOIN FETCH m.memberTeams mt " +
+           "JOIN FETCH mt.team " +
+           "WHERE m.id = :id")
+    Optional<Member> findByIdWithTeam(Long id);
+
     Member findByEmailAndStudentNumber(String email, String studentNumber);
 
     Member getByEmail(String email);

@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(404,HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다","U404"),
+    USER_DUPLICATED(409, HttpStatus.CONFLICT, "이미 가입된 사용자입니다.","U409"),
 
     // Auth
     INVALID_PERMISSION(401,HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다.","U401"),

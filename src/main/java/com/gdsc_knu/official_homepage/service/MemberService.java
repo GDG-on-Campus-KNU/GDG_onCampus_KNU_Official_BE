@@ -30,6 +30,7 @@ public class MemberService {
         return MemberResponse.Main.from(member);
     }
 
+    @Transactional
     public void addMemberInfo(Long id, MemberRequest.Append request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -39,11 +40,9 @@ public class MemberService {
                 request.getStudentNumber(),
                 request.getPhoneNumber());
         try {
-            memberRepository.save(member);
+            memberRepository.saveAndFlush(member);
         } catch (DataIntegrityViolationException e) {
-            Objects.requireNonNull(e.getRootCause());
-            if (e.getRootCause().getMessage().startsWith("Duplicate"))
-                throw new CustomException(ErrorCode.USER_DUPLICATED);
+            throw new CustomException(ErrorCode.USER_DUPLICATED);
         }
     }
 

@@ -10,11 +10,13 @@ import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +35,15 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         member.addInfo(request.getName(),
-                       request.getAge(),
-                       request.getMajor(),
-                       request.getStudentNumber(),
-                       request.getPhoneNumber());
+                request.getAge(),
+                request.getMajor(),
+                request.getStudentNumber(),
+                request.getPhoneNumber());
+        try {
+            memberRepository.saveAndFlush(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException(ErrorCode.USER_DUPLICATED);
+        }
     }
 
     /**

@@ -51,7 +51,7 @@ public class JwtValidator {
                 .orElseThrow(() -> new CustomException(ErrorCode.RT_NOT_FOUND));
         if (!redisToken.getEmail().equals(email)) {
             redisRepository.delete(redisToken);
-            throw new CustomException(ErrorCode.JWT_INCORRECT);
+            throw new CustomException(ErrorCode.RT_INCORRECT);
         }
         redisRepository.delete(redisToken);
         return jwtClaims;

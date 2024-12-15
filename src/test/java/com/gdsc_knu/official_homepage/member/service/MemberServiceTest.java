@@ -7,6 +7,8 @@ import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.Team;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.team.TeamRepository;
 import com.gdsc_knu.official_homepage.service.MemberService;
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataIntegrityViolationException;
 
 
 import java.util.List;
@@ -54,9 +55,10 @@ public class MemberServiceTest {
         MemberRequest.Append request =
                 new MemberRequest.Append("신규멤버", 20, "컴퓨터전공","20200001", duplicatePhoneNumber);
         // when
-        assertThrows(DataIntegrityViolationException.class, () ->
+        CustomException exception = assertThrows(CustomException.class, () ->
                 memberService.addMemberInfo(newMember.getId(), request));
         // then
+        assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.USER_DUPLICATED);
         assertThat(newMember.getRole()).isEqualTo(Role.ROLE_TEMP);
     }
 

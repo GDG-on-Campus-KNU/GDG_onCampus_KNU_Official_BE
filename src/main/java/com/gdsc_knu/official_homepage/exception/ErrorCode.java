@@ -13,14 +13,15 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(404,HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다","U404"),
+    USER_DUPLICATED(409, HttpStatus.CONFLICT, "이미 가입된 사용자입니다.","U409"),
 
     // Auth
     INVALID_PERMISSION(401,HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다.","U401"),
     JWT_EXPIRED(401, HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.","ST401"),
     JWT_NOT_FOUND(401, HttpStatus.UNAUTHORIZED, "엑세스 토큰이 존재하지 않습니다.","AT404"),
     RT_NOT_FOUND(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 저장되어 있지 않습니다.","RT404"),
-    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.","ST404"),
-    JWT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다.","RT404"),
+    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.","ST400"),
+    RT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다.","RT400"),
     FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.","U403"),
 
     // Application

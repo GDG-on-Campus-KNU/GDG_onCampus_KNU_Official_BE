@@ -20,8 +20,8 @@ public enum ErrorCode {
     JWT_EXPIRED(401, HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.","ST401"),
     JWT_NOT_FOUND(401, HttpStatus.UNAUTHORIZED, "엑세스 토큰이 존재하지 않습니다.","AT404"),
     RT_NOT_FOUND(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 저장되어 있지 않습니다.","RT404"),
-    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.","ST404"),
-    JWT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다.","RT404"),
+    JWT_INVALID(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.","ST400"),
+    RT_INCORRECT(401, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다.","RT400"),
     FORBIDDEN(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.","U403"),
 
     // Application

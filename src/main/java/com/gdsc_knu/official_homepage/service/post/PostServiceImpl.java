@@ -150,6 +150,7 @@ public class PostServiceImpl implements PostService {
      * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
      */
     @Override
+    @Transactional
     public void likePost(Long memberId, Long postId) {
         postLikeRepository.findByMemberIdAndPostId(memberId, postId)
                 .ifPresent(postLike -> {
@@ -166,6 +167,7 @@ public class PostServiceImpl implements PostService {
      * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
      */
     @Override
+    @Transactional
     public void unlikePost(Long memberId, Long postId) {
         PostLike postLike = postLikeRepository.findByMemberIdAndPostId(memberId, postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_LIKED));

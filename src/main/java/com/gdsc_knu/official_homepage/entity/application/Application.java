@@ -26,15 +26,12 @@ public class Application extends BaseTimeEntity {
 
     private String name;
 
-    @Column(unique = true)
     private String studentNumber;
 
     private String major;
 
-    @Column(unique = true)
     private String email;
 
-    @Column(unique = true)
     private String phoneNumber;
 
     private String techStack;

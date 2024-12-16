@@ -65,7 +65,7 @@ public class PostServiceImpl implements PostService {
         }
 
         AccessModel access = AccessModel.calcPostAccess(memberId, post.getMember());
-        boolean isLiked = memberId != 0L && postLikeRepository.findByMemberIdAndPostId(memberId, postId).isPresent();
+        boolean isLiked = memberId != 0L && postLikeRepository.existsByMemberAndPost(memberId, postId) == 1;
         return PostResponse.Detail.from(post, access, isLiked);
     }
 

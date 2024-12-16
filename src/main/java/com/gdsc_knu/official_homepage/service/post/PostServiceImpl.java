@@ -58,7 +58,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResponse.Detail getPost(Long memberId, Long postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdWithAuthor(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (!post.isSaved()) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);

@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.dto.admin.team;
 
 import com.gdsc_knu.official_homepage.dto.team.TeamResponse;
+import com.gdsc_knu.official_homepage.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,12 @@ public class AdminTeamResponse {
         private String name;
         private String studentNumber;
         private String profileUrl;
+
+        public static TeamMember from (Member member) {
+            return new TeamMember(member.getId(),
+                                  member.getName(),
+                                  member.getStudentNumber(),
+                                  member.getProfileUrl());
+        }
     }
 }

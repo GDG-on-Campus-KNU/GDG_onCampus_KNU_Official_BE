@@ -81,6 +81,7 @@ public class CommentService {
         comment.update(request.getContent());
     }
 
+    //TODO: 대댓글이 많은 경우 bulk delete 고려
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)

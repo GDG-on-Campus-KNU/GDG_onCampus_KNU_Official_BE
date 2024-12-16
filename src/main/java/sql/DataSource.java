@@ -12,6 +12,7 @@ public class DataSource {
     static Connection conn = null;
 
     public Connection open() {
+        // 연결 정보를 수정하여 개발 서버에 대량의 더미데이터를 추가할 수 있습니다.
         String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/gdsc";
         String password = "1234";

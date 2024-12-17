@@ -96,7 +96,7 @@ public class AdminApplicationService {
 
     @Transactional
     public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
-        Application application = applicationRepository.findById(id)
+        Application application = applicationRepository.findByIdFetchJoin(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         application.open();
         return AdminApplicationResponse.Detail.from(application);

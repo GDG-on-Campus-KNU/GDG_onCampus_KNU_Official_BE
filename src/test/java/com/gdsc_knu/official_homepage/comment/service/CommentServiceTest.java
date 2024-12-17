@@ -18,10 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.gdsc_knu.official_homepage.comment.CommentTestEntityFactory.*;
@@ -81,7 +80,7 @@ class CommentServiceTest {
         when(postRepository.findById(postId)).thenReturn(createPost(postId, postAuthorId));
         Comment comment = createComment(postId, memberId);
         when(commentRepository.findCommentAndReply(PageRequest.of(0,5), postId))
-                .thenReturn(new PageImpl<>(Collections.singletonList(comment)));
+                .thenReturn(List.of(comment));
         // when
         PageRequest page = PageRequest.of(0,5);
         PagingResponse<CommentResponse> response = commentService.getComment(memberId, postId, page);
@@ -99,7 +98,7 @@ class CommentServiceTest {
         when(postRepository.findById(postId)).thenReturn(createPost(postId, memberId));
         Comment comment = createComment(postId, commentAuthorId);
         when(commentRepository.findCommentAndReply(PageRequest.of(0,5), postId))
-                .thenReturn(new PageImpl<>(Collections.singletonList(comment)));
+                .thenReturn(List.of(comment));
         // when
         PageRequest page = PageRequest.of(0,5);
         PagingResponse<CommentResponse> response = commentService.getComment(memberId, postId, page);

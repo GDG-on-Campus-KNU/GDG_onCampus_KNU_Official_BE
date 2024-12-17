@@ -15,9 +15,9 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class PagingResponse<T> {
     private final List<T> data;
+    private final boolean hasNext;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Integer page;
-    private final boolean hasNext;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Integer totalPage;
 
@@ -32,11 +32,11 @@ public class PagingResponse<T> {
                 .build();
     }
 
-    public static <U,T> PagingResponse<T> withoutCountFrom(Page<U> data, int size, Function<U,T> converter) {
-        boolean hasNext = data.getNumberOfElements() >= size;
+    public static <U,T> PagingResponse<T> withoutCountFrom(List<U> data, int size, Function<U,T> converter) {
+        boolean hasNext = data.size() == size;
 
         return PagingResponse.<T>builder()
-                .data(data.getContent().stream().map(converter).toList())
+                .data(data.stream().map(converter).toList())
                 .hasNext(hasNext)
                 .build();
     }

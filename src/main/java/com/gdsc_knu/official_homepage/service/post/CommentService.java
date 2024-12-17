@@ -13,10 +13,11 @@ import com.gdsc_knu.official_homepage.repository.post.CommentRepository;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,13 +58,12 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         Long postAuthorId = post.getMember().getId();
 
-        Page<Comment> commentPage = commentRepository.findCommentAndReply(pageRequest, postId);
-        return createPagingResponse(commentPage, memberId, postAuthorId);
+        List<Comment> commentList = commentRepository.findCommentAndReply(pageRequest, postId);
+        return createPagingResponse(commentList, memberId, postAuthorId, pageRequest.getPageSize());
     }
 
-    private PagingResponse<CommentResponse> createPagingResponse(Page<Comment> commentPage, Long memberId, Long postAuthorId) {
-        int size = commentPage.getSize();
-        return PagingResponse.withoutCountFrom(commentPage, size, comment -> {
+    private PagingResponse<CommentResponse> createPagingResponse(List<Comment> commentList, Long memberId, Long postAuthorId, int size) {
+        return PagingResponse.withoutCountFrom(commentList, size, comment -> {
             Long commentAuthorId = comment.getAuthor().getId();
             AccessModel access = AccessModel.calcCommentAccess(memberId, postAuthorId, commentAuthorId);
             return CommentResponse.from(comment, access);
@@ -81,6 +81,7 @@ public class CommentService {
         comment.update(request.getContent());
     }
 
+    //TODO: 대댓글이 많은 경우 bulk delete 고려
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)

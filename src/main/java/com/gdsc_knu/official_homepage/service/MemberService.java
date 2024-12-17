@@ -25,7 +25,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponse.Main getMemberInfo(Long id) {
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findByIdWithTeam(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return MemberResponse.Main.from(member);
     }

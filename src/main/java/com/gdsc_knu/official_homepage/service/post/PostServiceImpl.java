@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -59,14 +58,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResponse.Detail getPost(Long memberId, Long postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdWithAuthor(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (!post.isSaved()) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
 
         AccessModel access = AccessModel.calcPostAccess(memberId, post.getMember());
-        boolean isLiked = memberId != 0L && postLikeRepository.findByMemberIdAndPostId(memberId, postId).isPresent();
+        boolean isLiked = memberId != 0L && postLikeRepository.existsByMemberAndPost(memberId, postId) == 1;
         return PostResponse.Detail.from(post, access, isLiked);
     }
 
@@ -78,14 +77,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Main> getPostList(Category category, int page, int size) {
-        Page<Post> postPage = postRepository.findAllByCategory(PageRequest.of(page, size), category);
+        List<Post> postPage = postRepository.findAllByCategory(PageRequest.of(page, size), category);
         return PagingResponse.withoutCountFrom(postPage, size, PostResponse.Main::from);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Temp> getTemporalPostList(Long memberId, PostStatus status, int page, int size) {
-        Page<Post> postList = postRepository.findAllByMemberIdAndStatus(memberId, status, PageRequest.of(page, size));
+        List<Post> postList = postRepository.findAllByMemberIdAndStatus(memberId, status, PageRequest.of(page, size));
         return PagingResponse.withoutCountFrom(postList, size, PostResponse.Temp::from);
     }
 
@@ -105,8 +104,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PagingResponse<PostResponse.Main> searchPostList(String keyword, int page, int size) {
-        Page<Post> postPage = postRepository.searchByKeyword(PageRequest.of(page, size), keyword);
-        return PagingResponse.withoutCountFrom(postPage, size, PostResponse.Main::from);
+        List<Post> postList = postRepository.searchByKeyword(PageRequest.of(page, size), keyword);
+        return PagingResponse.withoutCountFrom(postList, size, PostResponse.Main::from);
     }
 
     /**
@@ -151,6 +150,7 @@ public class PostServiceImpl implements PostService {
      * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
      */
     @Override
+    @Transactional
     public void likePost(Long memberId, Long postId) {
         postLikeRepository.findByMemberIdAndPostId(memberId, postId)
                 .ifPresent(postLike -> {
@@ -167,6 +167,7 @@ public class PostServiceImpl implements PostService {
      * post-like와 post는 join해서 한번에 가져오는 것도 고려해볼만한것 같습니다.
      */
     @Override
+    @Transactional
     public void unlikePost(Long memberId, Long postId) {
         PostLike postLike = postLikeRepository.findByMemberIdAndPostId(memberId, postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_LIKED));

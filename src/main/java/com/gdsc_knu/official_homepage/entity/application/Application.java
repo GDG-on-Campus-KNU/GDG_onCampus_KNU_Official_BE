@@ -2,6 +2,7 @@ package com.gdsc_knu.official_homepage.entity.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -37,6 +38,10 @@ public class Application extends BaseTimeEntity {
     private String techStack;
 
     private String links;
+
+    @ManyToOne
+    @JoinColumn(name = "class_year_id")
+    private ClassYear classYear;
 
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;

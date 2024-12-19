@@ -104,9 +104,12 @@ public class AdminApplicationService {
 
     // TODO : 동시성 제어
     @Transactional
-    public void noteApplication(Long id, String note) {
+    public void noteApplication(Long id, String note, Integer version) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
+        if (!version.equals(application.getVersion())) {
+            throw new CustomException(ErrorCode.CONCURRENT_FAILED);
+        }
         application.saveNote(note);
     }
 

@@ -77,6 +77,7 @@ public class AdminApplicationResponse {
     @NoArgsConstructor
     public static class Detail {
         private Long id; // application id
+        private Integer version;
         private String name;
         private String studentNumber;
         private String major;
@@ -96,6 +97,7 @@ public class AdminApplicationResponse {
         public static Detail from(Application application){
             return Detail.builder()
                     .id(application.getId())
+                    .version(application.getVersion())
                     .name(application.getName())
                     .studentNumber(application.getStudentNumber())
                     .major(application.getMajor())

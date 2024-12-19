@@ -19,7 +19,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
     Optional<Application> findByNameAndStudentNumber(String name, String studentNumber);
     Optional<Application> findByStudentNumber(String studentNumber);
     @Query("SELECT a " +
-            "FROM Application a JOIN FETCH a.answers "+
+            "FROM Application a LEFT JOIN FETCH a.answers "+
             "WHERE a.id=:id")
     Optional<Application> findByIdFetchJoin(Long id);
 

@@ -24,6 +24,9 @@ public class Application extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    private int version;
+
     private String name;
 
     @Column(unique = true)

@@ -6,6 +6,8 @@ import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
+import com.gdsc_knu.official_homepage.exception.CustomException;
+import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +25,9 @@ public class Application extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Version
+    private int version;
 
     private String name;
 
@@ -121,7 +126,9 @@ public class Application extends BaseTimeEntity {
         }
     }
 
-    public void saveNote(String note) {
+    public void saveNote(String note, Integer version) {
+        if (this.version != version)
+            throw new CustomException(ErrorCode.CONCURRENT_FAILED);
         this.note = note;
     }
 }

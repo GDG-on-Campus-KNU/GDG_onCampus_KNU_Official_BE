@@ -28,7 +28,7 @@ public enum ErrorCode {
     APPLICATION_NOT_FOUND(404,HttpStatus.NOT_FOUND, "지원서를 찾을 수 없습니다","A404"),
     CONFLICT(409, HttpStatus.CONFLICT, "이미 최종 제출된 지원서 입니다.","A409"),
     INVALID_APPLICATION_STATE(400, HttpStatus.BAD_REQUEST,"지원서 상태가 유효하지 않습니다.","A400"),
-    CONCURRENT_FAILED(409, HttpStatus.CONFLICT, "다른 사용자가 수정중입니다.","PN409"),
+    CONCURRENT_FAILED(409, HttpStatus.CONFLICT, "다른 사용자가 수정중입니다.","AN409"),
     // Team
 
 

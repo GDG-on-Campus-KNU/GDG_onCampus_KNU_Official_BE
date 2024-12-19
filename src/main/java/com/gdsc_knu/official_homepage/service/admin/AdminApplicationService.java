@@ -14,6 +14,7 @@ import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -102,15 +103,17 @@ public class AdminApplicationService {
         return AdminApplicationResponse.Detail.from(application);
     }
 
-    // TODO : 동시성 제어
     @Transactional
     public void noteApplication(Long id, String note, Integer version) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
-        if (!version.equals(application.getVersion())) {
+        application.saveNote(note, version);
+
+        try {
+            applicationRepository.saveAndFlush(application);
+        } catch (ObjectOptimisticLockingFailureException e) {
             throw new CustomException(ErrorCode.CONCURRENT_FAILED);
         }
-        application.saveNote(note);
     }
 
 

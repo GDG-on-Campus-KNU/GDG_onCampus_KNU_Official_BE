@@ -1,7 +1,9 @@
 package com.gdsc_knu.official_homepage.controller.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
+import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Admin Application", description = "서류확인 관련 API")
@@ -112,6 +115,37 @@ public class AdminApplicationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/classyear")
+    @Operation(summary="기수 목록 조회 API", description = "기수를 목록을 조회합니다.")
+    public ResponseEntity<List<AdminApplicationResponse.ClassYearResponse>> getClassYearList() {
+        return ResponseEntity.ok(applicationService.getClassYearList());
+    }
 
+    @GetMapping("/classyear")
+    @Operation(summary="기수 단건 조회 API", description = "기수를 단건 조회합니다.")
+    public ResponseEntity<AdminApplicationResponse.ClassYearResponse> getClassYear(@RequestParam("id") Long id) {
+        return ResponseEntity.ok(applicationService.getClassYear(id));
+    }
 
+    @PostMapping("/classyear")
+    @Operation(summary="기수 추가 API", description = "기수를 추가합니다.")
+    public ResponseEntity<Void> addClassYear(@RequestBody AdminApplicationRequest.ClassYearRequest classYearRequest) {
+        applicationService.addClassYear(classYearRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/classyear")
+    @Operation(summary="기수 수정 API", description = "기수의 정보를 수정합니다.")
+    public ResponseEntity<Void> updateClassYear(@RequestParam("id") Long id,
+                                                @RequestBody AdminApplicationRequest.ClassYearRequest classYearRequest) {
+        applicationService.updateClassYear(id, classYearRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/classyear")
+    @Operation(summary="기수 삭제 API", description = "기수를 삭제 합니다.")
+    public ResponseEntity<Void> deleteClassYear(@RequestParam("id") Long id) {
+        applicationService.deleteClassYear(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

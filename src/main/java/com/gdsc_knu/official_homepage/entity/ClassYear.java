@@ -22,4 +22,10 @@ public class ClassYear {
     private LocalDateTime applicationStartDateTime;
 
     private LocalDateTime applicationEndDateTime;
+
+    public void update(String name, LocalDateTime applicationStartDateTime, LocalDateTime applicationEndDateTime) {
+        this.name = name;
+        this.applicationStartDateTime = applicationStartDateTime;
+        this.applicationEndDateTime = applicationEndDateTime;
+    }
 }

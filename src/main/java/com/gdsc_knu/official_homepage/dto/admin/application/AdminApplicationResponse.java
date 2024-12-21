@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import lombok.AllArgsConstructor;
@@ -142,6 +143,26 @@ public class AdminApplicationResponse {
                     .code(status.value())
                     .message(message)
                     .data(status)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ClassYearResponse {
+        private Long id;
+        private String name;
+        private LocalDateTime applyStartDateTime;
+        private LocalDateTime applyEndDateTime;
+
+        public static AdminApplicationResponse.ClassYearResponse from(ClassYear classYear) {
+            return AdminApplicationResponse.ClassYearResponse.builder()
+                    .id(classYear.getId())
+                    .name(classYear.getName())
+                    .applyStartDateTime(classYear.getApplicationStartDateTime())
+                    .applyEndDateTime(classYear.getApplicationEndDateTime())
                     .build();
         }
     }

@@ -1,15 +1,18 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
+import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,7 @@ public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
     private final TransactionTemplate transactionTemplate;
+    private final ClassYearRepository classYearRepository;
 
 
 
@@ -116,5 +119,34 @@ public class AdminApplicationService {
         Page<Application> applicationPage
                 = applicationRepository.findByNameContaining(PageRequest.of(page,size), name);
         return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdminApplicationResponse.ClassYearResponse> getClassYearList() {
+        return classYearRepository.findAll().stream().map(AdminApplicationResponse.ClassYearResponse::from).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public AdminApplicationResponse.ClassYearResponse getClassYear(Long id) {
+        ClassYear classYear = classYearRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "해당 기수가 존재하지 않습니다."));
+        return AdminApplicationResponse.ClassYearResponse.from(classYear);
+    }
+
+    @Transactional
+    public void addClassYear(AdminApplicationRequest.ClassYearRequest request) {
+        classYearRepository.save(request.toEntity());
+    }
+
+    @Transactional
+    public void updateClassYear(Long id, AdminApplicationRequest.ClassYearRequest request) {
+        ClassYear classYear = classYearRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "해당 기수가 존재하지 않습니다."));
+        classYearRepository.save(request.toEntity());
+    }
+
+    @Transactional
+    public void deleteClassYear(Long id) {
+        classYearRepository.deleteById(id);
     }
 }

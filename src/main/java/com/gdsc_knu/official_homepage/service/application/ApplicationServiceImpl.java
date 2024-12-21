@@ -2,6 +2,7 @@ package com.gdsc_knu.official_homepage.service.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -12,6 +13,8 @@ import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -111,5 +114,12 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new CustomException(ErrorCode.CONFLICT);
         }
         return application;
+    }
+
+    private void validateApplicationDueDate(ClassYear classYear) {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(classYear.getApplicationStartDateTime()) || now.isAfter(classYear.getApplicationEndDateTime())) {
+            throw new CustomException(ErrorCode.INVALID_INPUT, "지원 기간이 아닙니다.");
+        }
     }
 }

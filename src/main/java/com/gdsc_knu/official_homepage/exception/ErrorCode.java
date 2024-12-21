@@ -30,6 +30,7 @@ public enum ErrorCode {
     INVALID_APPLICATION_STATE(400, HttpStatus.BAD_REQUEST,"지원서 상태가 유효하지 않습니다.","A400"),
     APPLICATION_DEADLINE_EXPIRED(400, HttpStatus.BAD_REQUEST,"지원 기간이 만료되었습니다.","A400"),
     INVALID_CLASS_YEAR(404, HttpStatus.NOT_FOUND,"존재하지 않는 기수입니다.","A404"),
+    APPLICATION_FORBIDDEN(403, HttpStatus.FORBIDDEN, "지원서에 접근할 수 있는 권한이 없습니다.","A403"),
 
     // Team
 

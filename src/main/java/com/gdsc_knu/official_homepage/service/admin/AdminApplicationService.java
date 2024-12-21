@@ -129,7 +129,7 @@ public class AdminApplicationService {
     @Transactional(readOnly = true)
     public AdminApplicationResponse.ClassYearResponse getClassYear(Long id) {
         ClassYear classYear = classYearRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "해당 기수가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR));
         return AdminApplicationResponse.ClassYearResponse.from(classYear);
     }
 
@@ -141,7 +141,8 @@ public class AdminApplicationService {
     @Transactional
     public void updateClassYear(Long id, AdminApplicationRequest.ClassYearRequest request) {
         ClassYear classYear = classYearRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INPUT, "해당 기수가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR));
+        classYear.update(request.getName(), request.getApplyStartDateTime(), request.getApplyEndDateTime());
         classYearRepository.save(request.toEntity());
     }
 

@@ -139,7 +139,7 @@ public class AdminApplicationController {
     public ResponseEntity<Void> updateClassYear(@RequestParam("id") Long id,
                                                 @RequestBody AdminApplicationRequest.ClassYearRequest classYearRequest) {
         applicationService.updateClassYear(id, classYearRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/classyear")

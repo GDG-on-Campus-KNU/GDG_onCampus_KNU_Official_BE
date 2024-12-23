@@ -4,7 +4,7 @@ import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
 
 public interface ApplicationService {
-    ApplicationResponse getApplication(String email, String name, String studentNumber);
+    ApplicationResponse getApplication(String email, String name, String studentNumber, Long classYearId);
 
     Long saveApplication(String email, ApplicationRequest applicationRequest);
 

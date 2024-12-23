@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long>, ApplicationQueryFactory{
-    Optional<Application> findByNameAndStudentNumber(String name, String studentNumber);
+    Optional<Application> findByNameAndStudentNumberAndClassYearId(String name, String studentNumber, Long classYearId);
     Optional<Application> findByStudentNumber(String studentNumber);
 
     @Query("SELECT " +

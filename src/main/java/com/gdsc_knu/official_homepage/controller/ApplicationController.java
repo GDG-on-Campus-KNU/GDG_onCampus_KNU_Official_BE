@@ -28,9 +28,12 @@ public class ApplicationController {
                     
                     최종제출 상태의 지원서는 조회가 불가능합니다.
                     """)
-    public ResponseEntity<ApplicationResponse> getApplication(@TokenMember JwtMemberDetail jwtMemberDetail, @RequestParam String name, @RequestParam String studentNumber) {
+    public ResponseEntity<ApplicationResponse> getApplication(@TokenMember JwtMemberDetail jwtMemberDetail,
+                                                              @RequestParam String name,
+                                                              @RequestParam String studentNumber,
+                                                              @RequestParam Long classYearId) {
         return ResponseEntity.ok()
-                .body(applicationService.getApplication(jwtMemberDetail.getEmail(), name, studentNumber));
+                .body(applicationService.getApplication(jwtMemberDetail.getEmail(), name, studentNumber, classYearId));
     }
 
     @PostMapping

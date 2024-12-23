@@ -34,12 +34,12 @@ public class ApplicationServiceImpl implements ApplicationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public ApplicationResponse getApplication(String email, String name, String studentNumber) {
+    public ApplicationResponse getApplication(String email, String name, String studentNumber, Long classYearId) {
         Member member = validateMember(email);
         if (!member.getStudentNumber().equals(studentNumber) || !member.getName().equals(name)) {
             throw new CustomException(ErrorCode.APPLICATION_FORBIDDEN);
         }
-        Application application = validateApplicationAccess(name, studentNumber);
+        Application application = validateApplicationAccess(name, studentNumber, classYearId);
         return new ApplicationResponse(application);
     }
 
@@ -53,12 +53,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public Long saveApplication(String email, ApplicationRequest applicationRequest) {
-        validateApplicationDeadline(applicationRequest.getClassYearId());
         validateApplicationStatus(applicationRequest.getApplicationStatus());
+        validateApplicationDeadline(applicationRequest.getClassYearId());
         Member member = validateMember(email);
-        applicationRepository.findByNameAndStudentNumber(member.getName(), member.getStudentNumber())
+        applicationRepository.findByNameAndStudentNumberAndClassYearId(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId())
                 .ifPresent(application -> {
-                    throw new CustomException(ErrorCode.APPLICATION_CONFLICT);
+                    if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
+                        throw new CustomException(ErrorCode.APPLICATION_CONFLICT);
+                    }
                 });
         member.updateTrack(applicationRequest.getTrack());
         return applicationRepository.save(new Application(member, applicationRequest)).getId();
@@ -73,22 +75,24 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public Long updateApplication(String email, ApplicationRequest applicationRequest) {
-        validateApplicationDeadline(applicationRequest.getClassYearId());
         validateApplicationStatus(applicationRequest.getApplicationStatus());
+        validateApplicationDeadline(applicationRequest.getClassYearId());
         Member member = validateMember(email);
-        Application application = validateApplicationAccess(member.getName(), member.getStudentNumber());
+        Application application = validateApplicationAccess(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId());
         application.updateApplication(member, applicationRequest);
         applicationRepository.save(application);
         return application.getId();
     }
 
     /**
-     * 지원서 접근 가능 상태를 판단 (이미 최종 제출 된 지원서는 접근 불가, 예외 발생)
+     * 입력된 지원서 상태의 유효성을 판단
      * @param applicationStatus 지원서 상태
      * @throws CustomException ErrorCode.INVALID_APPLICATION_STATE
      */
     private void validateApplicationStatus(ApplicationStatus applicationStatus) {
-        if (applicationStatus.equals(ApplicationStatus.REJECTED) || applicationStatus.equals(ApplicationStatus.APPROVED)) {
+        try {
+            ApplicationStatus.valueOf(applicationStatus.toString());
+        } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.INVALID_APPLICATION_STATE);
         }
     }
@@ -97,7 +101,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      * 이메일로 회원 존재 여부 조회 (존재하지 않는 멤버라면 예외 발생)
      * @param email 이메일
      * @return Member
-     * @throws CustomException ErrorCode.NOT_FOUND
+     * @throws CustomException ErrorCode.USER_NOT_FOUND
      */
     private Member validateMember(String email) {
         return memberRepository.findByEmail(email)
@@ -109,10 +113,10 @@ public class ApplicationServiceImpl implements ApplicationService {
      * @param name 이름
      * @param studentNumber 학번
      * @return Application
-     * @throws CustomException ErrorCode.NOT_FOUND(지원서가 존재하지 않음), ErrorCode.CONFLICT(지원서가 최종제출 됨)
+     * @throws CustomException ErrorCode.APPLICATION_NOT_FOUND(지원서가 존재하지 않음), ErrorCode.APPLICATION_CONFLICT(지원서가 최종제출 됨)
      */
-    private Application validateApplicationAccess(String name, String studentNumber) {
-        Application application = applicationRepository.findByNameAndStudentNumber(name, studentNumber)
+    private Application validateApplicationAccess(String name, String studentNumber, Long classYearId) {
+        Application application = applicationRepository.findByNameAndStudentNumberAndClassYearId(name, studentNumber, classYearId)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
             throw new CustomException(ErrorCode.APPLICATION_CONFLICT);

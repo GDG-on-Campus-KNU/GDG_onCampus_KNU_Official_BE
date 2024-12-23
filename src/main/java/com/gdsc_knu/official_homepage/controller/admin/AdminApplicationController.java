@@ -121,9 +121,9 @@ public class AdminApplicationController {
         return ResponseEntity.ok(applicationService.getClassYearList());
     }
 
-    @GetMapping("/classyear")
+    @GetMapping("/classyear/{id}")
     @Operation(summary="기수 단건 조회 API", description = "기수를 단건 조회합니다.")
-    public ResponseEntity<AdminApplicationResponse.ClassYearResponse> getClassYear(@RequestParam("id") Long id) {
+    public ResponseEntity<AdminApplicationResponse.ClassYearResponse> getClassYear(@PathVariable("id") Long id) {
         return ResponseEntity.ok(applicationService.getClassYear(id));
     }
 

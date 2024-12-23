@@ -14,7 +14,7 @@ public class ApplicationTest {
     @DisplayName("지원서를 열람한 경우 열람상태가 변경된다.")
     void getApplicationDetail() {
         // given
-        Application application = createApplication(1, Track.AI, ApplicationStatus.SAVED);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED);
         // when
         application.open();
         // then
@@ -26,7 +26,7 @@ public class ApplicationTest {
     @DisplayName("임시저장 상태인 경우 status 를 변경할 수 없다.(합/불합으로 변경할 수 없다)")
     void failedUpdateTemporal() {
         // given
-        Application application = createApplication(1, Track.AI, ApplicationStatus.TEMPORAL);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.TEMPORAL);
         // when
         application.updateStatus(ApplicationStatus.APPROVED);
         // then

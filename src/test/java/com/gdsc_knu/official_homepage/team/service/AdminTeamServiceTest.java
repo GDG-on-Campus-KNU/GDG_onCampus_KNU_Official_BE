@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +37,7 @@ public class AdminTeamServiceTest {
         // given
         Member member1 = createMember(1L);
         Member member2 = createMember(2L);
-        when(memberRepository.findAll()).thenReturn(new ArrayList<>(List.of(member1, member2)));
+        when(memberRepository.findAllByTrackAndRoleIn(any(), any())).thenReturn(new ArrayList<>(List.of(member1, member2)));
         String teamName = "팀 이름";
         // when
         adminTeamService.createParentTeam(new AdminTeamRequest.Create(teamName, null));

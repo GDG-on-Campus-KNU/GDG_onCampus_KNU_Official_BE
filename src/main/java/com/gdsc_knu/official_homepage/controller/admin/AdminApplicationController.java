@@ -26,7 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminApplicationController {
     private final AdminApplicationService applicationService;
-    private static final LocalDate ACTIVE_DATE = LocalDate.of(2024,9,14);
+    private static final LocalDate ACTIVE_DATE = LocalDate.of(2025,1,19);
 
     @GetMapping("statistic")
     @Operation(summary="지원서류 통계데이터 조회 API")
@@ -110,8 +110,8 @@ public class AdminApplicationController {
     @PatchMapping("note")
     @Operation(summary="지원서류 메모 API", description = "지원서류에 메모를 합니다.")
     public ResponseEntity<Void> noteApplication(@RequestParam("id") Long id,
-                                                @RequestBody String note) {
-        applicationService.noteApplication(id, note);
+                                                @RequestBody AdminApplicationRequest.Append request) {
+        applicationService.noteApplication(id, request.getNote(), request.getVersion());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

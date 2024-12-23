@@ -1,5 +1,4 @@
 package com.gdsc_knu.official_homepage.dto.admin.application;
-
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +8,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 public class AdminApplicationRequest {
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Append {
+        private String note;
+        private Integer version;
+    }
+  
     @Getter
     @Builder
     @AllArgsConstructor

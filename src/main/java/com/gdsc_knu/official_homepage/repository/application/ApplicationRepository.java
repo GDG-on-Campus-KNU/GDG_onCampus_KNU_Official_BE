@@ -18,6 +18,10 @@ import java.util.Set;
 public interface ApplicationRepository extends JpaRepository<Application, Long>, ApplicationQueryFactory{
     Optional<Application> findByNameAndStudentNumberAndClassYearId(String name, String studentNumber, Long classYearId);
     Optional<Application> findByStudentNumber(String studentNumber);
+    @Query("SELECT a " +
+            "FROM Application a LEFT JOIN FETCH a.answers "+
+            "WHERE a.id=:id")
+    Optional<Application> findByIdFetchJoin(Long id);
 
     @Query("SELECT " +
             "COUNT(CASE WHEN a.applicationStatus != 'TEMPORAL' THEN 1 END) AS total, " +

@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationTestEntityFactory {
-    public static Application createApplication(int id, Track track, ApplicationStatus status) {
+    public static Application createApplication(Long id, Track track, ApplicationStatus status) {
         return Application.builder()
-                .id(id==0 ? null : (long) id)
+                .id(id)
                 .email(String.format("test%s@email.com", id))
                 .studentNumber(String.valueOf(id))
                 .phoneNumber(String.format("010-0000-%s", id))
@@ -22,7 +22,7 @@ public class ApplicationTestEntityFactory {
     public static List<Application> createApplicationList(int startNum, int count, Track track, ApplicationStatus status){
         List<Application> applicationList = new ArrayList<>();
         for (int i=startNum; i<count; i++) {
-            applicationList.add(createApplication(i, track, status));
+            applicationList.add(createApplication((long) i, track, status));
         }
         return applicationList;
     }

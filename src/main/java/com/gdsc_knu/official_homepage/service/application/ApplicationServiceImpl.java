@@ -58,9 +58,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Member member = validateMember(email);
         applicationRepository.findByNameAndStudentNumberAndClassYearId(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId())
                 .ifPresent(application -> {
-                    if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
-                        throw new CustomException(ErrorCode.APPLICATION_CONFLICT);
-                    }
+                    throw new CustomException(ErrorCode.APPLICATION_CONFLICT, "이미 작성중인 지원서가 있습니다.");
                 });
         member.updateTrack(applicationRequest.getTrack());
         Application application =  new Application(member, applicationRequest);

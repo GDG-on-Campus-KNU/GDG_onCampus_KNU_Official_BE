@@ -63,7 +63,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                     }
                 });
         member.updateTrack(applicationRequest.getTrack());
-        return applicationRepository.save(new Application(member, applicationRequest)).getId();
+        Application application =  new Application(member, applicationRequest);
+        application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR)));
+        return applicationRepository.save(application).getId();
     }
 
     /**
@@ -80,6 +83,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         Member member = validateMember(email);
         Application application = validateApplicationAccess(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId());
         application.updateApplication(member, applicationRequest);
+        application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR)));
         applicationRepository.save(application);
         return application.getId();
     }

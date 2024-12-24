@@ -133,4 +133,8 @@ public class Application extends BaseTimeEntity {
             throw new CustomException(ErrorCode.CONCURRENT_FAILED);
         this.note = note;
     }
+
+    public void updateClassYear(ClassYear classYear) {
+        this.classYear = classYear;
+    }
 }

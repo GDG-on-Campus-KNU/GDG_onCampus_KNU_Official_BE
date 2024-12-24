@@ -156,7 +156,13 @@ public class AdminApplicationResponse {
     public static class ClassYearResponse {
         private Long id;
         private String name;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime applyStartDateTime;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         private LocalDateTime applyEndDateTime;
 
         public static AdminApplicationResponse.ClassYearResponse from(ClassYear classYear) {

@@ -3,7 +3,6 @@ package com.gdsc_knu.official_homepage.controller.admin;
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
-import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
@@ -52,10 +51,11 @@ public class AdminApplicationController {
             @RequestParam(value = "track", required = false) Track track,
             @RequestParam(value = "isMarked", required = false, defaultValue = "false") Boolean isMarked,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size)
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "classYearId", required = false) Long classYearId)
 
     {
-        return ResponseEntity.ok().body(applicationService.getApplicationsByOption(page, size, track, isMarked));
+        return ResponseEntity.ok().body(applicationService.getApplicationsByOption(page, size, track, isMarked, classYearId));
     }
 
 

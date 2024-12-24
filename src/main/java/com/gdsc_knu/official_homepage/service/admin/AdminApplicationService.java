@@ -70,9 +70,9 @@ public class AdminApplicationService {
 
 
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, Boolean isMarked){
+    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, Boolean isMarked, Long classYearId){
         Page<Application> applicationPage
-                = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked);
+                = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked, classYearId);
         return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
     }
 

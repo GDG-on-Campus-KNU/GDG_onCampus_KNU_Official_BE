@@ -1,6 +1,7 @@
 package com.gdsc_knu.official_homepage.service.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationRequestDTO;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -61,7 +62,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     throw new CustomException(ErrorCode.APPLICATION_CONFLICT, "이미 작성중인 지원서가 있습니다.");
                 });
         member.updateTrack(applicationRequest.getTrack());
-        Application application =  new Application(member, applicationRequest);
+        Application application =  new Application(member, createApplicationRequestDTO(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR)));
         return applicationRepository.save(application).getId();
@@ -80,7 +81,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         validateApplicationDeadline(applicationRequest.getClassYearId());
         Member member = validateMember(email);
         Application application = validateApplicationAccess(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId());
-        application.updateApplication(member, applicationRequest);
+        application.updateApplication(member, createApplicationRequestDTO(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR)));
         applicationRepository.save(application);
@@ -134,5 +135,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (now.isBefore(classYear.getApplicationStartDateTime()) || now.isAfter(classYear.getApplicationEndDateTime())) {
             throw new CustomException(ErrorCode.APPLICATION_DEADLINE_EXPIRED);
         }
+    }
+
+    private ApplicationRequestDTO createApplicationRequestDTO(ApplicationRequest applicationRequest) {
+        return ApplicationRequestDTO.builder()
+                .techStack(applicationRequest.getTechStack())
+                .links(applicationRequest.getLinks())
+                .applicationStatus(applicationRequest.getApplicationStatus())
+                .track(applicationRequest.getTrack())
+                .answers(applicationRequest.getAnswers())
+                .build();
     }
 }

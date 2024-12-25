@@ -1,12 +1,15 @@
 package com.gdsc_knu.official_homepage.application.service;
 
 import com.gdsc_knu.official_homepage.ClearDatabase;
+import com.gdsc_knu.official_homepage.config.QueryDslConfig;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import com.gdsc_knu.official_homepage.service.admin.AdminApplicationService;
 import jakarta.persistence.EntityManager;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,8 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.createApplication;
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.createApplicationList;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.setClassYear;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -38,6 +42,7 @@ import static org.mockito.Mockito.*;
 public class AdminApplicationServiceTest {
     @Autowired private AdminApplicationService applicationService;
     @Autowired private ApplicationRepository applicationRepository;
+    @Autowired private ClassYearRepository classYearRepository;
     @Autowired private ClearDatabase clearDatabase;
     @MockBean private MailService mailService;
 
@@ -45,6 +50,10 @@ public class AdminApplicationServiceTest {
     @AfterEach
     void tearDown() {
         clearDatabase.each("application");
+        clearDatabase.each("class_year");
+        // auto increment 초기화
+//        em.createNativeQuery("ALTER TABLE application ALTER COLUMN id RESTART WITH 1").executeUpdate();
+//        em.createNativeQuery("ALTER TABLE class_year ALTER COLUMN id RESTART WITH 1").executeUpdate();
     }
 
 
@@ -54,6 +63,9 @@ public class AdminApplicationServiceTest {
     void updateStatus() {
         // given
         Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        application.updateClassYear(classYear);
         applicationRepository.save(application);
         doThrow(CustomException.class).when(mailService).sendEach(application);
         // when
@@ -82,6 +94,10 @@ public class AdminApplicationServiceTest {
         List<Application> allApplications = Stream.of(ai, backend, frontend, temporal)
                 .flatMap(List::stream)
                 .toList();
+        int classYearStart = 1;
+        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
+        classYearRepository.saveAll(allClassYears);
+        setClassYear(allApplications, allClassYears);
         applicationRepository.saveAll(allApplications);
         // when
         Map<String, Integer> statistic = applicationService.getTrackStatistic();
@@ -100,6 +116,9 @@ public class AdminApplicationServiceTest {
     void updateNoteFailed() {
         // given
         Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        application.updateClassYear(classYear);
         applicationRepository.save(application);
         // 다른 사용자에 의해 변경
         application.saveNote("1",application.getVersion());
@@ -118,7 +137,10 @@ public class AdminApplicationServiceTest {
     @DisplayName("동시에 지원서를 수정하는 경우 처음 시도만 남고 오류를 반환한다.")
     void updateNoteConcurrentFailed() throws InterruptedException {
         Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
-        applicationRepository.saveAndFlush(application);;
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        application.updateClassYear(classYear);
+        applicationRepository.saveAndFlush(application);
 
         int threadCount = 2;
         CountDownLatch latch = new CountDownLatch(threadCount);

@@ -1,13 +1,24 @@
 package com.gdsc_knu.official_homepage.application;
 
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationTestEntityFactory {
+    public static ClassYear createClassYear(Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        return ClassYear.builder()
+                .id(id)
+                .name(String.format("test%s기", id))
+                .applicationStartDateTime(now)
+                .applicationEndDateTime(now.plusDays(1))
+                .build();
+    }
     public static Application createApplication(Long id, Track track, ApplicationStatus status) {
         return Application.builder()
                 .id(id)
@@ -25,5 +36,23 @@ public class ApplicationTestEntityFactory {
             applicationList.add(createApplication((long) i, track, status));
         }
         return applicationList;
+    }
+
+    public static List<ClassYear> createClassYearList(int startNum, int count) {
+        List<ClassYear> classYearList = new ArrayList<>();
+        for (int i=startNum; i<count; i++) {
+            System.out.println("i: " + i);
+            classYearList.add(createClassYear((long) i));
+            System.out.println("classYearID: " + classYearList.get(i-startNum).getId());
+        }
+        return classYearList;
+    }
+
+    public static void setClassYear(List<Application> applications, List<ClassYear> classYears) {
+        for (int i = 0; i < applications.size(); i++) {
+            int classYearIdx = i % classYears.size();
+            System.out.println("classYearIdx: " + classYearIdx);
+            applications.get(i).updateClassYear(classYears.get(classYearIdx));
+        }
     }
 }

@@ -1,10 +1,14 @@
 package com.gdsc_knu.official_homepage.application.repository;
 
+import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,25 +17,33 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.createApplicationList;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
 import static com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus.*;
 import static com.gdsc_knu.official_homepage.entity.enumeration.Track.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DataJpaTest
-@Import(QueryDslConfig.class)
+@Import({QueryDslConfig.class, ClearDatabase.class})
 public class AdminApplicationRepositoryTest {
     @Autowired private ApplicationRepository applicationRepository;
+    @Autowired private ClassYearRepository classYearRepository;
+    @Autowired private ClearDatabase clearDatabase;
+
     @AfterEach
+    @Transactional
+    @Rollback
     void tearDown() {
-        applicationRepository.deleteAll();
+        clearDatabase.each("application");
+        clearDatabase.each("class_year");
     }
 
     @Test
@@ -50,6 +62,10 @@ public class AdminApplicationRepositoryTest {
         List<Application> allApplications = Stream.of(temporal, save, approve, reject)
                 .flatMap(List::stream)
                 .toList();
+        int classYearStart = 1;
+        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
+        classYearRepository.saveAll(allClassYears);
+        setClassYear(allApplications, allClassYears);
         applicationRepository.saveAll(allApplications);
 
         // when
@@ -76,6 +92,10 @@ public class AdminApplicationRepositoryTest {
         List<Application> allApplications = Stream.of(temporal, ai, backend)
                 .flatMap(List::stream)
                 .toList();
+        int classYearStart = 1;
+        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
+        classYearRepository.saveAll(allClassYears);
+        setClassYear(allApplications, allClassYears);
         applicationRepository.saveAll(allApplications);
 
         // when
@@ -102,11 +122,15 @@ public class AdminApplicationRepositoryTest {
         List<Application> allApplications = Stream.of(temporal, ai, backend)
                 .flatMap(List::stream)
                 .toList();
+        int classYearStart = 1;
+        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
+        classYearRepository.saveAll(allClassYears);
+        setClassYear(allApplications, allClassYears);
         applicationRepository.saveAll(allApplications);
 
         // when
         PageRequest pageRequest = PageRequest.of(0,3);
-        Page<Application> applicationPage = applicationRepository.findAllApplicationsByOption(pageRequest, BACK_END, false);
+        Page<Application> applicationPage = applicationRepository.findAllApplicationsByOption(pageRequest, BACK_END, false, null);
 
         // then
         assertThat(applicationPage).hasSize(2).allSatisfy(application -> {
@@ -130,11 +154,15 @@ public class AdminApplicationRepositoryTest {
         List<Application> allApplications = Stream.of(temporal, ai, backend)
                 .flatMap(List::stream)
                 .toList();
+        int classYearStart = 1;
+        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
+        classYearRepository.saveAll(allClassYears);
+        setClassYear(allApplications, allClassYears);
         applicationRepository.saveAll(allApplications);
 
         // when
         PageRequest pageRequest = PageRequest.of(0,5);
-        Page<Application> applicationPage = applicationRepository.findAllApplicationsByOption(pageRequest,null, null);
+        Page<Application> applicationPage = applicationRepository.findAllApplicationsByOption(pageRequest,null, null, null);
 
         // then
         assertThat(applicationPage).hasSize(4).anySatisfy(

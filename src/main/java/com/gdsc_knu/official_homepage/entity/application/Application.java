@@ -12,6 +12,7 @@ import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Application extends BaseTimeEntity {
+public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,6 +44,8 @@ public class Application extends BaseTimeEntity {
     private String techStack;
 
     private String links;
+
+    private LocalDateTime submittedAt;
 
     @ManyToOne
     @JoinColumn(name = "class_year_id")
@@ -83,6 +86,7 @@ public class Application extends BaseTimeEntity {
                         .questionNumber(answers.getQuestionNumber())
                         .answer(answers.getAnswer())
                         .build()).toList();
+        this.submittedAt = LocalDateTime.now();
     }
 
     public void updateApplication(Member member, ApplicationRequest applicationRequest) {
@@ -96,6 +100,7 @@ public class Application extends BaseTimeEntity {
         this.applicationStatus = applicationRequest.getApplicationStatus();
         this.track = applicationRequest.getTrack();
         updateNewAnswers(applicationRequest.getAnswers());
+        this.submittedAt = LocalDateTime.now();
     }
 
     private void updateNewAnswers(List<ApplicationAnswerDTO> newAnswersDTO) {

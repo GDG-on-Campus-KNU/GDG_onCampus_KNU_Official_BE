@@ -17,10 +17,13 @@ public class ClassYear {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false)
     private LocalDateTime applicationStartDateTime;
 
+    @Column(nullable = false)
     private LocalDateTime applicationEndDateTime;
 
     public void update(String name, LocalDateTime applicationStartDateTime, LocalDateTime applicationEndDateTime) {

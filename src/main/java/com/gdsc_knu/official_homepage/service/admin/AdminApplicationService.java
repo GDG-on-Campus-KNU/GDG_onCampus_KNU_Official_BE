@@ -15,6 +15,7 @@ import com.gdsc_knu.official_homepage.repository.application.ApplicationReposito
 import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -135,25 +136,41 @@ public class AdminApplicationService {
     @Transactional(readOnly = true)
     public AdminApplicationResponse.ClassYearResponse getClassYear(Long id) {
         ClassYear classYear = classYearRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND));
         return AdminApplicationResponse.ClassYearResponse.from(classYear);
     }
 
     @Transactional
     public void addClassYear(AdminApplicationRequest.ClassYearRequest request) {
+        validateClassYear(request);
         classYearRepository.save(request.toEntity());
     }
 
     @Transactional
     public void updateClassYear(Long id, AdminApplicationRequest.ClassYearRequest request) {
         ClassYear classYear = classYearRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND));
+        validateClassYear(request);
         classYear.update(request.getName(), request.getApplyStartDateTime(), request.getApplyEndDateTime());
         classYearRepository.save(request.toEntity());
     }
 
     @Transactional
     public void deleteClassYear(Long id) {
-        classYearRepository.deleteById(id);
+        try {
+            classYearRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND);
+        }
+    }
+
+    private void validateClassYear(AdminApplicationRequest.ClassYearRequest request) {
+        classYearRepository.findByName(request.getName())
+                .ifPresent(classYear -> {
+                    throw new CustomException(ErrorCode.CLASS_YEAR_DUPLICATED);
+                });
+        if (request.getApplyStartDateTime().isAfter(request.getApplyEndDateTime()) || request.getApplyEndDateTime().isBefore(request.getApplyStartDateTime())) {
+            throw new CustomException(ErrorCode.INVALID_CLASS_YEAR);
+        }
     }
 }

@@ -49,7 +49,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      * @param email 이메일
      * @param applicationRequest (테크스택, 링크, 지원서 상태, 트랙, 답변)
      * @return Long 지원서 id
-     * @throws CustomException ErrorCode.APPLICATION_CONFLICT
+     * @throws CustomException ErrorCode.APPLICATION_DUPLICATED
      */
     @Override
     @Transactional
@@ -58,13 +58,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         validateApplicationDeadline(applicationRequest.getClassYearId());
         Member member = validateMember(email);
         applicationRepository.findByNameAndStudentNumberAndClassYearId(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId())
-                .ifPresent(application -> {
-                    throw new CustomException(ErrorCode.APPLICATION_CONFLICT, "이미 작성중인 지원서가 있습니다.");
-                });
+            .ifPresent(application -> {
+                throw new CustomException(ErrorCode.APPLICATION_DUPLICATED, "이미 작성 중이거나 제출한 지원서가 있습니다.");
+            });
         member.updateTrack(applicationRequest.getTrack());
         Application application =  new Application(member, createApplicationRequestDTO(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR)));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND)));
         return applicationRepository.save(application).getId();
     }
 
@@ -83,7 +83,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = validateApplicationAccess(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId());
         application.updateApplication(member, createApplicationRequestDTO(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR)));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND)));
         applicationRepository.save(application);
         return application.getId();
     }
@@ -117,13 +117,13 @@ public class ApplicationServiceImpl implements ApplicationService {
      * @param name 이름
      * @param studentNumber 학번
      * @return Application
-     * @throws CustomException ErrorCode.APPLICATION_NOT_FOUND(지원서가 존재하지 않음), ErrorCode.APPLICATION_CONFLICT(지원서가 최종제출 됨)
+     * @throws CustomException ErrorCode.APPLICATION_NOT_FOUND(지원서가 존재하지 않음), ErrorCode.APPLICATION_DUPLICATED(지원서가 최종제출 됨)
      */
     private Application validateApplicationAccess(String name, String studentNumber, Long classYearId) {
         Application application = applicationRepository.findByNameAndStudentNumberAndClassYearId(name, studentNumber, classYearId)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
-            throw new CustomException(ErrorCode.APPLICATION_CONFLICT);
+            throw new CustomException(ErrorCode.APPLICATION_DUPLICATED);
         }
         return application;
     }
@@ -131,7 +131,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private void validateApplicationDeadline(Long classYearId) {
         LocalDateTime now = LocalDateTime.now();
         ClassYear classYear = classYearRepository.findById(classYearId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CLASS_YEAR));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND));
         if (now.isBefore(classYear.getApplicationStartDateTime()) || now.isAfter(classYear.getApplicationEndDateTime())) {
             throw new CustomException(ErrorCode.APPLICATION_DEADLINE_EXPIRED);
         }

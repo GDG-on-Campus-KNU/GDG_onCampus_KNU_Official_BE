@@ -19,4 +19,12 @@ public class ApplicationModel {
     private ApplicationStatus applicationStatus;
     private Track track;
     private List<ApplicationAnswerDTO> answers;
+
+    public ApplicationModel(ApplicationRequest applicationRequest) {
+        this.techStack = applicationRequest.getTechStack();
+        this.links = applicationRequest.getLinks();
+        this.applicationStatus = applicationRequest.getApplicationStatus();
+        this.track = applicationRequest.getTrack();
+        this.answers = applicationRequest.getAnswers();
+    }
 }

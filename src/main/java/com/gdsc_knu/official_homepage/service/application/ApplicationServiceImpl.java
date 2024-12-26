@@ -62,7 +62,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 throw new CustomException(ErrorCode.APPLICATION_DUPLICATED);
             });
         member.updateTrack(applicationRequest.getTrack());
-        Application application =  new Application(member, createApplicationRequestDTO(applicationRequest));
+        Application application =  new Application(member, new ApplicationModel(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND)));
         return applicationRepository.save(application).getId();
@@ -81,7 +81,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         validateApplicationDeadline(applicationRequest.getClassYearId());
         Member member = validateMember(email);
         Application application = validateApplicationAccess(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId());
-        application.updateApplication(member, createApplicationRequestDTO(applicationRequest));
+        application.updateApplication(member, new ApplicationModel(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND)));
         return application.getId();
@@ -134,15 +134,5 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (now.isBefore(classYear.getApplicationStartDateTime()) || now.isAfter(classYear.getApplicationEndDateTime())) {
             throw new CustomException(ErrorCode.APPLICATION_DEADLINE_EXPIRED);
         }
-    }
-
-    private ApplicationModel createApplicationRequestDTO(ApplicationRequest applicationRequest) {
-        return ApplicationModel.builder()
-                .techStack(applicationRequest.getTechStack())
-                .links(applicationRequest.getLinks())
-                .applicationStatus(applicationRequest.getApplicationStatus())
-                .track(applicationRequest.getTrack())
-                .answers(applicationRequest.getAnswers())
-                .build();
     }
 }

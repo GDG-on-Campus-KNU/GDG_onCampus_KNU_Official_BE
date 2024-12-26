@@ -41,9 +41,7 @@ public class ApplicationTestEntityFactory {
     public static List<ClassYear> createClassYearList(int startNum, int count) {
         List<ClassYear> classYearList = new ArrayList<>();
         for (int i=startNum; i<count; i++) {
-            System.out.println("i: " + i);
             classYearList.add(createClassYear((long) i));
-            System.out.println("classYearID: " + classYearList.get(i-startNum).getId());
         }
         return classYearList;
     }
@@ -51,7 +49,6 @@ public class ApplicationTestEntityFactory {
     public static void setClassYear(List<Application> applications, List<ClassYear> classYears) {
         for (int i = 0; i < applications.size(); i++) {
             int classYearIdx = i % classYears.size();
-            System.out.println("classYearIdx: " + classYearIdx);
             applications.get(i).updateClassYear(classYears.get(classYearIdx));
         }
     }

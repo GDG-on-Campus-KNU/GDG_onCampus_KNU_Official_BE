@@ -51,9 +51,6 @@ public class AdminApplicationServiceTest {
     void tearDown() {
         clearDatabase.each("application");
         clearDatabase.each("class_year");
-        // auto increment 초기화
-//        em.createNativeQuery("ALTER TABLE application ALTER COLUMN id RESTART WITH 1").executeUpdate();
-//        em.createNativeQuery("ALTER TABLE class_year ALTER COLUMN id RESTART WITH 1").executeUpdate();
     }
 
 

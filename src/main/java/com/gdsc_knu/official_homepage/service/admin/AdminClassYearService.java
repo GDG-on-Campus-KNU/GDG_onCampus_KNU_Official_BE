@@ -42,7 +42,6 @@ public class AdminClassYearService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND));
         validateClassYear(request);
         classYear.update(request.getName(), request.getApplyStartDateTime(), request.getApplyEndDateTime());
-        classYearRepository.save(request.toEntity());
     }
 
     @Transactional

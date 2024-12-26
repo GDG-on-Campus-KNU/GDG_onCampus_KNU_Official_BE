@@ -84,7 +84,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.updateApplication(member, createApplicationRequestDTO(applicationRequest));
         application.updateClassYear(classYearRepository.findById(applicationRequest.getClassYearId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_YEAR_NOT_FOUND)));
-        applicationRepository.save(application);
         return application.getId();
     }
 

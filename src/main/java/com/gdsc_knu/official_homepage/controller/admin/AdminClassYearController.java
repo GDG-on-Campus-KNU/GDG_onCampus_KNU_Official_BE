@@ -4,6 +4,7 @@ import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRequ
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.service.admin.AdminClassYearService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Admin ClassYear", description = "기수 관리 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/admin/class-year")
@@ -18,7 +20,7 @@ public class AdminClassYearController {
     private final AdminClassYearService classYearService;
 
     @GetMapping()
-    @Operation(summary="기수 목록 조회 API", description = "기수를 목록을 조회합니다.")
+    @Operation(summary="기수 목록 조회 API", description = "기수 목록을 조회합니다.")
     public ResponseEntity<List<AdminApplicationResponse.ClassYearResponse>> getClassYearList() {
         return ResponseEntity.ok(classYearService.getClassYearList());
     }

@@ -1,8 +1,8 @@
 package com.gdsc_knu.official_homepage.entity.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
-import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
-import com.gdsc_knu.official_homepage.entity.BaseTimeEntity;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -11,6 +11,7 @@ import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Application extends BaseTimeEntity {
+public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,20 +32,23 @@ public class Application extends BaseTimeEntity {
 
     private String name;
 
-    @Column(unique = true)
     private String studentNumber;
 
     private String major;
 
-    @Column(unique = true)
     private String email;
 
-    @Column(unique = true)
     private String phoneNumber;
 
     private String techStack;
 
     private String links;
+
+    private LocalDateTime submittedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "class_year_id")
+    private ClassYear classYear;
 
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
@@ -65,35 +69,36 @@ public class Application extends BaseTimeEntity {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
-    // TODO : presentation 계층과 의존 제거
-    public Application(Member member, ApplicationRequest applicationRequest) {
+    public Application(Member member, ApplicationModel applicationModel) {
         this.name = member.getName();
         this.studentNumber = member.getStudentNumber();
         this.major = member.getMajor();
         this.email = member.getEmail();
         this.phoneNumber = member.getPhoneNumber();
-        this.techStack = applicationRequest.getTechStack();
-        this.links = applicationRequest.getLinks();
-        this.applicationStatus = applicationRequest.getApplicationStatus();
-        this.track = applicationRequest.getTrack();
-        this.answers = applicationRequest.getAnswers().stream()
+        this.techStack = applicationModel.getTechStack();
+        this.links = applicationModel.getLinks();
+        this.applicationStatus = applicationModel.getApplicationStatus();
+        this.track = applicationModel.getTrack();
+        this.answers = applicationModel.getAnswers().stream()
                 .map(answers -> ApplicationAnswer.builder()
                         .questionNumber(answers.getQuestionNumber())
                         .answer(answers.getAnswer())
                         .build()).toList();
+        this.submittedAt = LocalDateTime.now();
     }
 
-    public void updateApplication(Member member, ApplicationRequest applicationRequest) {
+    public void updateApplication(Member member, ApplicationModel applicationModel) {
         this.name = member.getName();
         this.studentNumber = member.getStudentNumber();
         this.major = member.getMajor();
         this.email = member.getEmail();
         this.phoneNumber = member.getPhoneNumber();
-        this.techStack = applicationRequest.getTechStack();
-        this.links = applicationRequest.getLinks();
-        this.applicationStatus = applicationRequest.getApplicationStatus();
-        this.track = applicationRequest.getTrack();
-        updateNewAnswers(applicationRequest.getAnswers());
+        this.techStack = applicationModel.getTechStack();
+        this.links = applicationModel.getLinks();
+        this.applicationStatus = applicationModel.getApplicationStatus();
+        this.track = applicationModel.getTrack();
+        updateNewAnswers(applicationModel.getAnswers());
+        this.submittedAt = LocalDateTime.now();
     }
 
     private void updateNewAnswers(List<ApplicationAnswerDTO> newAnswersDTO) {
@@ -130,5 +135,9 @@ public class Application extends BaseTimeEntity {
         if (this.version != version)
             throw new CustomException(ErrorCode.CONCURRENT_FAILED);
         this.note = note;
+    }
+
+    public void updateClassYear(ClassYear classYear) {
+        this.classYear = classYear;
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import lombok.AllArgsConstructor;
@@ -60,7 +61,7 @@ public class AdminApplicationResponse {
             return Overview.builder()
                     .id(application.getId())
                     .name(application.getName())
-                    .submittedAt(application.getModifiedAt())
+                    .submittedAt(application.getSubmittedAt())
                     .studentNumber(application.getStudentNumber())
                     .major(application.getMajor())
                     .track(application.getTrack().name())
@@ -104,7 +105,7 @@ public class AdminApplicationResponse {
                     .phoneNumber(application.getPhoneNumber())
                     .email(application.getEmail())
                     .track(application.getTrack().name())
-                    .submittedAt(application.getModifiedAt())
+                    .submittedAt(application.getSubmittedAt())
                     .techStack(application.getTechStack())
                     .link(application.getLinks())
                     .isMarked(application.isMarked())
@@ -144,6 +145,32 @@ public class AdminApplicationResponse {
                     .code(status.value())
                     .message(message)
                     .data(status)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ClassYearResponse {
+        private Long id;
+        private String name;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        private LocalDateTime applyStartDateTime;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        private LocalDateTime applyEndDateTime;
+
+        public static AdminApplicationResponse.ClassYearResponse from(ClassYear classYear) {
+            return AdminApplicationResponse.ClassYearResponse.builder()
+                    .id(classYear.getId())
+                    .name(classYear.getName())
+                    .applyStartDateTime(classYear.getApplicationStartDateTime())
+                    .applyEndDateTime(classYear.getApplicationEndDateTime())
                     .build();
         }
     }

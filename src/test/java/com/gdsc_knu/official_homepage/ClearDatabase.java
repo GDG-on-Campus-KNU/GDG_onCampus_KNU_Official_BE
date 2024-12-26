@@ -29,5 +29,6 @@ public class ClearDatabase {
         em.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         em.createNativeQuery(String.format("TRUNCATE TABLE %s", table)).executeUpdate();
         em.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        em.createNativeQuery(String.format("ALTER TABLE %s ALTER COLUMN id RESTART WITH 1", table)).executeUpdate();
     }
 }

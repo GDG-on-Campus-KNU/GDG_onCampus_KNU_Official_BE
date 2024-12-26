@@ -45,15 +45,16 @@ public class AdminApplicationController {
 
             마크된것만 조회하려면 isMarked=true로 설정하세요.
             
-            isMarked를 비워두거나 false로 설정하면 전체가 조회됩니다.(track도 마찬가지로 비워두면 전체)""")
+            isMarked를 비워두거나 false로 설정하면 전체가 조회됩니다.(track, classYearId도 마찬가지로 비워두면 전체)""")
     public ResponseEntity<PagingResponse<AdminApplicationResponse.Overview>> getApplicationListByOption(
             @RequestParam(value = "track", required = false) Track track,
             @RequestParam(value = "isMarked", required = false, defaultValue = "false") Boolean isMarked,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size)
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "classYearId", required = false) Long classYearId)
 
     {
-        return ResponseEntity.ok().body(applicationService.getApplicationsByOption(page, size, track, isMarked));
+        return ResponseEntity.ok().body(applicationService.getApplicationsByOption(page, size, track, isMarked, classYearId));
     }
 
 
@@ -112,7 +113,4 @@ public class AdminApplicationController {
         applicationService.noteApplication(id, request.getNote(), request.getVersion());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
 }

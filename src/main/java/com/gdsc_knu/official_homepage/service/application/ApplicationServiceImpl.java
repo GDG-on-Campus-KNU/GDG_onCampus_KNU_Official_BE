@@ -59,7 +59,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Member member = validateMember(email);
         applicationRepository.findByNameAndStudentNumberAndClassYearId(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId())
             .ifPresent(application -> {
-                throw new CustomException(ErrorCode.APPLICATION_DUPLICATED, "이미 작성 중이거나 제출한 지원서가 있습니다.");
+                throw new CustomException(ErrorCode.APPLICATION_DUPLICATED);
             });
         member.updateTrack(applicationRequest.getTrack());
         Application application =  new Application(member, createApplicationRequestDTO(applicationRequest));

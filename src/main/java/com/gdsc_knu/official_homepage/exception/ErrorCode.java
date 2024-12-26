@@ -26,7 +26,7 @@ public enum ErrorCode {
 
     // Application
     APPLICATION_NOT_FOUND(404,HttpStatus.NOT_FOUND, "지원서를 찾을 수 없습니다","A404"),
-    APPLICATION_DUPLICATED(409, HttpStatus.CONFLICT, "이미 최종 제출된 지원서 입니다.","A409"),
+    APPLICATION_DUPLICATED(409, HttpStatus.CONFLICT, "이미 작성 중이거나 최종 제출한 지원서가 존재합니다.","A409"),
     INVALID_APPLICATION_STATE(400, HttpStatus.BAD_REQUEST,"지원서 상태가 유효하지 않습니다.","A400"),
     APPLICATION_DEADLINE_EXPIRED(400, HttpStatus.BAD_REQUEST,"지원 기간이 만료되었습니다.","AA400"),
     CLASS_YEAR_NOT_FOUND(404, HttpStatus.NOT_FOUND,"존재하지 않는 기수입니다.","AC404"),

@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.service.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
-import com.gdsc_knu.official_homepage.dto.application.ApplicationRequestDTO;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationResponse;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -137,8 +137,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    private ApplicationRequestDTO createApplicationRequestDTO(ApplicationRequest applicationRequest) {
-        return ApplicationRequestDTO.builder()
+    private ApplicationModel createApplicationRequestDTO(ApplicationRequest applicationRequest) {
+        return ApplicationModel.builder()
                 .techStack(applicationRequest.getTechStack())
                 .links(applicationRequest.getLinks())
                 .applicationStatus(applicationRequest.getApplicationStatus())

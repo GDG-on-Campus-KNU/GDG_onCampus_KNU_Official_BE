@@ -1,7 +1,7 @@
 package com.gdsc_knu.official_homepage.entity.application;
 
 import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
-import com.gdsc_knu.official_homepage.dto.application.ApplicationRequestDTO;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -69,17 +69,17 @@ public class Application {
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationAnswer> answers = new ArrayList<>();
 
-    public Application(Member member, ApplicationRequestDTO applicationRequestDTO) {
+    public Application(Member member, ApplicationModel applicationModel) {
         this.name = member.getName();
         this.studentNumber = member.getStudentNumber();
         this.major = member.getMajor();
         this.email = member.getEmail();
         this.phoneNumber = member.getPhoneNumber();
-        this.techStack = applicationRequestDTO.getTechStack();
-        this.links = applicationRequestDTO.getLinks();
-        this.applicationStatus = applicationRequestDTO.getApplicationStatus();
-        this.track = applicationRequestDTO.getTrack();
-        this.answers = applicationRequestDTO.getAnswers().stream()
+        this.techStack = applicationModel.getTechStack();
+        this.links = applicationModel.getLinks();
+        this.applicationStatus = applicationModel.getApplicationStatus();
+        this.track = applicationModel.getTrack();
+        this.answers = applicationModel.getAnswers().stream()
                 .map(answers -> ApplicationAnswer.builder()
                         .questionNumber(answers.getQuestionNumber())
                         .answer(answers.getAnswer())
@@ -87,17 +87,17 @@ public class Application {
         this.submittedAt = LocalDateTime.now();
     }
 
-    public void updateApplication(Member member, ApplicationRequestDTO applicationRequestDTO) {
+    public void updateApplication(Member member, ApplicationModel applicationModel) {
         this.name = member.getName();
         this.studentNumber = member.getStudentNumber();
         this.major = member.getMajor();
         this.email = member.getEmail();
         this.phoneNumber = member.getPhoneNumber();
-        this.techStack = applicationRequestDTO.getTechStack();
-        this.links = applicationRequestDTO.getLinks();
-        this.applicationStatus = applicationRequestDTO.getApplicationStatus();
-        this.track = applicationRequestDTO.getTrack();
-        updateNewAnswers(applicationRequestDTO.getAnswers());
+        this.techStack = applicationModel.getTechStack();
+        this.links = applicationModel.getLinks();
+        this.applicationStatus = applicationModel.getApplicationStatus();
+        this.track = applicationModel.getTrack();
+        updateNewAnswers(applicationModel.getAnswers());
         this.submittedAt = LocalDateTime.now();
     }
 

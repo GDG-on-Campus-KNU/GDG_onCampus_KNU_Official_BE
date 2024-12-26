@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class ApplicationRequestDTO {
+public class ApplicationModel {
     private String techStack;
     private String links;
     private ApplicationStatus applicationStatus;

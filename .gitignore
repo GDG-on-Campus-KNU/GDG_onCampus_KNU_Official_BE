@@ -39,3 +39,4 @@ out/
 src/main/resources/static/index.html
 src/main/resources/images/**
 .env
+gradle.properties

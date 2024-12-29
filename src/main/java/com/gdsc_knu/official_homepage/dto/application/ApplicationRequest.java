@@ -16,6 +16,9 @@ import java.util.List;
 @Builder
 @Getter
 public class ApplicationRequest {
+    @NotNull(message = "기수 정보는 필수입니다.")
+    private Long classYearId;
+    
     @NotNull(message = "잘못된 입력 형식입니다.")
     private String techStack;
 

@@ -20,12 +20,13 @@ import java.util.List;
 public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, Boolean isMarked) {
+    public Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, Boolean isMarked, Long classYearId) {
         List<Application> applications = jpaQueryFactory
                 .selectFrom(QApplication.application)
                 .where(QApplication.application.applicationStatus.ne(ApplicationStatus.TEMPORAL)
                         .and(eqTrack(track))
-                        .and(eqIsMarked(isMarked)))
+                        .and(eqIsMarked(isMarked))
+                        .and(eqClassYear(classYearId)))
                 .orderBy(QApplication.application.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -49,5 +50,9 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
 
     private BooleanExpression eqIsMarked(Boolean isMarked) {
         return (isMarked == null || !isMarked) ? null : QApplication.application.isMarked.eq(true);
+    }
+
+    private BooleanExpression eqClassYear(Long classYearId) {
+        return classYearId == null ? null : QApplication.application.classYear.id.eq(classYearId);
     }
 }

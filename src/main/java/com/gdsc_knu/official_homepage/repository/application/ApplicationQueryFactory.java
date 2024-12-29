@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ApplicationQueryFactory {
-    Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, Boolean isMarked);
+    Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, Boolean isMarked, Long classYearId);
 }

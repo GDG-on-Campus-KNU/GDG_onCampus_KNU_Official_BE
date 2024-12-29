@@ -1,23 +1,27 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
+import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;
+import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
+import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +34,7 @@ public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
     private final TransactionTemplate transactionTemplate;
+    private final ClassYearRepository classYearRepository;
 
 
 
@@ -66,9 +71,9 @@ public class AdminApplicationService {
 
 
     @Transactional(readOnly = true)
-    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, Boolean isMarked){
+    public PagingResponse<AdminApplicationResponse.Overview> getApplicationsByOption(int page, int size, Track track, Boolean isMarked, Long classYearId){
         Page<Application> applicationPage
-                = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked);
+                = applicationRepository.findAllApplicationsByOption(PageRequest.of(page,size), track, isMarked, classYearId);
         return PagingResponse.from(applicationPage, AdminApplicationResponse.Overview::from);
     }
 
@@ -96,18 +101,23 @@ public class AdminApplicationService {
 
     @Transactional
     public AdminApplicationResponse.Detail getApplicationDetail(Long id) {
-        Application application = applicationRepository.findById(id)
+        Application application = applicationRepository.findByIdFetchJoin(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         application.open();
         return AdminApplicationResponse.Detail.from(application);
     }
 
-    // TODO : 동시성 제어
     @Transactional
-    public void noteApplication(Long id, String note) {
+    public void noteApplication(Long id, String note, Integer version) {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
-        application.saveNote(note);
+        application.saveNote(note, version);
+
+        try {
+            applicationRepository.saveAndFlush(application);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new CustomException(ErrorCode.CONCURRENT_FAILED);
+        }
     }
 
 

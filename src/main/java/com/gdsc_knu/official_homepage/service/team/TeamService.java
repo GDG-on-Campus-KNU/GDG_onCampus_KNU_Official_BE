@@ -25,7 +25,7 @@ public class TeamService {
         if (!team.isAssignedTeam())
             throw new CustomException(ErrorCode.INVALID_INPUT, "정상 배정된 팀이 아닙니다.");
 
-        List<MemberTeam> memberTeams = memberTeamRepository.findMembersByTeamId(teamId);
+        List<MemberTeam> memberTeams = memberTeamRepository.findAllByTeamId(teamId);
         return memberTeams.stream()
                 .map(memberTeam -> MemberResponse.WithTrack.from(memberTeam.getMember()))
                 .toList();

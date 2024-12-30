@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.gdsc_knu.official_homepage.entity.application.QApplication.application;
 import static com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus.*;
 
 
@@ -26,20 +28,20 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
     @Override
     public Page<Application> findAllApplicationsByOption(Pageable pageable, Track track, Boolean isMarked, Long classYearId) {
         List<Application> applications = jpaQueryFactory
-                .selectFrom(QApplication.application)
-                .where(QApplication.application.applicationStatus.ne(TEMPORAL)
+                .selectFrom(application)
+                .where(application.applicationStatus.ne(TEMPORAL)
                         .and(eqTrack(track))
                         .and(eqIsMarked(isMarked))
                         .and(eqClassYear(classYearId)))
-                .orderBy(QApplication.application.id.desc())
+                .orderBy(application.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = jpaQueryFactory
-                .select(QApplication.application.count())
-                .from(QApplication.application)
-                .where(QApplication.application.applicationStatus.ne(TEMPORAL)
+                .select(application.count())
+                .from(application)
+                .where(application.applicationStatus.ne(TEMPORAL)
                         .and(eqTrack(track))
                         .and(eqIsMarked(isMarked))
                         .and(eqClassYear(classYearId)))
@@ -47,21 +49,22 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
         return new PageImpl<>(applications, pageable, total == null ? 0 : total);
     }
 
+    // 리팩토링 대상
     @Override
     public ApplicationStatisticType getStatistics(Long classYearId) {
         return jpaQueryFactory
             .select(Projections.fields(ApplicationStatisticType.class,
-                new CaseBuilder().when(QApplication.application.applicationStatus.ne(TEMPORAL))
+                new CaseBuilder().when(application.applicationStatus.ne(TEMPORAL))
                         .then(1).otherwise(0).sum().as("total"),
-                new CaseBuilder().when(QApplication.application.applicationStatus.ne(TEMPORAL)
-                        .and(QApplication.application.isOpened.eq(true)))
+                new CaseBuilder().when(application.applicationStatus.ne(TEMPORAL)
+                        .and(application.isOpened.eq(true)))
                         .then(1).otherwise(0).sum().as("openCount"),
-                new CaseBuilder().when(QApplication.application.applicationStatus.eq(APPROVED))
+                new CaseBuilder().when(application.applicationStatus.eq(APPROVED))
                         .then(1).otherwise(0).sum().as("approvedCount"),
-                new CaseBuilder().when(QApplication.application.applicationStatus.eq(REJECTED))
+                new CaseBuilder().when(application.applicationStatus.eq(REJECTED))
                         .then(1).otherwise(0).sum().as("rejectedCount")
             ))
-            .from(QApplication.application)
+            .from(application)
             .where(eqClassYear(classYearId))
             .fetchOne();
     }
@@ -70,26 +73,26 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
     public List<ApplicationTrackType> getGroupByTrack(Long classYearId) {
         return jpaQueryFactory
                 .select(Projections.fields(ApplicationTrackType.class,
-                        QApplication.application.track.as("track"),
-                        QApplication.application.count().as("count")
+                        application.track.as("track"),
+                        application.count().as("count")
                 ))
-                .from(QApplication.application)
-                .where(QApplication.application.applicationStatus.ne(TEMPORAL)
+                .from(application)
+                .where(application.applicationStatus.ne(TEMPORAL)
                         .and(eqClassYear(classYearId)))
-                .groupBy(QApplication.application.track)
+                .groupBy(application.track)
                 .fetch();
     }
 
 
     private BooleanExpression eqTrack(Track track) {
-        return track == null ? null : QApplication.application.track.eq(track);
+        return track == null ? null : application.track.eq(track);
     }
 
     private BooleanExpression eqIsMarked(Boolean isMarked) {
-        return (isMarked == null || !isMarked) ? null : QApplication.application.isMarked.eq(true);
+        return (isMarked == null || !isMarked) ? null : application.isMarked.eq(true);
     }
 
     private BooleanExpression eqClassYear(Long classYearId) {
-        return classYearId == null ? null : QApplication.application.classYear.id.eq(classYearId);
+        return classYearId == null ? null : application.classYear.id.eq(classYearId);
     }
 }

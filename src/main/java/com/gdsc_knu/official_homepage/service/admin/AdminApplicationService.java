@@ -1,21 +1,17 @@
 package com.gdsc_knu.official_homepage.service.admin;
 
 import com.gdsc_knu.official_homepage.dto.PagingResponse;
-import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationRequest;
 import com.gdsc_knu.official_homepage.dto.admin.application.AdminApplicationResponse;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationStatisticType;
 import com.gdsc_knu.official_homepage.dto.admin.application.ApplicationTrackType;
-import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.exception.CustomException;
 import com.gdsc_knu.official_homepage.exception.ErrorCode;
 import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
-import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -34,19 +30,17 @@ public class AdminApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MailService mailService;
     private final TransactionTemplate transactionTemplate;
-    private final ClassYearRepository classYearRepository;
-
 
 
     @Transactional(readOnly = true)
-    public AdminApplicationResponse.Statistics getStatistic() {
-        ApplicationStatisticType statistic = applicationRepository.getStatistics();
+    public AdminApplicationResponse.Statistics getStatistic(Long classYearId) {
+        ApplicationStatisticType statistic = applicationRepository.getStatistics(classYearId);
         return AdminApplicationResponse.Statistics.from(statistic);
     }
 
     @Transactional(readOnly = true)
-    public Map<String, Integer> getTrackStatistic() {
-        List<ApplicationTrackType> trackStatistics = applicationRepository.getGroupByTrack();
+    public Map<String, Integer> getTrackStatistic(Long classYearId) {
+        List<ApplicationTrackType> trackStatistics = applicationRepository.getGroupByTrack(classYearId);
 
         Map<String, Integer> trackCountMap = trackStatistics.stream()
                 .collect(Collectors.toMap(ApplicationTrackType::getTrack, ApplicationTrackType::getCount));

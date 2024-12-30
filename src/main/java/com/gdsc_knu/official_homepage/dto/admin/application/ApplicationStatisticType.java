@@ -1,8 +1,11 @@
 package com.gdsc_knu.official_homepage.dto.admin.application;
 
-public interface ApplicationStatisticType {
-    Integer getTotal();
-    Integer getOpenCount();
-    Integer getApprovedCount();
-    Integer getRejectedCount();
+import lombok.Getter;
+
+@Getter
+public class ApplicationStatisticType {
+    Integer total;
+    Integer openCount;
+    Integer approvedCount;
+    Integer rejectedCount;
 }

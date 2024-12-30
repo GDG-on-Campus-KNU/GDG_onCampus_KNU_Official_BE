@@ -78,17 +78,16 @@ public class AdminApplicationServiceTest {
         int start = 1;
         int countPerStatus = 2;
         ApplicationStatus status = ApplicationStatus.SAVED;
-        List<Application> ai = createApplicationList(start, start+countPerStatus, Track.AI, status);
+        List<Application> ai = createApplicationList(start, start+=countPerStatus, Track.AI, status);
         List<Application> backend = createApplicationList(start, start+=countPerStatus, Track.BACK_END, status);
         List<Application> frontend = createApplicationList(start, start+=countPerStatus, Track.FRONT_END, status);
         List<Application> temporal = createApplicationList(start, start+=countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
         List<Application> allApplications = Stream.of(ai, backend, frontend, temporal)
                 .flatMap(List::stream)
                 .toList();
-        int classYearStart = 1;
-        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
-        classYearRepository.saveAll(allClassYears);
-        setClassYear(allApplications, allClassYears);
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        setClassYear(allApplications, classYear);
         applicationRepository.saveAll(allApplications);
         // when
         Map<String, Integer> statistic = applicationService.getTrackStatistic(null);

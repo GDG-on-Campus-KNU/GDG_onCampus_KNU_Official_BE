@@ -92,6 +92,27 @@ public class AdminApplicationRepositoryTest {
     }
 
     @Test
+    @DisplayName("서류합격 지원서 개수를 카운트한다.")
+    void getStatisticDocumentPass() {
+        // given
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        List<Application> applications = createApplicationList(1, 1+4, AI, SAVED);
+        setClassYear(applications, classYear);
+        // mark 를 바꾸면 서류합격
+        for (int i=0; i<2; i++) {
+            applications.get(i).changeMark();
+        }
+        applicationRepository.saveAll(applications);
+
+        // when
+        ApplicationStatisticType statistic = applicationRepository.getStatistics(null);
+
+        // then
+        assertThat(statistic.getDocumentPassedCount()).isEqualTo(2);
+    }
+
+    @Test
     @DisplayName("트랙별 지원 현황을 조회한다. 임시저장 지원서는 결과에 포함하지 않는다.")
     void getGroupByTrack() {
         // given (track 마다 더미데이터를 countPerStatus 씩 생성한다.)

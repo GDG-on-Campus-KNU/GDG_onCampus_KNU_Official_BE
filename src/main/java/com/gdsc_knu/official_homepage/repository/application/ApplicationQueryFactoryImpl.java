@@ -37,7 +37,8 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
                 .from(QApplication.application)
                 .where(QApplication.application.applicationStatus.ne(ApplicationStatus.TEMPORAL)
                         .and(eqTrack(track))
-                        .and(eqIsMarked(isMarked)))
+                        .and(eqIsMarked(isMarked))
+                        .and(eqClassYear(classYearId)))
                 .fetchFirst();
         return new PageImpl<>(applications, pageable, total == null ? 0 : total);
     }

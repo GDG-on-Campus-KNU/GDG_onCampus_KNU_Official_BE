@@ -52,4 +52,10 @@ public class ApplicationTestEntityFactory {
             applications.get(i).updateClassYear(classYears.get(classYearIdx));
         }
     }
+
+    public static void setClassYear(List<Application> applications, ClassYear classYear) {
+        for (int i = 0; i < applications.size(); i++) {
+            applications.get(i).updateClassYear(classYear);
+        }
+    }
 }

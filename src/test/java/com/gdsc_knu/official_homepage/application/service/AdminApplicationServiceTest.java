@@ -79,12 +79,9 @@ public class AdminApplicationServiceTest {
         int countPerStatus = 2;
         ApplicationStatus status = ApplicationStatus.SAVED;
         List<Application> ai = createApplicationList(start, start+countPerStatus, Track.AI, status);
-        start+=countPerStatus;
-        List<Application> backend = createApplicationList(start, start+countPerStatus, Track.BACK_END, status);
-        start+=countPerStatus;
-        List<Application> frontend = createApplicationList(start, start+countPerStatus, Track.FRONT_END, status);
-        start+=countPerStatus;
-        List<Application> temporal = createApplicationList(start, start+countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
+        List<Application> backend = createApplicationList(start, start+=countPerStatus, Track.BACK_END, status);
+        List<Application> frontend = createApplicationList(start, start+=countPerStatus, Track.FRONT_END, status);
+        List<Application> temporal = createApplicationList(start, start+=countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
         List<Application> allApplications = Stream.of(ai, backend, frontend, temporal)
                 .flatMap(List::stream)
                 .toList();
@@ -94,7 +91,7 @@ public class AdminApplicationServiceTest {
         setClassYear(allApplications, allClassYears);
         applicationRepository.saveAll(allApplications);
         // when
-        Map<String, Integer> statistic = applicationService.getTrackStatistic();
+        Map<String, Integer> statistic = applicationService.getTrackStatistic(null);
         // then
         assertThat(statistic.get("BACK_END")).isEqualTo(2);
         assertThat(statistic.get("FRONT_END")).isEqualTo(2);

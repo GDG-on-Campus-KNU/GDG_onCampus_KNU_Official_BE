@@ -52,13 +52,10 @@ public class AdminApplicationRepositoryTest {
         // given (status 마다 더미데이터를 countPerStatus 씩 생성한다.)
         int start = 1;
         int countPerStatus = 5;
-        List<Application> temporal = createApplicationList(start, start+countPerStatus, AI, TEMPORAL);
-        start+=countPerStatus;
-        List<Application> save = createApplicationList(start, start+countPerStatus, AI, SAVED);
-        start+=countPerStatus;
-        List<Application> approve = createApplicationList(start, start+countPerStatus, AI, APPROVED);
-        start+=countPerStatus;
-        List<Application> reject = createApplicationList(start, start+countPerStatus, AI, REJECTED);
+        List<Application> temporal = createApplicationList(start, start+=countPerStatus, AI, TEMPORAL);
+        List<Application> save = createApplicationList(start, start+=countPerStatus, AI, SAVED);
+        List<Application> approve = createApplicationList(start, start+=countPerStatus, AI, APPROVED);
+        List<Application> reject = createApplicationList(start, start+=countPerStatus, AI, REJECTED);
         List<Application> allApplications = Stream.of(temporal, save, approve, reject)
                 .flatMap(List::stream)
                 .toList();
@@ -68,7 +65,7 @@ public class AdminApplicationRepositoryTest {
         applicationRepository.saveAll(allApplications);
 
         // when
-        ApplicationStatisticType statistic = applicationRepository.getStatistics();
+        ApplicationStatisticType statistic = applicationRepository.getStatistics(null);
 
         // then
         assertThat(statistic.getTotal()).isEqualTo(15);
@@ -78,16 +75,31 @@ public class AdminApplicationRepositoryTest {
     }
 
     @Test
+    @DisplayName("지원 및 합격 개수를 기수로 필터링하여 카운트한다.")
+    void getStatisticByClassYear() {
+        // given (기수 3개 지원서 9개를 생성한다.)
+        List<ClassYear> classYears = createClassYearList(1, 1+3);
+        classYearRepository.saveAll(classYears);
+        List<Application> applications = createApplicationList(1, 1+9, AI, SAVED);
+        setClassYear(applications, classYears);
+        applicationRepository.saveAll(applications);
+
+        // when
+        ApplicationStatisticType statistic = applicationRepository.getStatistics(2L);
+
+        // then (2기 지원서가 3개 조회된다.)
+        assertThat(statistic.getTotal()).isEqualTo(3);
+    }
+
+    @Test
     @DisplayName("트랙별 지원 현황을 조회한다. 임시저장 지원서는 결과에 포함하지 않는다.")
     void getGroupByTrack() {
         // given (track 마다 더미데이터를 countPerStatus 씩 생성한다.)
         int start = 1;
         int countPerStatus = 2;
-        List<Application> ai = createApplicationList(start, start+countPerStatus, AI, SAVED);
-        start+=countPerStatus;
-        List<Application> backend = createApplicationList(start, start+countPerStatus, BACK_END, SAVED);
-        start+=countPerStatus;
-        List<Application> temporal = createApplicationList(start, start+countPerStatus, BACK_END, TEMPORAL);
+        List<Application> ai = createApplicationList(start, start+=countPerStatus, AI, SAVED);
+        List<Application> backend = createApplicationList(start, start+=countPerStatus, BACK_END, SAVED);
+        List<Application> temporal = createApplicationList(start, start+=countPerStatus, BACK_END, TEMPORAL);
         List<Application> allApplications = Stream.of(temporal, ai, backend)
                 .flatMap(List::stream)
                 .toList();
@@ -97,7 +109,7 @@ public class AdminApplicationRepositoryTest {
         applicationRepository.saveAll(allApplications);
 
         // when
-        List<ApplicationTrackType> groupStatistic = applicationRepository.getGroupByTrack();
+        List<ApplicationTrackType> groupStatistic = applicationRepository.getGroupByTrack(null);
         Map<String, Integer> trackCountMap = groupStatistic.stream()
                 .collect(Collectors.toMap(ApplicationTrackType::getTrack, ApplicationTrackType::getCount));
 
@@ -145,11 +157,9 @@ public class AdminApplicationRepositoryTest {
         // given (옵션별 더미데이터를 countPerStatus 씩 생성한다.)
         int start = 1;
         int countPerStatus = 2;
-        List<Application> ai = createApplicationList(start, start+countPerStatus, AI, SAVED);
-        start+=countPerStatus;
-        List<Application> backend = createApplicationList(start, start+countPerStatus, BACK_END, SAVED);
-        start+=countPerStatus;
-        List<Application> temporal = createApplicationList(start, start+countPerStatus, BACK_END, TEMPORAL);
+        List<Application> ai = createApplicationList(start, start+=countPerStatus, AI, SAVED);
+        List<Application> backend = createApplicationList(start, start+=countPerStatus, BACK_END, SAVED);
+        List<Application> temporal = createApplicationList(start, start+=countPerStatus, BACK_END, TEMPORAL);
         List<Application> allApplications = Stream.of(temporal, ai, backend)
                 .flatMap(List::stream)
                 .toList();
@@ -172,9 +182,9 @@ public class AdminApplicationRepositoryTest {
     @DisplayName("기수별 지원서를 페이징 조회한다.")
     void findAllByClassYear() {
         // given (총 6개의 지원서와 3개의 기수를 생성하여 매핑한다.)
-        List<ClassYear> classYears = createClassYearList(1, 3);
+        List<ClassYear> classYears = createClassYearList(1, 1+3);
         classYearRepository.saveAll(classYears);
-        List<Application> applications = createApplicationList(1, 6, AI, SAVED);
+        List<Application> applications = createApplicationList(1, 1+6, AI, SAVED);
         setClassYear(applications, classYears);
         applicationRepository.saveAll(applications);
 

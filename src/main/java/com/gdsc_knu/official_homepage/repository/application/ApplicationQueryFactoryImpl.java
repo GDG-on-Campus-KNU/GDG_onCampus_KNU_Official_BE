@@ -62,7 +62,9 @@ public class ApplicationQueryFactoryImpl implements ApplicationQueryFactory{
                 new CaseBuilder().when(application.applicationStatus.eq(APPROVED))
                         .then(1).otherwise(0).sum().as("approvedCount"),
                 new CaseBuilder().when(application.applicationStatus.eq(REJECTED))
-                        .then(1).otherwise(0).sum().as("rejectedCount")
+                        .then(1).otherwise(0).sum().as("rejectedCount"),
+                new CaseBuilder().when(application.isMarked.eq(true))
+                        .then(1).otherwise(0).sum().as("documentPassedCount")
             ))
             .from(application)
             .where(eqClassYear(classYearId))

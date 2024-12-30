@@ -8,4 +8,5 @@ public class ApplicationStatisticType {
     Integer openCount;
     Integer approvedCount;
     Integer rejectedCount;
+    Integer documentPassedCount;
 }

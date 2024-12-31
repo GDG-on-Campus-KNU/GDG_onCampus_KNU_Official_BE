@@ -28,6 +28,7 @@ public class AdminApplicationResponse {
         private Integer notOpenCount;
         private Integer approvedCount;
         private Integer rejectedCount;
+        private Integer documentPassedCount;
 
         public static Statistics from(ApplicationStatisticType applicationStatisticType) {
             return Statistics.builder()
@@ -36,6 +37,7 @@ public class AdminApplicationResponse {
                     .notOpenCount(applicationStatisticType.getTotal() - applicationStatisticType.getOpenCount())
                     .approvedCount(applicationStatisticType.getApprovedCount())
                     .rejectedCount(applicationStatisticType.getRejectedCount())
+                    .documentPassedCount(applicationStatisticType.getDocumentPassedCount())
                     .build();
         }
     }

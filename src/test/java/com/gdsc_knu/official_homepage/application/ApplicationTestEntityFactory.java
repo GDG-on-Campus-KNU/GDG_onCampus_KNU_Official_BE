@@ -23,6 +23,7 @@ public class ApplicationTestEntityFactory {
         return Application.builder()
                 .id(id)
                 .email(String.format("test%s@email.com", id))
+                .name(String.format("test%s", id))
                 .studentNumber(String.valueOf(id))
                 .phoneNumber(String.format("010-0000-%s", id))
                 .applicationStatus(status)

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +40,7 @@ public class MemberTest {
     @DisplayName("최초 가입 정보 입력 후 GUEST 권한을 획득할 수 있다")
     void addNewMemberInfo() {
         // given
-        Member member = createMember();
+        Member member = createMember(1L);
         MemberRequest.Append request = new MemberRequest.Append("새로운 이름",24,"2000123456", "컴퓨터학부","010-1111-1111");
 
         // when
@@ -51,17 +52,5 @@ public class MemberTest {
         assertThat(member.getStudentNumber()).isEqualTo("2000123456");
         assertThat(member.getMajor()).isEqualTo("컴퓨터학부");
         assertThat(member.getRole()).isEqualTo(Role.ROLE_GUEST);
-    }
-
-
-    public Member createMember() {
-        return Member.builder()
-                .role(Role.ROLE_TEMP)
-                .track(Track.UNDEFINED)
-                .email("test@email.com")
-                .name("테스트이름")
-                .profileUrl("http://test.png")
-                .phoneNumber("010-0000-0000")
-                .build();
     }
 }

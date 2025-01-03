@@ -3,8 +3,6 @@ package com.gdsc_knu.official_homepage.team.service;
 import com.gdsc_knu.official_homepage.dto.admin.team.AdminTeamRequest;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.Team;
-import com.gdsc_knu.official_homepage.entity.enumeration.Role;
-import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
 import com.gdsc_knu.official_homepage.repository.team.MemberTeamRepository;
 import com.gdsc_knu.official_homepage.repository.team.TeamRepository;
@@ -20,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -65,16 +64,6 @@ public class AdminTeamServiceTest {
         assertThat(parent.getSubTeams().get(0).getParent()).isEqualTo(parent);
         assertThat(parent.getSubTeams().get(0).getTeamName()).isEqualTo(String.format("%s 1팀", parent.getTeamName()));
 
-    }
-
-    private Member createMember(Long id) {
-        return  Member.builder()
-                .id(id)
-                .email("test@email.com")
-                .name("테스트 유저")
-                .track(Track.BACK_END)
-                .role(Role.ROLE_MEMBER)
-                .build();
     }
 
     private Team createTeam(Long id, Team parent) {

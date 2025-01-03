@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
+import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
@@ -65,14 +66,5 @@ public class MemberRepositoryTest {
             assertThat(member.getTrack()).isEqualTo(Track.BACK_END);
             assertThat(member.getRole()).isEqualTo(Role.ROLE_GUEST);
         });
-    }
-
-    private Member createMember(Long id, String name, Track track, Role role) {
-        return Member.builder()
-                .name(name)
-                .email(String.format("test%s@email.com", id))
-                .track(track)
-                .role(role)
-                .build();
     }
 }

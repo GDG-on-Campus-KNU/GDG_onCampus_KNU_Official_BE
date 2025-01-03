@@ -1,10 +1,12 @@
 package com.gdsc_knu.official_homepage.member.repository;
 
+import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,15 @@ import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.crea
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
-@Import(QueryDslConfig.class)
+@Import({QueryDslConfig.class, ClearDatabase.class})
 public class MemberRepositoryTest {
     @Autowired private MemberRepository memberRepository;
+    @Autowired private ClearDatabase clearDatabase;
+
+    @AfterEach
+    void tearDown() {
+        clearDatabase.each("member");
+    }
 
     @Test
     @DisplayName("직렬별 사용자를 이름으로 정렬하여 조회한다. MEMBER 만 조회된다.")

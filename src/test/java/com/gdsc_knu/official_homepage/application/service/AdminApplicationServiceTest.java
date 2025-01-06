@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 

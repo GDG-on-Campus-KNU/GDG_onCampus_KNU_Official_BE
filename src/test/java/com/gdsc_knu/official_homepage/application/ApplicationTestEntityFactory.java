@@ -22,6 +22,17 @@ public class ApplicationTestEntityFactory {
                 .applicationEndDateTime(now.plusDays(1))
                 .build();
     }
+
+    public static ClassYear createExpiredClassYear(Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        return ClassYear.builder()
+                .id(id)
+                .name(String.format("test%s기", id))
+                .applicationStartDateTime(now.minusDays(2))
+                .applicationEndDateTime(now.minusDays(1))
+                .build();
+    }
+
     public static Application createApplication(Long id, Track track, ApplicationStatus status) {
         return Application.builder()
                 .id(id)

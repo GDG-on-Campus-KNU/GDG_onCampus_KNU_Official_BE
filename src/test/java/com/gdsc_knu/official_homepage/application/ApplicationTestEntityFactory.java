@@ -68,7 +68,7 @@ public class ApplicationTestEntityFactory {
             applications.get(i).updateClassYear(classYears.get(classYearIdx));
         }
     }
-
+  
     public static ApplicationRequest createApplicationRequest(Long classYearId) {
         return ApplicationRequest.builder()
                 .classYearId(classYearId)

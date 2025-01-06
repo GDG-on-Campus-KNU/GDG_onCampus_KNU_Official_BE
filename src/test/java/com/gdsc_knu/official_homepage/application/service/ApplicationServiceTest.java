@@ -2,6 +2,7 @@ package com.gdsc_knu.official_homepage.application.service;
 
 import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -22,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
@@ -134,8 +135,7 @@ public class ApplicationServiceTest {
     void FailedSaveApplication() {
         // given
         Long classYearId = 1L;
-        ApplicationStatus applicationStatus = ApplicationStatus.TEMPORAL;
-        Application application = createApplication(null, Track.AI, applicationStatus);
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
         ClassYear classYear = createClassYear(classYearId);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
@@ -148,7 +148,7 @@ public class ApplicationServiceTest {
         CustomException customException = assertThrows(CustomException.class, () ->
                 applicationService.saveApplication(member.getEmail(), applicationRequest));
         // then
-        assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.APPLICATION_DUPLICATED);
+        assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.APPLICATION_CONFLICT);
     }
 
     @Test
@@ -156,14 +156,8 @@ public class ApplicationServiceTest {
     void FailedSaveApplicationDeadline() {
         // given
         Long classYearId = 1L;
-        ApplicationStatus applicationStatus = ApplicationStatus.TEMPORAL;
-        Application application = createApplication(null, Track.AI, applicationStatus);
-        LocalDateTime now = LocalDateTime.now();
-        ClassYear classYear = ClassYear.builder()
-                .id(classYearId)
-                .applicationStartDateTime(now.minusDays(2))
-                .applicationEndDateTime(now.minusDays(1))
-                .build();
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
+        ClassYear classYear = createExpiredClassYear(1L);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
@@ -184,16 +178,7 @@ public class ApplicationServiceTest {
     void updateApplication() {
         // given
         Long classYearId = 1L;
-        List<ApplicationAnswerDTO> answerList = List.of(
-                ApplicationAnswerDTO.builder()
-                        .questionNumber(0)
-                        .answer("답변1")
-                        .build(),
-                ApplicationAnswerDTO.builder()
-                        .questionNumber(1)
-                        .answer("답변2")
-                        .build()
-        );
+        List<ApplicationAnswerDTO> answerList = createApplicationAnswerDTOList(2, "답변");
         ClassYear classYear = createClassYear(classYearId);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
@@ -207,16 +192,7 @@ public class ApplicationServiceTest {
         String newLinks = "https://new-link.com";
         Track newTrack = Track.FRONT_END;
         ApplicationStatus newApplicationStatus = ApplicationStatus.SAVED;
-        List<ApplicationAnswerDTO> newAnswerList = List.of(
-                ApplicationAnswerDTO.builder()
-                        .questionNumber(0)
-                        .answer("새로운 답변1")
-                        .build(),
-                ApplicationAnswerDTO.builder()
-                        .questionNumber(1)
-                        .answer("새로운 답변2")
-                        .build()
-        );
+        List<ApplicationAnswerDTO> newAnswerList = createApplicationAnswerDTOList(2, "새로운 답변");
 
         ApplicationRequest applicationUpdateRequest = ApplicationRequest.builder()
                 .classYearId(classYearId) // 기수 정보는 수정 불가
@@ -247,21 +223,27 @@ public class ApplicationServiceTest {
     void FailedUpdateApplication() {
         // given
         Long classYearId = 1L;
-        ApplicationStatus applicationStatus = ApplicationStatus.SAVED;
-        Application application = createApplication(null, Track.AI, applicationStatus);
+        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(classYearId);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
         application.updateClassYear(classYear);
-        application.updateApplication(member, createApplicationModel());
+        ApplicationModel applicationModel = ApplicationModel.builder()
+                .techStack("Java")
+                .links("https://github.com")
+                .track(Track.BACK_END)
+                .answers(new ArrayList<>())
+                .applicationStatus(ApplicationStatus.SAVED)
+                .build();
+        application.updateApplication(member, applicationModel);
         applicationRepository.save(application);
         ApplicationRequest applicationRequest = createApplicationRequest(classYearId);
         // when
         CustomException customException = assertThrows(CustomException.class, () ->
                 applicationService.updateApplication(member.getEmail(), applicationRequest));
         // then
-        assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.INVALID_APPLICATION_STATE);
+        assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.APPLICATION_CONFLICT);
     }
 
     @Test
@@ -271,12 +253,7 @@ public class ApplicationServiceTest {
         Long classYearId = 1L;
         ApplicationStatus applicationStatus = ApplicationStatus.TEMPORAL;
         Application application = createApplication(null, Track.AI, applicationStatus);
-        LocalDateTime now = LocalDateTime.now();
-        ClassYear classYear = ClassYear.builder()
-                .id(classYearId)
-                .applicationStartDateTime(now.minusDays(2))
-                .applicationEndDateTime(now.minusDays(1))
-                .build();
+        ClassYear classYear = createExpiredClassYear(1L);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);

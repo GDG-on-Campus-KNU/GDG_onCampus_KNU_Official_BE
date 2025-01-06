@@ -8,7 +8,6 @@ import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.repository.application.ApplicationRepository;
 import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,8 @@ import java.util.stream.Stream;
 
 import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
 import static com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus.*;
-import static com.gdsc_knu.official_homepage.entity.enumeration.Track.*;
+import static com.gdsc_knu.official_homepage.entity.enumeration.Track.AI;
+import static com.gdsc_knu.official_homepage.entity.enumeration.Track.BACK_END;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

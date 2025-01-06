@@ -23,6 +23,17 @@ public class ApplicationTestEntityFactory {
                 .applicationEndDateTime(now.plusDays(1))
                 .build();
     }
+
+    public static ClassYear createExpiredClassYear(Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        return ClassYear.builder()
+                .id(id)
+                .name(String.format("test%s기", id))
+                .applicationStartDateTime(now.minusDays(2))
+                .applicationEndDateTime(now.minusDays(1))
+                .build();
+    }
+
     public static Application createApplication(Long id, Track track, ApplicationStatus status) {
         return Application.builder()
                 .id(id)
@@ -32,19 +43,6 @@ public class ApplicationTestEntityFactory {
                 .phoneNumber(String.format("010-0000-%s", id))
                 .applicationStatus(status)
                 .track(track)
-                .build();
-    }
-
-    public static Application createApplication(Long id, Track track, ApplicationStatus status, List<ApplicationAnswer> answerList) {
-        return Application.builder()
-                .id(id)
-                .email(String.format("test%s@email.com", id))
-                .name(String.format("test%s", id))
-                .studentNumber(String.valueOf(id))
-                .phoneNumber(String.format("010-0000-%s", id))
-                .applicationStatus(status)
-                .track(track)
-                .answers(answerList)
                 .build();
     }
 
@@ -100,5 +98,20 @@ public class ApplicationTestEntityFactory {
                 .answers(answerList)
                 .applicationStatus(ApplicationStatus.TEMPORAL)
                 .build();
+    }
+
+    public static ApplicationAnswerDTO createApplicationAnswerDTO(int questionNumber, String answer) {
+        return ApplicationAnswerDTO.builder()
+                .questionNumber(questionNumber)
+                .answer(answer)
+                .build();
+    }
+
+    public static List<ApplicationAnswerDTO> createApplicationAnswerDTOList(int count, String defaultAnswer) {
+        List<ApplicationAnswerDTO> answerList = new ArrayList<>();
+        for (int i=0; i<count; i++) {
+            answerList.add(createApplicationAnswerDTO(i, defaultAnswer+i));
+        }
+        return answerList;
     }
 }

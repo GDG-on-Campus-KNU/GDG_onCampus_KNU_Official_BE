@@ -59,7 +59,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Member member = validateMember(email);
         applicationRepository.findByNameAndStudentNumberAndClassYearId(member.getName(), member.getStudentNumber(), applicationRequest.getClassYearId())
             .ifPresent(application -> {
-                throw new CustomException(ErrorCode.APPLICATION_DUPLICATED);
+                throw new CustomException(ErrorCode.APPLICATION_CONFLICT);
             });
         member.updateTrack(applicationRequest.getTrack());
         Application application =  new Application(member, new ApplicationModel(applicationRequest));
@@ -122,7 +122,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = applicationRepository.findByNameAndStudentNumberAndClassYearId(name, studentNumber, classYearId)
                 .orElseThrow(() -> new CustomException(ErrorCode.APPLICATION_NOT_FOUND));
         if (!application.getApplicationStatus().equals(ApplicationStatus.TEMPORAL)) {
-            throw new CustomException(ErrorCode.APPLICATION_DUPLICATED);
+            throw new CustomException(ErrorCode.APPLICATION_CONFLICT);
         }
         return application;
     }

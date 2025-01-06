@@ -22,27 +22,14 @@ public class ApplicationTestEntityFactory {
                 .applicationEndDateTime(now.plusDays(1))
                 .build();
     }
-
-    public static ClassYear createExpiredClassYear(Long id) {
-        LocalDateTime now = LocalDateTime.now();
-        return ClassYear.builder()
-                .id(id)
-                .name(String.format("test%s기", id))
-                .applicationStartDateTime(now.minusDays(2))
-                .applicationEndDateTime(now.minusDays(1))
-                .build();
-    }
-
     public static Application createApplication(Long id, Track track, ApplicationStatus status) {
         return Application.builder()
                 .id(id)
                 .email(String.format("test%s@email.com", id))
-                .name(String.format("test%s", id))
                 .studentNumber(String.valueOf(id))
                 .phoneNumber(String.format("010-0000-%s", id))
                 .applicationStatus(status)
                 .track(track)
-                .answers(new ArrayList<>())
                 .build();
     }
 
@@ -66,6 +53,12 @@ public class ApplicationTestEntityFactory {
         for (int i = 0; i < applications.size(); i++) {
             int classYearIdx = i % classYears.size();
             applications.get(i).updateClassYear(classYears.get(classYearIdx));
+        }
+    }
+
+    public static void setClassYear(List<Application> applications, ClassYear classYear) {
+        for (int i = 0; i < applications.size(); i++) {
+            applications.get(i).updateClassYear(classYear);
         }
     }
 

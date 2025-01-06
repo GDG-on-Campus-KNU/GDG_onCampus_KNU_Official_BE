@@ -60,12 +60,12 @@ public class AdminApplicationServiceTest {
         classYearRepository.save(classYear);
         application.updateClassYear(classYear);
         applicationRepository.save(application);
-        doThrow(CustomException.class).when(mailService).sendEach(application);
+        doThrow(CustomException.class).when(mailService).sendEach(any());
         // when
-        // then
         assertThrows(CustomException.class, () ->
                 applicationService.decideApplication(application.getId(), ApplicationStatus.APPROVED)
         );
+        // then
         assertThat(application.getApplicationStatus()).isEqualTo(ApplicationStatus.APPROVED);
     }
 
@@ -74,26 +74,22 @@ public class AdminApplicationServiceTest {
     @DisplayName("트랙별 지원서의 개수를 정상적으로 카운트한다. (트랙에 지원이 없는 경우 0을 카운트한다.)")
     void getTrackStatistic() {
         // given
-        int start = 2;
+        int start = 1;
         int countPerStatus = 2;
         ApplicationStatus status = ApplicationStatus.SAVED;
-        List<Application> ai = createApplicationList(start, start+countPerStatus, Track.AI, status);
-        start+=countPerStatus;
-        List<Application> backend = createApplicationList(start, start+countPerStatus, Track.BACK_END, status);
-        start+=countPerStatus;
-        List<Application> frontend = createApplicationList(start, start+countPerStatus, Track.FRONT_END, status);
-        start+=countPerStatus;
-        List<Application> temporal = createApplicationList(start, start+countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
+        List<Application> ai = createApplicationList(start, start+=countPerStatus, Track.AI, status);
+        List<Application> backend = createApplicationList(start, start+=countPerStatus, Track.BACK_END, status);
+        List<Application> frontend = createApplicationList(start, start+=countPerStatus, Track.FRONT_END, status);
+        List<Application> temporal = createApplicationList(start, start+=countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
         List<Application> allApplications = Stream.of(ai, backend, frontend, temporal)
                 .flatMap(List::stream)
                 .toList();
-        int classYearStart = 1;
-        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
-        classYearRepository.saveAll(allClassYears);
-        setClassYear(allApplications, allClassYears);
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        setClassYear(allApplications, classYear);
         applicationRepository.saveAll(allApplications);
         // when
-        Map<String, Integer> statistic = applicationService.getTrackStatistic();
+        Map<String, Integer> statistic = applicationService.getTrackStatistic(null);
         // then
         assertThat(statistic.get("BACK_END")).isEqualTo(2);
         assertThat(statistic.get("FRONT_END")).isEqualTo(2);
@@ -108,7 +104,7 @@ public class AdminApplicationServiceTest {
     @DisplayName("지원서 메모가 이미 수정된 경우 다시 수정을 시도할 때 오류를 반환한다.")
     void updateNoteFailed() {
         // given
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
         application.updateClassYear(classYear);
@@ -129,7 +125,7 @@ public class AdminApplicationServiceTest {
     @Test
     @DisplayName("동시에 지원서를 수정하는 경우 처음 시도만 남고 오류를 반환한다.")
     void updateNoteConcurrentFailed() throws InterruptedException {
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
         application.updateClassYear(classYear);

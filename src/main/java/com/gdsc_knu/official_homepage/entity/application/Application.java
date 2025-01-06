@@ -83,6 +83,7 @@ public class Application {
                 .map(answers -> ApplicationAnswer.builder()
                         .questionNumber(answers.getQuestionNumber())
                         .answer(answers.getAnswer())
+                        .application(this)
                         .build()).toList();
         this.submittedAt = LocalDateTime.now();
     }

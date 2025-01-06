@@ -1,7 +1,11 @@
 package com.gdsc_knu.official_homepage.application;
 
+import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
+import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
+import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 
@@ -31,6 +35,19 @@ public class ApplicationTestEntityFactory {
                 .build();
     }
 
+    public static Application createApplication(Long id, Track track, ApplicationStatus status, List<ApplicationAnswer> answerList) {
+        return Application.builder()
+                .id(id)
+                .email(String.format("test%s@email.com", id))
+                .name(String.format("test%s", id))
+                .studentNumber(String.valueOf(id))
+                .phoneNumber(String.format("010-0000-%s", id))
+                .applicationStatus(status)
+                .track(track)
+                .answers(answerList)
+                .build();
+    }
+
     public static List<Application> createApplicationList(int startNum, int count, Track track, ApplicationStatus status){
         List<Application> applicationList = new ArrayList<>();
         for (int i=startNum; i<count; i++) {
@@ -52,5 +69,36 @@ public class ApplicationTestEntityFactory {
             int classYearIdx = i % classYears.size();
             applications.get(i).updateClassYear(classYears.get(classYearIdx));
         }
+    }
+
+    public static ApplicationRequest createApplicationRequest(Long classYearId) {
+        return ApplicationRequest.builder()
+                .classYearId(classYearId)
+                .techStack("Java")
+                .links("https://github.com")
+                .track(Track.BACK_END)
+                .answers(new ArrayList<>())
+                .applicationStatus(ApplicationStatus.TEMPORAL)
+                .build();
+    }
+
+    public static ApplicationModel createApplicationModel() {
+        return ApplicationModel.builder()
+                .techStack("Java")
+                .links("https://github.com")
+                .track(Track.BACK_END)
+                .answers(new ArrayList<>())
+                .applicationStatus(ApplicationStatus.TEMPORAL)
+                .build();
+    }
+
+    public static ApplicationModel createApplicationModel(List<ApplicationAnswerDTO> answerList) {
+        return ApplicationModel.builder()
+                .techStack("Java")
+                .links("https://github.com")
+                .track(Track.BACK_END)
+                .answers(answerList)
+                .applicationStatus(ApplicationStatus.TEMPORAL)
+                .build();
     }
 }

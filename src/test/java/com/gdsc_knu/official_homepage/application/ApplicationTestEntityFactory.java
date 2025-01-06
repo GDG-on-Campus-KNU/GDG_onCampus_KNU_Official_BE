@@ -5,7 +5,6 @@ import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
-import com.gdsc_knu.official_homepage.entity.application.ApplicationAnswer;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 
@@ -43,6 +42,7 @@ public class ApplicationTestEntityFactory {
                 .phoneNumber(String.format("010-0000-%s", id))
                 .applicationStatus(status)
                 .track(track)
+                .answers(new ArrayList<>())
                 .build();
     }
 

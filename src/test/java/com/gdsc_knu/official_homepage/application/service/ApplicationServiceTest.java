@@ -51,13 +51,11 @@ public class ApplicationServiceTest {
     @DisplayName("타인의 지원서를 열람할 경우 예외가 발생한다.")
     void FailedGetApplication() {
         // given
-        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
         ClassYear classYear = createClassYear(1L);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
-        application.updateClassYear(classYear);
-        application.updateApplication(member, createApplicationModel());
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL, classYear, member);
         applicationRepository.save(application);
         Member otherMember = createMember(2L);
         memberRepository.save(otherMember);
@@ -135,13 +133,11 @@ public class ApplicationServiceTest {
     void FailedSaveApplication() {
         // given
         Long classYearId = 1L;
-        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
         ClassYear classYear = createClassYear(classYearId);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
-        application.updateClassYear(classYear);
-        application.updateApplication(member, createApplicationModel());
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL, classYear, member);
         applicationRepository.save(application);
         ApplicationRequest applicationRequest = createApplicationRequest(classYearId);
         // when
@@ -156,13 +152,11 @@ public class ApplicationServiceTest {
     void FailedSaveApplicationDeadline() {
         // given
         Long classYearId = 1L;
-        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
         ClassYear classYear = createExpiredClassYear(1L);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
-        application.updateClassYear(classYear);
-        application.updateApplication(member, createApplicationModel());
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL, classYear, member);
         applicationRepository.save(application);
         ApplicationRequest applicationRequest = createApplicationRequest(classYearId);
         // when
@@ -223,20 +217,11 @@ public class ApplicationServiceTest {
     void FailedUpdateApplication() {
         // given
         Long classYearId = 1L;
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(classYearId);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
-        application.updateClassYear(classYear);
-        ApplicationModel applicationModel = ApplicationModel.builder()
-                .techStack("Java")
-                .links("https://github.com")
-                .track(Track.BACK_END)
-                .answers(new ArrayList<>())
-                .applicationStatus(ApplicationStatus.SAVED)
-                .build();
-        application.updateApplication(member, applicationModel);
+        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED, classYear, member);
         applicationRepository.save(application);
         ApplicationRequest applicationRequest = createApplicationRequest(classYearId);
         // when
@@ -251,13 +236,11 @@ public class ApplicationServiceTest {
     void FailedUpdateApplicationDeadline() {
         // given
         Long classYearId = 1L;
-        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
         ClassYear classYear = createExpiredClassYear(1L);
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
-        application.updateClassYear(classYear);
-        application.updateApplication(member, createApplicationModel());
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL, classYear, member);
         applicationRepository.save(application);
         ApplicationRequest applicationRequest = createApplicationRequest(classYearId);
         // when

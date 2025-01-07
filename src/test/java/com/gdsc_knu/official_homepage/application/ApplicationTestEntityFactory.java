@@ -4,6 +4,7 @@ import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
+import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
@@ -41,6 +42,25 @@ public class ApplicationTestEntityFactory {
                 .phoneNumber(String.format("010-0000-%s", id))
                 .applicationStatus(status)
                 .track(track)
+                .build();
+    }
+
+    public static Application createApplication(Long id, Track track, ApplicationStatus status,
+                                                ClassYear classYear, Member member) {
+        return Application.builder()
+                .id(id)
+                .email(member.getEmail())
+                .name(member.getName())
+                .studentNumber(member.getStudentNumber())
+                .phoneNumber(member.getPhoneNumber())
+                .major(member.getMajor())
+                .techStack("Java")
+                .links("https://github.com")
+                .submittedAt(LocalDateTime.now())
+                .applicationStatus(status)
+                .track(track)
+                .answers(new ArrayList<>())
+                .classYear(classYear)
                 .build();
     }
 

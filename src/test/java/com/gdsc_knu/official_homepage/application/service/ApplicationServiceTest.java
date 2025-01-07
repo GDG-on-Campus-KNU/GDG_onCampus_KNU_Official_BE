@@ -108,8 +108,8 @@ public class ApplicationServiceTest {
         String phoneNumber = member.getPhoneNumber();
 
         // when
-        Application application = applicationRepository.findById(
-                applicationService.saveApplication(member.getEmail(), applicationRequest)).orElseThrow();
+        Long returnedId = applicationService.saveApplication(email, applicationRequest);
+        Application application = applicationRepository.findById(returnedId).orElseThrow();
         // then
         assertThat(application.getClassYear().getId()).isEqualTo(classYearId);
         assertThat(application.getTechStack()).isEqualTo(techStack);

@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
+import static com.gdsc_knu.official_homepage.team.TeamTestEntityFactory.createMember;
+import static com.gdsc_knu.official_homepage.team.TeamTestEntityFactory.createTeam;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -66,11 +67,5 @@ public class AdminTeamServiceTest {
 
     }
 
-    private Team createTeam(Long id, Team parent) {
-        return Team.builder()
-                .id(id)
-                .teamName("팀 이름")
-                .parent(parent)
-                .build();
-    }
+
 }

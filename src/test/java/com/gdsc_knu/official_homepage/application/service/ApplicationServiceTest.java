@@ -2,7 +2,6 @@ package com.gdsc_knu.official_homepage.application.service;
 
 import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationAnswerDTO;
-import com.gdsc_knu.official_homepage.dto.application.ApplicationModel;
 import com.gdsc_knu.official_homepage.dto.application.ApplicationRequest;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.Member;
@@ -23,11 +22,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
-import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

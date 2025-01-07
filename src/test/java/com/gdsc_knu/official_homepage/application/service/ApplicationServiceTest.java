@@ -251,8 +251,7 @@ public class ApplicationServiceTest {
     void FailedUpdateApplicationDeadline() {
         // given
         Long classYearId = 1L;
-        ApplicationStatus applicationStatus = ApplicationStatus.TEMPORAL;
-        Application application = createApplication(null, Track.AI, applicationStatus);
+        Application application = createApplication(null, Track.AI, ApplicationStatus.TEMPORAL);
         ClassYear classYear = createExpiredClassYear(1L);
         Member member = createMember(1L);
         classYearRepository.save(classYear);

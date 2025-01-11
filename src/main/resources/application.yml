@@ -34,3 +34,6 @@ logging:
     webhook-url: ${DISCORD_WEBHOOK_URL:default}
     attendance-webhook-url: ${DISCORD_ATTENDANCE_WEBHOOK_URL:default}
 
+white-list:
+  name1: ${SERVER_PROD_IP:localhost}
+  name2: ${SERVER_PROD_DOMAIN:localhost}

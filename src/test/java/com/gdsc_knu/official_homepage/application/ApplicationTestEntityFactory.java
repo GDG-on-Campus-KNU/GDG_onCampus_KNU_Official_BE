@@ -65,6 +65,25 @@ public class ApplicationTestEntityFactory {
                 .build();
     }
 
+    public static Application createApplication(Long id, Track track, ApplicationStatus status,
+                                                ClassYear classYear) {
+        return Application.builder()
+                .id(id)
+                .email(String.format("test%s@email.com", id))
+                .name(String.format("test%s", id))
+                .studentNumber(String.valueOf(id))
+                .phoneNumber(String.format("010-0000-%s", id))
+                .major(String.format("컴퓨터학부-%s", id))
+                .techStack("Java")
+                .links("https://github.com")
+                .submittedAt(LocalDateTime.now())
+                .applicationStatus(status)
+                .track(track)
+                .answers(new ArrayList<>())
+                .classYear(classYear)
+                .build();
+    }
+
     public static List<Application> createApplicationList(int startNum, int count, Track track, ApplicationStatus status){
         List<Application> applicationList = new ArrayList<>();
         for (int i=startNum; i<count; i++) {

@@ -27,11 +27,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.setClassYear;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 
 @SpringBootTest
@@ -56,10 +56,9 @@ public class AdminApplicationServiceTest {
     @DisplayName("메일 전송에 실패하더라도 status 변경은 저장한다.(SAVED -> APPROVED)")
     void updateStatus() {
         // given
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
-        application.updateClassYear(classYear);
+        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED, classYear);
         applicationRepository.save(application);
         doThrow(CustomException.class).when(mailService).sendEach(any());
         // when
@@ -126,10 +125,9 @@ public class AdminApplicationServiceTest {
     @Test
     @DisplayName("동시에 지원서를 수정하는 경우 처음 시도만 남고 오류를 반환한다.")
     void updateNoteConcurrentFailed() throws InterruptedException {
-        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
-        application.updateClassYear(classYear);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED, classYear);
         applicationRepository.saveAndFlush(application);
 
         int threadCount = 2;

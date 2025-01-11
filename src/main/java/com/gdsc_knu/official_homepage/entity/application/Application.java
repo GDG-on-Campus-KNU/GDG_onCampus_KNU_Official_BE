@@ -83,6 +83,7 @@ public class Application {
                 .map(answers -> ApplicationAnswer.builder()
                         .questionNumber(answers.getQuestionNumber())
                         .answer(answers.getAnswer())
+                        .application(this)
                         .build()).toList();
         this.submittedAt = LocalDateTime.now();
     }
@@ -108,7 +109,7 @@ public class Application {
                 .collect(Collectors.toMap(ApplicationAnswer::getQuestionNumber, answer -> answer));
         int answerSize = oldAnswers.size();
         if (answerSize != newAnswers.size()) {
-            throw new IllegalArgumentException("지원서의 질문 응답 개수가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.APPLICATION_ANSWER_UNMATCHED);
         }
         for (int i = 0; i < answerSize; i++) {
             if (!oldAnswers.get(i).getAnswer().equals(newAnswers.get(i))) {

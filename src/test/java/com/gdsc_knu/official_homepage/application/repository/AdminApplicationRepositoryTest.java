@@ -24,9 +24,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestFactory.*;
 import static com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus.*;
-import static com.gdsc_knu.official_homepage.entity.enumeration.Track.*;
+import static com.gdsc_knu.official_homepage.entity.enumeration.Track.AI;
+import static com.gdsc_knu.official_homepage.entity.enumeration.Track.BACK_END;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

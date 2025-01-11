@@ -26,14 +26,15 @@ public enum ErrorCode {
 
     // Application
     APPLICATION_NOT_FOUND(404,HttpStatus.NOT_FOUND, "지원서를 찾을 수 없습니다","A404"),
-    APPLICATION_DUPLICATED(409, HttpStatus.CONFLICT, "이미 작성 중이거나 최종 제출한 지원서가 존재합니다.","A409"),
+    APPLICATION_CONFLICT(409, HttpStatus.CONFLICT, "이미 작성 중이거나 최종 제출한 지원서가 존재합니다.","A409"),
     INVALID_APPLICATION_STATE(400, HttpStatus.BAD_REQUEST,"지원서 상태가 유효하지 않습니다.","A400"),
-    APPLICATION_DEADLINE_EXPIRED(400, HttpStatus.BAD_REQUEST,"지원 기간이 만료되었습니다.","AA400"),
+    APPLICATION_DEADLINE_EXPIRED(400, HttpStatus.BAD_REQUEST,"지원 기간이 만료되었습니다.","AD400"),
     CLASS_YEAR_NOT_FOUND(404, HttpStatus.NOT_FOUND,"존재하지 않는 기수입니다.","AC404"),
     INVALID_CLASS_YEAR(400, HttpStatus.BAD_REQUEST,"기수 정보 설정이 잘못 되었습니다.","AC400"),
     CLASS_YEAR_DUPLICATED(409, HttpStatus.CONFLICT,"이미 존재하는 기수 이름입니다.","AC409"),
     APPLICATION_FORBIDDEN(403, HttpStatus.FORBIDDEN, "지원서에 접근할 수 있는 권한이 없습니다.","A403"),
     CONCURRENT_FAILED(409, HttpStatus.CONFLICT, "다른 사용자가 수정중입니다.","AN409"),
+    APPLICATION_ANSWER_UNMATCHED(400, HttpStatus.BAD_REQUEST, "답변 개수가 일치하지 않습니다.","AA400"),
     // Team
 
 

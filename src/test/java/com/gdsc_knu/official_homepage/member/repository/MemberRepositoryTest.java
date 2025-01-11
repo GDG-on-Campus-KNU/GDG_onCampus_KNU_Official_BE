@@ -1,10 +1,12 @@
 package com.gdsc_knu.official_homepage.member.repository;
 
+import com.gdsc_knu.official_homepage.ClearDatabase;
 import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.entity.Member;
 import com.gdsc_knu.official_homepage.entity.enumeration.Role;
 import com.gdsc_knu.official_homepage.entity.enumeration.Track;
 import com.gdsc_knu.official_homepage.repository.member.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,19 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
+import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
-@Import(QueryDslConfig.class)
+@Import({QueryDslConfig.class, ClearDatabase.class})
 public class MemberRepositoryTest {
     @Autowired private MemberRepository memberRepository;
+    @Autowired private ClearDatabase clearDatabase;
+
+    @AfterEach
+    void tearDown() {
+        clearDatabase.each("member");
+    }
 
     @Test
     @DisplayName("직렬별 사용자를 이름으로 정렬하여 조회한다. MEMBER 만 조회된다.")
@@ -65,14 +74,5 @@ public class MemberRepositoryTest {
             assertThat(member.getTrack()).isEqualTo(Track.BACK_END);
             assertThat(member.getRole()).isEqualTo(Role.ROLE_GUEST);
         });
-    }
-
-    private Member createMember(Long id, String name, Track track, Role role) {
-        return Member.builder()
-                .name(name)
-                .email(String.format("test%s@email.com", id))
-                .track(track)
-                .role(role)
-                .build();
     }
 }

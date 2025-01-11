@@ -97,15 +97,8 @@ public class ApplicationServiceTest {
         Member member = createMember(1L);
         classYearRepository.save(classYear);
         memberRepository.save(member);
-
-        String email = member.getEmail();
-        String name = member.getName();
-        String studentNumber = member.getStudentNumber();
-        String major = member.getMajor();
-        String phoneNumber = member.getPhoneNumber();
-
         // when
-        Long returnedId = applicationService.saveApplication(email, applicationRequest);
+        Long returnedId = applicationService.saveApplication(member.getEmail(), applicationRequest);
         Application application = applicationRepository.findById(returnedId).orElseThrow();
         // then
         assertThat(application.getClassYear().getId()).isEqualTo(classYearId);
@@ -113,11 +106,11 @@ public class ApplicationServiceTest {
         assertThat(application.getLinks()).isEqualTo(links);
         assertThat(application.getTrack()).isEqualTo(track);
         assertThat(application.getApplicationStatus()).isEqualTo(applicationStatus);
-        assertThat(application.getEmail()).isEqualTo(email);
-        assertThat(application.getName()).isEqualTo(name);
-        assertThat(application.getStudentNumber()).isEqualTo(studentNumber);
-        assertThat(application.getMajor()).isEqualTo(major);
-        assertThat(application.getPhoneNumber()).isEqualTo(phoneNumber);
+        assertThat(application.getEmail()).isEqualTo(member.getEmail());
+        assertThat(application.getName()).isEqualTo(member.getName());
+        assertThat(application.getStudentNumber()).isEqualTo(member.getStudentNumber());
+        assertThat(application.getMajor()).isEqualTo(member.getMajor());
+        assertThat(application.getPhoneNumber()).isEqualTo(member.getPhoneNumber());
         assertThat(application.getAnswers().size()).isEqualTo(answerList.size());
         for (int i = 0; i < answerList.size(); i++) {
             assertThat(application.getAnswers().get(i).getQuestionNumber()).isEqualTo(answerList.get(i).getQuestionNumber());

@@ -46,7 +46,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("타인의 지원서를 열람할 경우 예외가 발생한다.")
-    void FailedGetApplication() {
+    void failedGetApplication() {
         // given
         ClassYear classYear = createClassYear(1L);
         Member member = createMember(1L);
@@ -127,7 +127,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("동일한 기수에 동일한 지원자가 두 번째 지원서를 첫 제출할 경우 예외가 발생한다.")
-    void FailedSaveApplication() {
+    void failedSaveApplication() {
         // given
         Long classYearId = 1L;
         ClassYear classYear = createClassYear(classYearId);
@@ -146,7 +146,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("데드라인을 넘어서 지원서를 제출 시 예외가 발생한다.")
-    void FailedSaveApplicationDeadline() {
+    void failedSaveApplicationDeadline() {
         // given
         Long classYearId = 1L;
         ClassYear classYear = createExpiredClassYear(1L);
@@ -211,7 +211,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("임시 저장 상태가 아닌 지원서를 수정할 경우 예외가 발생한다.")
-    void FailedUpdateApplication() {
+    void failedUpdateApplication() {
         // given
         Long classYearId = 1L;
         ClassYear classYear = createClassYear(classYearId);
@@ -230,7 +230,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("데드라인을 넘어서 지원서를 수정 시 예외가 발생한다.")
-    void FailedUpdateApplicationDeadline() {
+    void failedUpdateApplicationDeadline() {
         // given
         Long classYearId = 1L;
         ClassYear classYear = createExpiredClassYear(1L);

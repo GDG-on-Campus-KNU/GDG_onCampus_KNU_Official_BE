@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApplicationTestEntityFactory {
+public class ApplicationTestFactory {
     public static ClassYear createClassYear(Long id) {
         LocalDateTime now = LocalDateTime.now();
         return ClassYear.builder()

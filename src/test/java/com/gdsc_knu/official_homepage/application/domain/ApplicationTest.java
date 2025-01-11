@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApplicationTest {

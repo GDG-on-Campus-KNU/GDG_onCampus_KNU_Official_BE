@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestFactory.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

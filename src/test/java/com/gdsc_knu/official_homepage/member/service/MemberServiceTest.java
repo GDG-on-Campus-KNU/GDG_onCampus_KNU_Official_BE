@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
+import static com.gdsc_knu.official_homepage.member.MemberTestEntityFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -102,15 +103,6 @@ public class MemberServiceTest {
         // then
         assertThat(response.size()).isEqualTo(2);
         assertThat(response.stream().map(TeamResponse.Main::getTeamName)).containsExactly("부모2 1팀", "부모1 1팀");
-    }
-
-    private Member createMember(Long id) {
-        return Member.builder()
-                .name("이름")
-                .email(String.format("test%s@email.com", id))
-                .track(Track.UNDEFINED)
-                .role(Role.ROLE_TEMP)
-                .build();
     }
 
     private Team parentTeam(String teamName) {

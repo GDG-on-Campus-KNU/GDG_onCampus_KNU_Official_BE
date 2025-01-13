@@ -27,15 +27,19 @@ public class AdminApplicationController {
     private static final LocalDate ACTIVE_DATE = LocalDate.of(2025,1,19);
 
     @GetMapping("statistic")
-    @Operation(summary="지원서류 통계데이터 조회 API")
-    public ResponseEntity<AdminApplicationResponse.Statistics> getStatistic() {
-        return ResponseEntity.ok().body(applicationService.getStatistic());
+    @Operation(summary="지원서류 통계데이터 조회 API", description = "classYearId를 비워두거나 false로 설정하면 전체가 조회됩니다.")
+    public ResponseEntity<AdminApplicationResponse.Statistics> getStatistic(
+            @RequestParam(value = "classYearId", required = false) Long classYearId)
+    {
+        return ResponseEntity.ok().body(applicationService.getStatistic(classYearId));
     }
 
     @GetMapping("statistic/track")
-    @Operation(summary="직렬별, 전체 지원서류 개수 조회 API")
-    public ResponseEntity<Map<String, Integer>> getTrackStatistic() {
-        return ResponseEntity.ok().body(applicationService.getTrackStatistic());
+    @Operation(summary="직렬별, 전체 지원서류 개수 조회 API", description = "classYearId를 비워두거나 false로 설정하면 전체가 조회됩니다.")
+    public ResponseEntity<Map<String, Integer>> getTrackStatistic(
+            @RequestParam(value = "classYearId", required = false) Long classYearId)
+    {
+        return ResponseEntity.ok().body(applicationService.getTrackStatistic(classYearId));
     }
 
 

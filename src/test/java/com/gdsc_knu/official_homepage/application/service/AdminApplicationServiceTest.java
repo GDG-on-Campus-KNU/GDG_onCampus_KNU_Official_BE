@@ -1,7 +1,6 @@
 package com.gdsc_knu.official_homepage.application.service;
 
 import com.gdsc_knu.official_homepage.ClearDatabase;
-import com.gdsc_knu.official_homepage.config.QueryDslConfig;
 import com.gdsc_knu.official_homepage.entity.ClassYear;
 import com.gdsc_knu.official_homepage.entity.application.Application;
 import com.gdsc_knu.official_homepage.entity.enumeration.ApplicationStatus;
@@ -12,7 +11,6 @@ import com.gdsc_knu.official_homepage.repository.application.ApplicationReposito
 import com.gdsc_knu.official_homepage.repository.application.ClassYearRepository;
 import com.gdsc_knu.official_homepage.service.MailService;
 import com.gdsc_knu.official_homepage.service.admin.AdminApplicationService;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -30,11 +27,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.*;
-import static com.gdsc_knu.official_homepage.application.ApplicationTestEntityFactory.setClassYear;
+import static com.gdsc_knu.official_homepage.application.ApplicationTestFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 
 @SpringBootTest
@@ -59,17 +56,16 @@ public class AdminApplicationServiceTest {
     @DisplayName("메일 전송에 실패하더라도 status 변경은 저장한다.(SAVED -> APPROVED)")
     void updateStatus() {
         // given
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
-        application.updateClassYear(classYear);
+        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED, classYear);
         applicationRepository.save(application);
-        doThrow(CustomException.class).when(mailService).sendEach(application);
+        doThrow(CustomException.class).when(mailService).sendEach(any());
         // when
-        // then
         assertThrows(CustomException.class, () ->
                 applicationService.decideApplication(application.getId(), ApplicationStatus.APPROVED)
         );
+        // then
         assertThat(application.getApplicationStatus()).isEqualTo(ApplicationStatus.APPROVED);
     }
 
@@ -78,26 +74,22 @@ public class AdminApplicationServiceTest {
     @DisplayName("트랙별 지원서의 개수를 정상적으로 카운트한다. (트랙에 지원이 없는 경우 0을 카운트한다.)")
     void getTrackStatistic() {
         // given
-        int start = 2;
+        int start = 1;
         int countPerStatus = 2;
         ApplicationStatus status = ApplicationStatus.SAVED;
-        List<Application> ai = createApplicationList(start, start+countPerStatus, Track.AI, status);
-        start+=countPerStatus;
-        List<Application> backend = createApplicationList(start, start+countPerStatus, Track.BACK_END, status);
-        start+=countPerStatus;
-        List<Application> frontend = createApplicationList(start, start+countPerStatus, Track.FRONT_END, status);
-        start+=countPerStatus;
-        List<Application> temporal = createApplicationList(start, start+countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
+        List<Application> ai = createApplicationList(start, start+=countPerStatus, Track.AI, status);
+        List<Application> backend = createApplicationList(start, start+=countPerStatus, Track.BACK_END, status);
+        List<Application> frontend = createApplicationList(start, start+=countPerStatus, Track.FRONT_END, status);
+        List<Application> temporal = createApplicationList(start, start+=countPerStatus, Track.BACK_END, ApplicationStatus.TEMPORAL);
         List<Application> allApplications = Stream.of(ai, backend, frontend, temporal)
                 .flatMap(List::stream)
                 .toList();
-        int classYearStart = 1;
-        List<ClassYear> allClassYears = createClassYearList(classYearStart, classYearStart+countPerStatus);
-        classYearRepository.saveAll(allClassYears);
-        setClassYear(allApplications, allClassYears);
+        ClassYear classYear = createClassYear(1L);
+        classYearRepository.save(classYear);
+        setClassYear(allApplications, classYear);
         applicationRepository.saveAll(allApplications);
         // when
-        Map<String, Integer> statistic = applicationService.getTrackStatistic();
+        Map<String, Integer> statistic = applicationService.getTrackStatistic(null);
         // then
         assertThat(statistic.get("BACK_END")).isEqualTo(2);
         assertThat(statistic.get("FRONT_END")).isEqualTo(2);
@@ -112,7 +104,7 @@ public class AdminApplicationServiceTest {
     @DisplayName("지원서 메모가 이미 수정된 경우 다시 수정을 시도할 때 오류를 반환한다.")
     void updateNoteFailed() {
         // given
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
         application.updateClassYear(classYear);
@@ -133,10 +125,9 @@ public class AdminApplicationServiceTest {
     @Test
     @DisplayName("동시에 지원서를 수정하는 경우 처음 시도만 남고 오류를 반환한다.")
     void updateNoteConcurrentFailed() throws InterruptedException {
-        Application application = createApplication(null, Track.AI, ApplicationStatus.SAVED);
         ClassYear classYear = createClassYear(1L);
         classYearRepository.save(classYear);
-        application.updateClassYear(classYear);
+        Application application = createApplication(1L, Track.AI, ApplicationStatus.SAVED, classYear);
         applicationRepository.saveAndFlush(application);
 
         int threadCount = 2;

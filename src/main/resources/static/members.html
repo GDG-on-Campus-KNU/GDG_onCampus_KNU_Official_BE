@@ -18,7 +18,7 @@
         <button type="submit">선택</button>
     </form>
     <p>참석하지 않은 사람 체크</p>
-    <form th:action="@{/api/member/check/attendance}" method="post">
+    <form th:action="@{/api/member/check/attendance}" method="get">
         <input type="hidden" name="track" th:value="${defaultTrack}" />
         <ul style="padding-left: 0; margin-left: 0;">
             <li style="list-style-type: none; padding: 0; margin: 0;" th:each="member : ${members}">

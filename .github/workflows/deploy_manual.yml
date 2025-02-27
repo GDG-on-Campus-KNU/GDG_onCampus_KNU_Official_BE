@@ -5,15 +5,14 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Manual Deploy dev branch 
+name: Manual Deploy dev branch
 
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
 
@@ -25,14 +24,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      # set up application file
-      - name: Create application.yml
-        run: |
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION }}" > application.yml
-          echo "${{ secrets.APPLICATION_PROD }}" > application-prod.yml
 
       # apply caching
       - name: Gradle Caching
@@ -49,7 +40,7 @@ jobs:
       - name: Setup Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test -Pprofile=prod
+          ./gradlew clean build -x test -Pprofile=dev
 
       # login dockerhub
       - name: docker login
@@ -81,9 +72,4 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }} 2>/dev/null || true
-            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker-compose -f docker-compose.yml up -d
-            sudo docker system prune -f
+            ./deploy.sh

@@ -28,7 +28,7 @@ spring:
             enable: true
   thymeleaf:
     cache: true
-    prefix: classpath:/static/
+    prefix: classpath:/templates/
 logging:
   discord:
     webhook-url: ${DISCORD_WEBHOOK_URL:default}

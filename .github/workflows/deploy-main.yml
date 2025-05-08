@@ -57,7 +57,6 @@ jobs:
       - name: docker Hub push
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
 
-
   # run docker image
   deploy:
     runs-on: ubuntu-latest
@@ -72,8 +71,4 @@ jobs:
           key: ${{ secrets.MAIN_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            sudo docker stop ${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker rm ${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGENAME }}
-            sudo docker-compose -f docker-compose.yml up -d
+            ./deploy.sh

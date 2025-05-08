@@ -35,7 +35,7 @@ public class AdminMemberCheckController {
         return "members";
     }
 
-    @PostMapping("api/member/check/attendance")
+    @GetMapping("api/member/check/attendance")
     public ResponseEntity<String> check(@RequestParam List<String> memberNames,
                                         @RequestParam Track track) {
         discordClient.sendAttendance(memberNames, track.name());

@@ -23,13 +23,12 @@ public class CommentController {
     private final CommentService commentService;
     @PostMapping("{postId}/comment")
     @Operation(summary = "댓글 작성 API", description = "groupId가 null or 0이면 댓글, 아니면 해당 댓글의 답글로 저장한다.")
-    public ResponseEntity<Void> createComment(
+    public ResponseEntity<CommentResponse> createComment(
             @TokenMember JwtMemberDetail jwtMemberDetail,
             @PathVariable(name = "postId")Long postId,
             @RequestBody CommentRequest.Create request)
     {
-        commentService.createComment(jwtMemberDetail.getId(), postId, request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().body(commentService.createComment(jwtMemberDetail.getId(), postId, request));
     }
 
 

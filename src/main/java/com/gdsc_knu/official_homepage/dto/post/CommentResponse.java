@@ -44,5 +44,17 @@ public class CommentResponse {
                 .build();
     }
 
+    public static CommentResponse fromCreator(Comment comment){
+        return CommentResponse.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .createAt(comment.getCreateAt())
+                .name(comment.getAuthorName())
+                .profileUrl(comment.getAuthorProfile())
+                .isChild(comment.isChild())
+                .canDelete(true)
+                .canModify(true)
+                .build();
+    }
 
 }

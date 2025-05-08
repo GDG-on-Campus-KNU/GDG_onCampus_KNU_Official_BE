@@ -27,7 +27,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void createComment(Long memberId, Long postId, CommentRequest.Create request){
+    public CommentResponse createComment(Long memberId, Long postId, CommentRequest.Create request){
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         Member member = memberRepository.findById(memberId)
@@ -36,6 +36,7 @@ public class CommentService {
         Comment parent = getParentComment(request.getGroupId());
         Comment comment = Comment.from(request.getContent(), member, post, parent);
         commentRepository.save(comment);
+        return CommentResponse.fromCreator(comment);
     }
 
     private Comment getParentComment(Long parentId) {

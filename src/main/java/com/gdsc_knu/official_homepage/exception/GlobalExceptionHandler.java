@@ -25,14 +25,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
     private final Environment environment;
-    private final DiscordClient discordClient;
     public List<String> activeProfiles() {
         return Arrays.asList(environment.getActiveProfiles());
     }
 
     private ResponseEntity<ExceptionDto> exceptionDto(CustomException e, HttpServletRequest request) {
         if (activeProfiles().contains("prod")) {
-            discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
             return ResponseEntity.status(e.getErrorCode().getError())
                     .body(new ExceptionDto(e.getErrorCode()));
         }
@@ -50,7 +48,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ExceptionDto> jwtExceptionHandler(JwtException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.UNAUTHORIZED, request);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ExceptionDto(ErrorCode.INVALID_PERMISSION, e.getMessage()));
     }
@@ -58,7 +55,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionDto> illegalArgumentExceptionHandler(IllegalArgumentException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionDto(ErrorCode.INVALID_INPUT, e.getMessage()));
     }
@@ -67,7 +63,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ExceptionDto> noSuchElementExceptionHandler(NoSuchElementException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionDto(ErrorCode.INVALID_INPUT, e.getMessage()));
     }
@@ -76,7 +71,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> illegalStateException(IllegalStateException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionDto(HttpStatus.BAD_REQUEST,e.getMessage()));
     }
@@ -86,7 +80,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> invalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionDto(HttpStatus.BAD_REQUEST, "요청 데이터가 잘못되었습니다. 누락되거나, 올바른 타입인지 확인하세요."));
     }
@@ -96,7 +89,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ExceptionDto> sqlException(SQLException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
@@ -105,7 +97,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ExceptionDto> indexOutOfBoundsException(IndexOutOfBoundsException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
@@ -115,7 +106,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ExceptionDto> nullPointerException(NullPointerException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
@@ -125,7 +115,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handlerMethodValidationException(HandlerMethodValidationException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionDto(HttpStatus.BAD_REQUEST, "입력값이 잘못되었습니다.: " + e.getMessage()));
     }
@@ -133,7 +122,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<ExceptionDto> messagingExceptionHandler(MessagingException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
@@ -141,7 +129,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MailException.class)
     public ResponseEntity<ExceptionDto> mailExceptionHandler(MailException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.INTERNAL_SERVER_ERROR, request);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
@@ -153,7 +140,6 @@ public class GlobalExceptionHandler {
         e.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         log.error(errors.toString());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
@@ -161,7 +147,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         log.error(e.getMessage());
-        discordClient.sendErrorAlert(e, HttpStatus.BAD_REQUEST, request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

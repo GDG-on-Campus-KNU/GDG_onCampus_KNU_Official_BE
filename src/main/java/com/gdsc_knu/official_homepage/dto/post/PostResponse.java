@@ -117,27 +117,27 @@ public class PostResponse {
         }
     }
 
-//    @Getter
-//    @Builder
-//    @AllArgsConstructor
-//    public static class Modify {
-//        private String title;
-//        private String content;
-//        private String summary;
-//        private String thumbnailUrl;
-//        private Category category;
-//        private PostStatus status;
-//
-//        public static Modify from(Post post) {
-//            int length = Math.min(post.getContent().length(), 20);
-//            return Modify.builder()
-//                    .title(post.getTitle())
-//                    .summary(post.getContent().substring(0, length))
-//                    .content(post.getContent())
-//                    .thumbnailUrl(post.getThumbnailUrl())
-//                    .category(post.getCategory())
-//                    .status(post.getStatus())
-//                    .build();
-//        }
-//    }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class Modify {
+        private String title;
+        private String content;
+        private String summary;
+        private String thumbnailUrl;
+        private Category category;
+        private PostStatus status;
+
+        public static Modify from(Post post) {
+            int length = Math.min(post.getContent().length(), 20);
+            return Modify.builder()
+                    .title(post.getTitle())
+                    .summary(post.getContent().substring(0, length))
+                    .content(post.getContent())
+                    .thumbnailUrl(post.getThumbnailUrl())
+                    .category(post.getCategory())
+                    .status(post.getStatus())
+                    .build();
+        }
+    }
 }

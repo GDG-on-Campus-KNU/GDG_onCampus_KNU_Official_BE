@@ -65,13 +65,14 @@ public class PostController {
         return ResponseEntity.ok().body(post);
     }
 
-//    @GetMapping("/{postId}/modify")
-//    @Operation(summary = "게시글 수정용 정보 조회 API", description = "게시글 수정을 위해 필요한 정보를 조회한다. 작성자만 조회 가능하다.")
-//    public ResponseEntity<PostResponse.Modify> getTemporalPost(@PathVariable("postId") Long postId,
-//                                                               @TokenMember JwtMemberDetail jwtMemberDetail) {
-//        PostResponse.Modify modifyPost = postService.getModifyPost(jwtMemberDetail.getId(), postId);
-//        return ResponseEntity.ok().body(modifyPost);
-//    }
+    @GetMapping("/{postId}/modify")
+    @Operation(summary = "게시글 수정용 정보 조회 API", description = "게시글 수정을 위해 필요한 정보를 조회한다. 작성자만 조회 가능하다.")
+    public ResponseEntity<PostResponse.Modify> getTemporalPost(@PathVariable("postId") Long postId,
+                                                               @TokenMember JwtMemberDetail jwtMemberDetail) {
+        PostResponse.Modify modifyPost = postService.getModifyPost(jwtMemberDetail.getId(), postId);
+        return ResponseEntity.ok().body(modifyPost);
+    }
+
     @PostMapping()
     @Operation(summary = "게시글 작성 API", description = "게시글을 작성한다. 회원만 작성 가능하다.")
     public ResponseEntity<Void> createPost(@TokenMember JwtMemberDetail jwtMemberDetail,

@@ -15,16 +15,16 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${white-list.name1}")
-    String server_name1;
+    String serverName1;
     @Value("${white-list.name2}")
-    String server_name2;
+    String serverName2;
 
     private final TokenMemberResolver tokenMemberResolver;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173","https://gdsc-knu.com",server_name1, server_name2)
+                .allowedOrigins("http://localhost:5173","https://gdsc-knu.com",serverName1, serverName2)
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")

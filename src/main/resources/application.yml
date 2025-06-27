@@ -37,3 +37,6 @@ logging:
 white-list:
   name1: ${SERVER_PROD_IP:localhost}
   name2: ${SERVER_PROD_DOMAIN:localhost}
+server:
+  domain:
+    dev: ${SERVER_DEV_DOMAIN:https://gdsc-knu.shop}

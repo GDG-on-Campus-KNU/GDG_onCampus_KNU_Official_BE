@@ -88,18 +88,17 @@ public class PostServiceImpl implements PostService {
         return PagingResponse.withoutCountFrom(postList, size, PostResponse.Temp::from);
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public PostResponse.Modify getModifyPost(Long memberId, Long postId) {
-//        Post post = postRepository.findById(postId)
-//                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-//        if (!post.getMember().getId().equals(memberId)) {
-//            throw new CustomException(ErrorCode.POST_FORBIDDEN);
-//        }
-//        PostResponse.Modify modifyPost = PostResponse.Modify.from(post);
-//
-//        return modifyPost;
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public PostResponse.Modify getModifyPost(Long memberId, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new CustomException(ErrorCode.POST_FORBIDDEN);
+        }
+
+        return PostResponse.Modify.from(post);
+    }
 
     @Override
     @Transactional(readOnly = true)

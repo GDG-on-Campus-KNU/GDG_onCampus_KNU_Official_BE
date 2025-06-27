@@ -5,11 +5,17 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${server.domain.dev}")
+    String devServer;
     @Bean
     public OpenAPI openAPI() {
         String jwt = "accessToken";
@@ -24,7 +30,10 @@ public class SwaggerConfig {
                 .components(new Components())
                 .info(apiInfo())
                 .addSecurityItem(securityRequirement)
-                .components(components);
+                .components(components)
+                .servers(List.of(
+                        new io.swagger.v3.oas.models.servers.Server().url(devServer)
+                ));
     }
     private Info apiInfo() {
         return new Info()
